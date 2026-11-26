@@ -1,0 +1,84 @@
+# Profile for the big box: AMD EPYC 9754 (128 cores / 256 threads), 512 GB RAM, several RTX 5070 Ti.
+# Only the differences from config/train.yaml's values matter here; everything else uses the defaults in
+# python/riftzero/config.py — so copy any setting from train.yaml you want to keep the same (decks, caps, ...).
+#   scripts/start.sh --config config/train-epyc.yaml
+
+run:
+  name: epyc-1
+  seed: 1
+  runsDir: runs
+
+decks:
+  mode: pool
+  pool:                 # with ~10x the games, a wider pool is affordable
+    - 01-azir.json
+    - 02-vex.json
+    - 03-evelynn.json
+    - 04-rek-sai.json
+    - 06-kai-sa.json
+    - 09-irelia.json
+    - 11-kennen.json
+    - 12-ezreal.json
+    - 13-sett.json
+  allowMirror: true
+
+caps:
+  maxTurns: 60
+  maxTurnsAnneal: { to: 40, startStep: 30000, endStep: 100000 }
+  timeoutShaping: 0.2
+  maxActions: 1500
+  maxMainPerTurn: 40
+
+selfplay:
+  workers: 120          # one per physical core minus 8 (SMT threads add little for this engine); try 160 and compare games/h
+  concurrentGames: 4
+  gamesPerShard: 8
+
+env:
+  kind: factored
+
+search:
+  algorithm: gumbel
+  fullSims: 96
+  fastSims: 24
+  fullProb: 0.25
+  maxConsidered: 16
+
+evalSearch:
+  fullSims: 96
+
+inference:
+  backend: torch
+  host: 127.0.0.1
+  basePort: 47000
+  gpus: [0, 1]          # list every GPU you want serving inference (nvidia-smi -L)
+  serversPerGpu: 2      # Python request handling is the limit before the GPU is: 2 processes per GPU
+  maxBatch: 512
+  batchTimeoutMs: 2.0
+  dtype: bf16
+  reloadEverySec: 20
+  memoryFraction: 0.30
+
+model:
+  size: medium          # ≈ 6M params
+
+train:
+  gpu: 0                # put the trainer on a GPU of its own if you have one more than `inference.gpus`
+  batchSize: 1024
+  lr: 6.0e-4
+  warmupSteps: 1000
+  schedule: cosine
+  totalSteps: 400000
+  minPositions: 50000
+  replayPositions: 2000000   # ~60 GB RAM
+  maxSampleReuse: 4.0
+  ckptEverySteps: 1000
+  keepCheckpoints: 40
+  keepShardFiles: 8000   # ~8000 × 8 games × ~40 positions × ~33 KB ≈ 85 GB of shards on disk
+
+eval:
+  everyCheckpoints: 2
+  gamesPerOpponent: 40
+  opponents: [searchai, best, bot]
+  concurrentGames: 8
+  gating: { enabled: false, threshold: 0.55 }

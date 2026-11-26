@@ -1,0 +1,127 @@
+# Riftforge self-play training — default profile for the HOME PC:
+#   AMD Ryzen 7 9800X3D (8 cores / 16 threads) + one RTX 5070 Ti 16 GB, Windows 11 + WSL2 (Ubuntu).
+# For the 128-core EPYC box use config/train-epyc.yaml. Every value not set here falls back to the defaults in
+# python/riftzero/config.py. Override anything on the command line, e.g.
+#   scripts/start.sh --set search.fullSims=32 --set run.name=home-2
+#
+# Start:  scripts/start.sh          (Windows native: scripts\start.ps1)
+# Watch:  scripts/status.sh --watch  + TensorBoard (see TRAINING.md)
+# Stop:   Ctrl-C, or scripts/stop.sh from another terminal. Starting again with the same run.name resumes.
+
+run:
+  name: home-1          # runs/<name>/ holds everything for this run; a new name = a fresh run
+  seed: 1
+  runsDir: runs
+
+# ---------------------------------------------------------------------------------------------------------------
+# Decks. Start narrow: a few decks means far more games per matchup, so the network learns real play sooner.
+# Widen the pool (more files from data/meta-decks/, or your own deck JSON) once Elo vs SearchAI stops climbing —
+# a new run name, or the same run (it keeps learning, the old matchups stay in the replay buffer for a while).
+decks:
+  mode: pool            # pool: both seats draw from `pool` | matchup: seat A plays `me`, seat B one of `opponents`
+  pool:                 # file names in data/meta-decks/, paths relative to the repo, or absolute paths
+    - 01-azir.json      # Azir (1st)
+    - 02-vex.json       # Vex (2nd)
+    - 04-rek-sai.json   # Rek'Sai (4th)
+    - 06-kai-sa.json    # Kai'Sa (6th)
+  allowMirror: true     # mirror matches are useful practice too
+  # Fine-tuning one matchup (e.g. your deck vs what your friend plays) — see TRAINING.md "Fine-tune a matchup":
+  # mode: matchup
+  # me: decks/my-deck.json
+  # opponents: [02-vex.json, 06-kai-sa.json]
+
+# ---------------------------------------------------------------------------------------------------------------
+# Game caps (fuzz-agent recommendation). A capped game is a "timeout": a draw, nudged by the point difference.
+caps:
+  maxTurns: 60          # early networks play slowly; trained play ends around turn 26
+  maxTurnsAnneal:       # tighten to 40 once play is sensible (linear over trainer steps)
+    to: 40
+    startStep: 20000
+    endStep: 60000
+  timeoutShaping: 0.2   # timeout value = 0.2 × clipped point difference (a real win is worth 1.0)
+  maxActions: 1500
+  maxMainPerTurn: 40    # forces endTurn after this many main-phase actions in one turn
+
+# ---------------------------------------------------------------------------------------------------------------
+selfplay:
+  workers: auto         # auto = logical CPU threads − reserveThreads (16 − 2 = 14 on the 9800X3D)
+  reserveThreads: 2     # left for the trainer, the inference server and your desktop
+  concurrentGames: 4    # games per worker in flight (keeps the GPU fed while a worker computes)
+  gamesPerShard: 4      # games per training-data file
+  statsEverySec: 10
+
+env:
+  kind: factored        # factored: big decisions (damage splits, big moves, payments) as complete sub-choices
+                        # engine:   the engine's raw legal list (samples some big decisions — not recommended)
+
+# ---------------------------------------------------------------------------------------------------------------
+# Search (per decision). Gumbel AlphaZero is strong at low simulation counts. Playout-cap randomisation: a
+# `fullProb` share of decisions get `fullSims` simulations and become training targets; the rest get `fastSims`
+# and are only played (more games per hour for the value target).
+search:
+  algorithm: gumbel     # gumbel | puct
+  fullSims: 64
+  fastSims: 16
+  fullProb: 0.25
+  maxConsidered: 16     # Gumbel: root options considered (sequential halving)
+  cVisit: 50
+  cScale: 1.0
+  cPuct: 1.5
+  dirichletAlpha: 0.3   # puct only
+  dirichletFrac: 0.25   # puct only
+  temperatureMoves: 12  # puct only
+  forcedStepCap: 64
+
+evalSearch:             # search used in eval matches (no noise, every decision full)
+  fullSims: 64
+
+target:
+  pointsShaping: 0.0    # 0 = learn from win/loss only (recommended). >0 blends the final point difference in.
+
+# ---------------------------------------------------------------------------------------------------------------
+inference:
+  backend: torch        # torch | mock (mock = no GPU, uniform network: plumbing test only)
+  host: 127.0.0.1       # TCP on localhost: works on Linux, WSL2 and Windows
+  basePort: 47000       # servers listen on basePort, basePort+1, ...
+  gpus: [0]
+  serversPerGpu: 1
+  maxBatch: 256
+  batchTimeoutMs: 2.0   # how long a batch may wait to fill
+  dtype: bf16           # bf16 | fp16 | fp32
+  reloadEverySec: 20    # pick up new checkpoints this often
+  memoryFraction: 0.30  # VRAM cap for the inference process (the trainer shares the same 16 GB card)
+
+model:
+  size: small           # tiny | small | medium | large (python/riftzero/model.py). small ≈ 1M params.
+
+train:
+  gpu: 0
+  batchSize: 256
+  lr: 3.0e-4
+  warmupSteps: 500
+  schedule: cosine      # cosine | constant (after warmup)
+  totalSteps: 200000    # cosine horizon
+  minLrFrac: 0.1
+  weightDecay: 1.0e-4
+  valueWeight: 1.0
+  gradClip: 1.0
+  minPositions: 10000   # wait for this much data before the first step
+  replayPositions: 200000  # sliding window of recent positions kept in RAM (~30 KB each → ~6 GB)
+  maxSampleReuse: 4.0   # train at most 4 samples per generated position (stops overfitting a small buffer)
+  ckptEverySteps: 500
+  keepCheckpoints: 30
+  keepShardFiles: 3000  # older shard files are deleted (their data is already in memory or too old)
+  logEverySteps: 50
+  ampDtype: bf16
+  compile: false        # torch.compile: faster steps, slower start; try it once things work
+  initFrom: null        # path to a checkpoint to start from (fine-tuning), e.g. runs/home-1/ckpt/best.pt
+
+eval:
+  everyCheckpoints: 3   # ≈ every 1500 steps (about every 2 h on the home PC)
+  gamesPerOpponent: 16
+  opponents: [searchai, best, bot]   # searchai = the hand-built AI: the yardstick for "is this getting good?"
+  concurrentGames: 4
+  gating:
+    enabled: false      # false: best = latest evaluated. true: promote only when it beats best by `threshold`
+    threshold: 0.55
+  searchAi: {}          # options for SearchAI (src/ai/search.ts SearchOptions), e.g. { turnNodes: 4000 }

@@ -2,3 +2,8 @@ node_modules
 dist/
 *.cpuprofile
 tests/ui/shots/
+runs/
+.venv/
+__pycache__/
+*.pyc
+*.rfs.tmp

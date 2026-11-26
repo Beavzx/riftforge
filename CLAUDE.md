@@ -6,7 +6,7 @@ and a coach that explains its moves so Jonathon can talk through his decisions w
 
 ## Where things stand (handover from the claude.ai session, 2026-11-26)
 
-The work so far was done in one claude.ai session with five parallel agents, merged on `master`. Per-agent notes
+The work so far was done in one claude.ai session with five parallel agents, merged on `main`. Per-agent notes
 are in `docs/agents/*.md`; read the relevant one before changing an area.
 
 | Area | Status | Code | Notes |
@@ -74,7 +74,7 @@ Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, exp
 - **Engine todos:** 2v2 invite timing (RJ#906); ven-163's Empower-scope "[1] or [A] less" still takes the [1]
   (rules-decisions #79). Jonathon's ENGINE-10 update (merged from the second zip) fixed RJ#13152, RJ#13165 and RJ#13329,
   and its RJ#13328 fix replaced the fuzz agent's version. Jonathon keeps working on the engine himself, so merge his
-  zips as a commit on a branch from the last upstream commit, then merge into master.
+  zips as a commit on a branch from the last upstream commit, then merge into `main` (the last upstream commit is branch `upstream/engine1`).
 - **Self-play throughput:** measured on the mock backend at about 13 ms per search simulation, 87% of it in the rules
   engine (`getLegalActions` + `applyAction`). `TRAINING.md` estimates about 800–1,000 games/hour on the home PC and
   4,000–5,000 on the EPYC.

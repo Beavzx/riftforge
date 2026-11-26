@@ -2295,5 +2295,53 @@
     ]
    }
   ]
+ },
+ {
+  "date": "2026-11-26T20:24:05.033Z",
+  "seed": 700001,
+  "games": 200,
+  "workers": 1,
+  "seconds": 332,
+  "steps": 27991,
+  "turns": 3925,
+  "ended": 199,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 96960,
+   "probesLegal": 4081,
+   "enumChecks": 2059,
+   "jsonChecks": 1651,
+   "viewChecks": 4362,
+   "rollbacks": 52
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Cosmic Vista"
+    ],
+    "seeds": [
+     700008
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Smite",
+     "Trusty Ramhound"
+    ],
+    "seeds": [
+     700039
+    ]
+   }
+  ]
  }
 ]

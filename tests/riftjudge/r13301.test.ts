@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import {
   assert, S0, put, hand, control, move, act, P0, P1, BF_A, BF_B, pend, chainLabels, fundAll, canPlayNow, zone,
-  attackSetup, expectPending, setBattlefieldCard, locOf, endTurn, hasKeyword, mightOf, legal, play, passN, answer, rejects, addRunes,
+  attackSetup, expectPending, setBattlefieldCard, locOf, endTurn, hasKeyword, mightOf, legal, play, passN, answer, rejects, addRunes, cast,
 } from '../conformance/harness.ts';
 import { drive, ans, opt, withTokens, unitsNamed, setLegend, nameOf } from './r11701.helpers.ts';
 import { officialBanlist } from '../../src/engine/banlist.ts';
@@ -332,4 +332,16 @@ test('RJ#13328 Dancing Grenade replayed for [A] never leaves the chain during th
   assert.ok(!zones.has('trash') && !zones.has('gone'), `during the loop: ${[...zones]}`);
   assert.equal(g.objects[e].damage, 2 + 4); assert.equal(g.objects[f].damage, 3);
   assert.equal(zone(g, gr), 'trash', 'trashed when the loop stops');
+});
+
+test('RJ#13328 guard: a spell whose own resolution puts a reflexive item on the chain (Disintegrate\'s "do this: draw 1") still goes to the trash', () => {
+  let g = S0(); fundAll(g, P0, 6);
+  const e = put(g, P1, 'V(2)', BF_A); control(g, BF_A, P1);
+  const h = g.players[P0].hand.length;
+  let d: string;
+  [g, d] = cast(g, P0, 'Disintegrate', { targets: [[e]] });
+  g = drive(g);
+  assert.equal(zone(g, e), 'trash', 'killed');
+  assert.equal(g.players[P0].hand.length, h + 1, 'drew 1 from the reflexive item');
+  assert.equal(zone(g, d), 'trash', 'Disintegrate left the chain to the trash');
 });

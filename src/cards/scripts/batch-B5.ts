@@ -89,6 +89,9 @@ const REPLAY = delayedAbility('B5:replayForA', when('spellResolved', (ev, ctx) =
   if (!pc.pay(c, id)) return;
   pc.play(id, { ignoreCost: true });
 }, { text: 'You may play this again for [A]' }));
+// No longer scheduled (Dancing Grenade replays inside its own resolution, RJ#13328); kept registered so a saved game that
+// still holds one of these delayed entries resolves it as before.
+void REPLAY;
 
 // =====================================================================================
 // ORIGINS (ogn)
@@ -904,7 +907,15 @@ card('unl-020-219', "Deal 2 to a unit. Its controller may play this spell again 
     const bonus = ctx.count(grenadeKey(ctx.self));
     const dealt = ctx.deal(2 + bonus, t);
     if (Object.values(dealt).some(n => n > 0)) ctx.bump(grenadeKey(ctx.self));
-    ctx.delay(REPLAY, { obj: ctx.self, epoch: ctx.obj(ctx.self).epoch ?? 0, p }, 'endOfTurn', 1);
+    // RJ#13328: the replay is part of this spell's own resolution — the target's controller decides (and pays [A]) while the
+    // grenade is still on the chain, and it is played again from there: it never reaches the trash during the loop (same
+    // object, so the damage count accumulates). resolveTop keeps a spell on the chain when it was replayed (chain.ts).
+    const pc = ctx.as(p);
+    const c = cost('[A]');
+    if (ctx.obj(ctx.self)?.zone !== 'chain' || !pc.canPay(c, ctx.self)) return;
+    if (!pc.may(`Play ${ctx.name(ctx.self)} again for [A]?`)) return;
+    if (!pc.pay(c, ctx.self)) return;
+    pc.play(ctx.self, { ignoreCost: true });
   }, { targets: [T.unit({ prompt: 'Deal 2 to a unit', ...harm })] }),
 ]);
 

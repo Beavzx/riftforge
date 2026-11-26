@@ -323,7 +323,11 @@ export function resolveTop(g: GameState): void {
   if (i >= 0) g.chain.splice(i, 1);
   if (item.kind === 'spell') {
     const o = g.objects[item.source];
-    if (o && o.zone === 'chain') {
+    // RJ#13328 (Dancing Grenade): a spell played again by its own resolution is a new chain item for the same object — it
+    // stays on the chain instead of leaving it
+    // (only a new SPELL item counts: a reflexive "do this" item the spell put on the chain shares its source)
+    const replayed = g.chain.some(c => c.kind === 'spell' && c.source === item.source && c.id !== item.id);
+    if (o && o.zone === 'chain' && !replayed) {
       // B7-4: "play it, then banish / recycle it"
       if (item.viaFlow || item.choices.banishAfter || item.leaveTo === 'banish') banish(g, [item.source]);
       else if (item.leaveTo === 'recycle') recycle(g, [item.source]);

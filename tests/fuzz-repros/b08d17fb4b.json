@@ -1,0 +1,850 @@
+{
+ "hash": "b08d17fb4b",
+ "signature": "legal-rollback|listed playCard rolled back: cannot pay N O|",
+ "kind": "legal-rollback",
+ "message": "listed playCard rolled back: cannot pay 2 O",
+ "cards": [
+  "Salvage"
+ ],
+ "cardIds": [
+  "ogn-224-298"
+ ],
+ "spec": {
+  "seed": 3316,
+  "decks": [
+   {
+    "legend": "ven-153-166",
+    "champion": "ven-136-166",
+    "main": [
+     "ogn-221-298",
+     "rad-135-167",
+     "rad-135-167",
+     "rad-135-167",
+     "ogs-012-024",
+     "ogs-012-024",
+     "ogs-012-024",
+     "unl-163-219",
+     "ogn-157-298",
+     "ogn-157-298",
+     "ogn-157-298",
+     "ven-116-166",
+     "rad-120-167",
+     "rad-120-167",
+     "ogn-135-298",
+     "ogn-135-298",
+     "rad-128-167",
+     "unl-164-219",
+     "unl-164-219",
+     "unl-164-219",
+     "unl-120-219",
+     "unl-120-219",
+     "unl-120-219",
+     "sfd-110-221",
+     "sfd-110-221",
+     "ogn-224-298",
+     "sfd-098-221",
+     "ven-076-166",
+     "ven-076-166",
+     "unl-110-219",
+     "unl-110-219",
+     "unl-110-219",
+     "ogn-139-298",
+     "ogn-149-298",
+     "ogn-161-298",
+     "ogn-161-298",
+     "ogn-161-298",
+     "ogn-226-298",
+     "ogn-226-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-275-298",
+     "ogn-283-298",
+     "ogn-290-298"
+    ]
+   },
+   {
+    "legend": "rad-151-167",
+    "champion": "rad-065-167",
+    "main": [
+     "sfd-073-221",
+     "ogn-224-298",
+     "ogn-224-298",
+     "ogn-206-298",
+     "rad-118-167",
+     "rad-118-167",
+     "rad-118-167",
+     "rad-056-167",
+     "sfd-171-221",
+     "sfd-171-221",
+     "ogn-213-298",
+     "ogn-213-298",
+     "ogn-217-298",
+     "ogn-217-298",
+     "ogn-217-298",
+     "ogn-241-298",
+     "ven-119-166",
+     "ven-119-166",
+     "ven-119-166",
+     "ogn-230-298",
+     "ogn-230-298",
+     "unl-161-219",
+     "unl-161-219",
+     "unl-161-219",
+     "sfd-154-221",
+     "unl-160-219",
+     "unl-160-219",
+     "ogn-230-298",
+     "rad-116-167",
+     "rad-116-167",
+     "rad-125-167",
+     "rad-125-167",
+     "rad-125-167",
+     "ogn-095-298",
+     "ogn-095-298",
+     "ogn-095-298",
+     "ogn-097-298",
+     "sfd-160-221",
+     "sfd-160-221"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ven-161-166",
+     "ogn-276-298",
+     "ogn-288-298"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "random"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "random",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": []
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o43",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o88",
+   "destination": 1
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "no"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o82",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o105",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o98",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o65"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o102",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o106",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 950
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o100",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o104",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o49",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o101",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o107",
+   "abilityIndex": 950
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o59",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o101",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o107",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o29",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o99",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o105",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o27",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o43",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o53",
+   "abilityIndex": 951,
+   "payment": {
+    "exhaust": [],
+    "recycle": [
+     "o53"
+    ]
+   }
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o29"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o82",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o29"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o102",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o98",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o98",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o66"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o15",
+   "destination": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o29"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "hide",
+   "player": 0,
+   "obj": "o18",
+   "battlefieldIndex": 1,
+   "payment": {
+    "exhaust": [],
+    "recycle": []
+   }
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o27"
+   ],
+   "to": 0
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 951,
+   "payment": {
+    "exhaust": [],
+    "recycle": []
+   }
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o106",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o18",
+   "destination": 1,
+   "payment": {
+    "exhaust": [],
+    "recycle": []
+   }
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 951
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o27"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o29"
+   ],
+   "to": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o15"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o94"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o27"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o100",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o66"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o15",
+    "o27",
+    "o113"
+   ],
+   "to": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 951
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o29"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o18"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o66"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 950
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o66"
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o71",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 951
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o61"
+  }
+ ],
+ "original": {
+  "seed": 3316,
+  "steps": 146,
+  "turn": 20,
+  "policies": [
+   "chaos",
+   "random"
+  ]
+ },
+ "minimized": {
+  "actions": 117,
+  "deckCards": 39,
+  "ms": 585
+ },
+ "found": "2026-11-25T23:20:28.585Z",
+ "count": 1,
+ "triage": {
+  "owner": "script",
+  "status": "fixed",
+  "note": "Starry-Eyed Songstress (batch-B8): for targeted spells the legality probe carries an item, so the optional 'exhaust me and three units: [2] less' was assumed even when impossible; unaffordable spells were listed then rolled back ('cannot pay'). Fixed: probes are treated like the no-item case (no discount, B8-11)."
+ }
+}

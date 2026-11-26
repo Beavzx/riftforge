@@ -1,0 +1,458 @@
+{
+ "hash": "55e5a57e1f",
+ "signature": "view-leak|view p0: internal id of hidden hand object oN appears: [\"hidden\"],\"defenders\":[\"oN\",\"oN\"],\"recalled\":false,\"roleEpochs\":{\"a:oN\":N,\"d:oN\":N,\"d:o|",
+ "kind": "view-leak",
+ "message": "view p0: internal id of hidden hand object o64 appears: [\"hidden\"],\"defenders\":[\"o3\",\"o10\"],\"recalled\":false,\"roleEpochs\":{\"a:o64\":3,\"d:o3\":3,\"d:o",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 727444,
+  "decks": [
+   {
+    "legend": "ogn-253-298",
+    "champion": "ogn-243-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "rad-123-167",
+     "rad-123-167",
+     "ogn-018-298",
+     "ogn-018-298",
+     "ogn-018-298",
+     "rad-116-167",
+     "rad-116-167",
+     "ven-117-166",
+     "unl-010-219",
+     "unl-010-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "rad-116-167",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "sfd-017-221",
+     "sfd-017-221",
+     "rad-132-167",
+     "rad-132-167",
+     "rad-019-167",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "sfd-212-221",
+     "unl-208-219",
+     "ogn-275-298"
+    ]
+   },
+   {
+    "legend": "unl-201-219",
+    "champion": "unl-143-219",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-128-219",
+     "ogn-134-298",
+     "ogn-134-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-122-219",
+     "ogn-189-298",
+     "ogn-189-298",
+     "sfd-113-221",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "ogn-291-298",
+     "ogn-290-298",
+     "sfd-217-221"
+    ]
+   }
+  ],
+  "policies": [
+   "bot",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "random",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o59",
+    "o60"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o6",
+   "destination": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o61",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o113"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o3",
+   "destination": "base"
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o4"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o3"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "hide",
+   "player": 0,
+   "obj": "o7",
+   "battlefieldIndex": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o61"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o7"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o64",
+   "destination": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o3"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o2",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "hide",
+   "player": 0,
+   "obj": "o10",
+   "battlefieldIndex": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o64"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o10",
+   "destination": 1
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o68"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o64"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o2"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  }
+ ],
+ "original": {
+  "seed": 727444,
+  "steps": 63,
+  "turn": 8,
+  "policies": [
+   "bot",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 56,
+  "deckCards": 15,
+  "ms": 36421
+ },
+ "found": "2026-11-26T14:44:20.397Z",
+ "count": 1,
+ "triage": {
+  "owner": "engine",
+  "status": "fixed",
+  "note": "HIDDEN-IDS: a hidden internal id embedded inside a view key (ex.counts \"B4:mv:mfCaptain:oN#5\" / ex.combat.roleEpochs \"a:oN\") was not matched (only exact keys / an id at the start were). aliasView now drops any key and replaces any value token that embeds a hidden id, in a final pass over the whole view (also pending/costs). Regression: tests/rules/hidden-ids.test.ts."
+ }
+}

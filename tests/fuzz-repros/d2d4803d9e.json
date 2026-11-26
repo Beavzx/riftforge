@@ -1,0 +1,253 @@
+{
+  "hash": "d2d4803d9e",
+  "signature": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+  "kind": "legal-rollback",
+  "message": "listed playCard rolled back: a required target is no longer available",
+  "cards": [
+    "Convergent Mutation"
+  ],
+  "cardIds": [
+    "ogn-108-298"
+  ],
+  "spec": {
+    "seed": 2042,
+    "decks": [
+      {
+        "legend": "unl-181-219",
+        "champion": "unl-022-219",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03"
+        ],
+        "battlefields": [
+          "unl-215-219",
+          "rad-161-167",
+          "rad-157-167"
+        ]
+      },
+      {
+        "legend": "ogn-263-298",
+        "champion": "ogn-121-298",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-108-298",
+          "ogn-108-298",
+          "ogn-108-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05"
+        ],
+        "battlefields": [
+          "unl-207-219",
+          "ogn-280-298",
+          "ogn-290-298"
+        ]
+      }
+    ],
+    "policies": [
+      "random",
+      "random"
+    ],
+    "manualPay": [
+      true,
+      false
+    ],
+    "battlefieldSelection": "random",
+    "dense": false,
+    "validateDecks": false
+  },
+  "actions": [
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "second"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o9"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o78",
+        "o64"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o83",
+      "destination": "base"
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    }
+  ],
+  "probe": {
+    "action": {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o88"
+    },
+    "expect": "apply"
+  },
+  "original": {
+    "seed": 2042,
+    "steps": 106,
+    "turn": 8,
+    "policies": [
+      "random",
+      "random"
+    ]
+  },
+  "minimized": {
+    "actions": 13,
+    "deckCards": 3,
+    "ms": 7328
+  },
+  "found": "2026-11-25T23:04:46.634Z",
+  "count": 2,
+  "triage": {
+    "owner": "engine",
+    "status": "fixed",
+    "note": "Listed plays whose required target groups can't all be filled are undone (Rollback 'a required target is no longer available'): canPlay checks groups independently ('another friendly unit' with one friendly unit: Deathgrip, Convergent Mutation, Smoke and Mirrors) and affordablePlay accepts the no-target cost before considering Deflect on every first-group candidate (Shakedown vs a Deflect 2 unit). Per RULINGS R-5 the plays are illegal, so getLegalActions should not list them.",
+    "ref": "F-3",
+    "fixedBy": "ENGINE phase 2 (F-1/F-3/F-4)"
+  }
+}

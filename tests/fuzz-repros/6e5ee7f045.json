@@ -1,0 +1,238 @@
+{
+  "hash": "6e5ee7f045",
+  "signature": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+  "kind": "illegal-accepted",
+  "message": "validateAction accepted activate(opponent's object)",
+  "cards": [
+    "Blind Monk"
+  ],
+  "cardIds": [
+    "ogn-257-298"
+  ],
+  "spec": {
+    "seed": 2000,
+    "decks": [
+      {
+        "legend": "sfd-205-221",
+        "champion": "ogn-232-298",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06"
+        ],
+        "battlefields": [
+          "rad-163-167",
+          "rad-161-167",
+          "ogn-281-298"
+        ]
+      },
+      {
+        "legend": "ogn-257-298",
+        "champion": "ogn-151-298",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04"
+        ],
+        "battlefields": [
+          "ogn-284-298",
+          "ven-161-166",
+          "ogn-292-298"
+        ]
+      }
+    ],
+    "policies": [
+      "random",
+      "chaos"
+    ],
+    "manualPay": [
+      false,
+      true
+    ],
+    "battlefieldSelection": "random",
+    "dense": false,
+    "validateDecks": false
+  },
+  "actions": [
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "second"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o67"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o36",
+        "o11"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o38",
+      "destination": "base"
+    }
+  ],
+  "probe": {
+    "action": {
+      "type": "activate",
+      "player": 0,
+      "obj": "o57",
+      "abilityIndex": 0
+    },
+    "expect": "reject"
+  },
+  "original": {
+    "seed": 2000,
+    "steps": 103,
+    "turn": 6,
+    "policies": [
+      "random",
+      "chaos"
+    ]
+  },
+  "minimized": {
+    "actions": 9,
+    "deckCards": 2,
+    "ms": 1773
+  },
+  "found": "2026-11-25T23:03:19.293Z",
+  "count": 2,
+  "triage": {
+    "owner": "engine",
+    "status": "fixed",
+    "note": "Same root cause as 970f013312: validateAction accepts activating an ability of an object the player doesn't control.",
+    "ref": "F-1",
+    "fixedBy": "ENGINE phase 2 (F-1/F-3/F-4)"
+  }
+}

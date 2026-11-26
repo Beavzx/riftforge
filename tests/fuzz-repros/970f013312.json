@@ -1,0 +1,232 @@
+{
+  "hash": "970f013312",
+  "signature": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+  "kind": "enum-missing",
+  "message": "validateAction accepts activate(opponent's object) but getLegalActions does not list it",
+  "cards": [
+    "Fury Rune"
+  ],
+  "cardIds": [
+    "rad-r01"
+  ],
+  "spec": {
+    "seed": 2003,
+    "decks": [
+      {
+        "legend": "rad-155-167",
+        "champion": "rad-133-167",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06"
+        ],
+        "battlefields": [
+          "unl-209-219",
+          "unl-206-219",
+          "unl-t03"
+        ]
+      },
+      {
+        "legend": "sfd-187-221",
+        "champion": "sfd-170-221",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r01",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06"
+        ],
+        "battlefields": [
+          "unl-208-219",
+          "sfd-221-221",
+          "ogn-291-298"
+        ]
+      }
+    ],
+    "policies": [
+      "bot",
+      "random"
+    ],
+    "manualPay": [
+      false,
+      false
+    ],
+    "battlefieldSelection": "choose",
+    "dense": false,
+    "validateDecks": false
+  },
+  "actions": [
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o54"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o112"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "first"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": []
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o87",
+        "o71"
+      ]
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    }
+  ],
+  "probe": {
+    "action": {
+      "type": "activate",
+      "player": 0,
+      "obj": "o98",
+      "abilityIndex": 950
+    },
+    "expect": "apply"
+  },
+  "original": {
+    "seed": 2003,
+    "steps": 87,
+    "turn": 3,
+    "policies": [
+      "bot",
+      "random"
+    ]
+  },
+  "minimized": {
+    "actions": 7,
+    "deckCards": 2,
+    "ms": 1109
+  },
+  "found": "2026-11-25T23:03:17.494Z",
+  "count": 2,
+  "triage": {
+    "owner": "engine",
+    "status": "fixed",
+    "note": "validate('activate') (src/engine/legal.ts validateInner) calls canActivate without the controller/owner check that activatableAbilities applies, so a player can activate the opponent's legend, gear, unit, Equip/Empower (900/901) and rune abilities (950/951) by sending the action. Same root cause as 6e5ee7f045.",
+    "ref": "F-1",
+    "fixedBy": "ENGINE phase 2 (F-1/F-3/F-4)"
+  }
+}

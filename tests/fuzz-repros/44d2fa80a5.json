@@ -1,0 +1,523 @@
+{
+ "hash": "44d2fa80a5",
+ "signature": "view-leak|view p0: runeDeck object oN shows cardId rad-r03|",
+ "kind": "view-leak",
+ "message": "view p0: runeDeck object o105 shows cardId rad-r03",
+ "cards": [
+  "Parallel Convergence",
+  "Aspiring Engineer"
+ ],
+ "cardIds": [
+  "rad-051-167",
+  "sfd-061-221"
+ ],
+ "spec": {
+  "seed": 424274,
+  "decks": [
+   {
+    "legend": "ogs-021-024",
+    "champion": "ogs-006-024",
+    "main": [
+     "ven-122-166",
+     "ven-122-166",
+     "unl-170-219",
+     "unl-170-219",
+     "unl-170-219",
+     "ven-055-166",
+     "ven-055-166",
+     "ogn-208-298",
+     "unl-085-219",
+     "unl-085-219",
+     "sfd-169-221",
+     "ogn-207-298",
+     "unl-175-219",
+     "sfd-173-221",
+     "sfd-173-221",
+     "unl-068-219",
+     "unl-068-219",
+     "unl-068-219",
+     "unl-169-219",
+     "ven-059-166",
+     "ven-059-166",
+     "sfd-173-221",
+     "rad-067-167",
+     "rad-067-167",
+     "ven-135-166",
+     "ven-135-166",
+     "ven-135-166",
+     "ven-069-166",
+     "ven-069-166",
+     "ven-069-166",
+     "sfd-062-221",
+     "sfd-062-221",
+     "sfd-079-221",
+     "ogn-096-298",
+     "ogn-237-298",
+     "ogn-237-298",
+     "ogn-237-298",
+     "ogn-238-298",
+     "unl-154-219",
+     "unl-154-219",
+     "unl-154-219",
+     "rad-066-167"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-291-298",
+     "sfd-219-221",
+     "ogn-293-298"
+    ]
+   },
+   {
+    "legend": "rad-151-167",
+    "champion": "rad-065-167",
+    "main": [
+     "ogn-236-298",
+     "ogn-236-298",
+     "sfd-061-221",
+     "sfd-061-221",
+     "sfd-061-221",
+     "rad-067-167",
+     "rad-067-167",
+     "ogn-118-298",
+     "ogn-118-298",
+     "ogn-118-298",
+     "ogn-084-298",
+     "ogn-237-298",
+     "sfd-163-221",
+     "rad-051-167",
+     "rad-051-167",
+     "rad-051-167",
+     "unl-178-219",
+     "unl-178-219",
+     "unl-178-219",
+     "sfd-165-221",
+     "sfd-165-221",
+     "ogn-117-298",
+     "ogn-122-298",
+     "rad-069-167",
+     "sfd-090-221",
+     "sfd-068-221",
+     "sfd-068-221",
+     "ogn-092-298",
+     "ogn-092-298",
+     "rad-125-167",
+     "unl-089-219",
+     "unl-089-219",
+     "ogn-102-298",
+     "ogn-102-298",
+     "ogn-239-298",
+     "ogn-239-298",
+     "ogn-239-298",
+     "sfd-160-221",
+     "sfd-160-221"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "rad-164-167",
+     "unl-208-219",
+     "sfd-211-221"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "random",
+  "dense": true,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "second"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o62",
+    "o63"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o6",
+    "o4"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o65",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o65"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o49",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o49",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o61",
+   "destination": 1
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o67",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o53",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o53",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o67"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o72",
+   "destination": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o55",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o54",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o69",
+   "destination": 1
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o56",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 951,
+   "payment": {
+    "exhaust": [
+     "o45"
+    ],
+    "recycle": []
+   }
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o71",
+   "destination": "base"
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": []
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o70",
+   "destination": "base"
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o73",
+   "destination": "base"
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o74"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o67"
+   ]
+  }
+ ],
+ "original": {
+  "seed": 424274,
+  "steps": 62,
+  "turn": 13,
+  "policies": [
+   "chaos",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 62,
+  "deckCards": 43,
+  "ms": 19633
+ },
+ "found": "2026-11-26T14:23:07.274Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "HIDDEN-IDS: false positive of the fuzz redaction check. During a cancelable play (UI-CANCEL) the opponent is shown the pre-play board, where the recycled rune was still in the pool; viewProblems now checks against the same reference state as getView."
+ }
+}

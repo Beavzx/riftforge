@@ -1,0 +1,20 @@
+{
+  "name": "riftforge",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "node --import tsx --test 'tests/**/*.test.ts'",
+    "test:engine": "node --import tsx --test 'tests/rules/**/*.test.ts' 'tests/cards/**/*.test.ts' 'tests/conformance/**/*.test.ts' 'tests/puzzles/**/*.test.ts' 'tests/riftjudge/**/*.test.ts' 'tests/basics/**/*.test.ts'",
+    "gym": "node --import tsx tools/gym-server.ts",
+    "bundle": "node --import tsx tools/bundle.ts",
+    "fuzz": "node --import tsx tools/fuzz.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "playwright": "^1.63.0",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3"
+  }
+}

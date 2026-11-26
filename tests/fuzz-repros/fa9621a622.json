@@ -1,0 +1,527 @@
+{
+ "hash": "fa9621a622",
+ "signature": "view-leak|view p0: log \"Resolving Ekko: Deathknell \u2014 Recycle me to ready your runes.\" names hidden mainDeck object oN|",
+ "kind": "view-leak",
+ "message": "view p0: log \"Resolving Ekko: Deathknell \u2014 Recycle me to ready your runes.\" names hidden mainDeck object o40",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 2158,
+  "decks": [
+   {
+    "legend": "rad-139-167",
+    "champion": "rad-061-167",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "sfd-021-221",
+     "sfd-021-221",
+     "unl-086-219",
+     "unl-086-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "sfd-003-221",
+     "sfd-070-221",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-086-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-082-219",
+     "ogn-110-298",
+     "ogn-110-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03"
+    ],
+    "battlefields": [
+     "ogn-275-298",
+     "sfd-213-221",
+     "rad-157-167"
+    ]
+   },
+   {
+    "legend": "ogn-265-298",
+    "champion": "ogn-117-298",
+    "main": [
+     "ven-133-166",
+     "ven-133-166",
+     "ven-133-166",
+     "sfd-165-221",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-288-298",
+     "ogn-298-298",
+     "ven-160-166"
+    ]
+   }
+  ],
+  "policies": [
+   "bot",
+   "chaos"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "random",
+  "dense": true,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o98",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 951,
+   "payment": {
+    "exhaust": [
+     "o109"
+    ],
+    "recycle": []
+   }
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o12",
+   "destination": "base"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o105",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o8",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 901
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o85",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o104",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o8"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o40",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o26"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o2",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o8"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o57",
+   "abilityIndex": 0,
+   "payment": {
+    "exhaust": [],
+    "recycle": [
+     "o101",
+     "o99"
+    ]
+   }
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o99",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o101",
+   "abilityIndex": 950
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o61",
+   "destination": "base",
+   "payment": {
+    "exhaust": [],
+    "recycle": [
+     "o99",
+     "o101"
+    ]
+   }
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o61",
+   "abilityIndex": 901
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o61",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "0"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  }
+ ],
+ "original": {
+  "seed": 2158,
+  "steps": 113,
+  "turn": 11,
+  "policies": [
+   "bot",
+   "chaos"
+  ]
+ },
+ "minimized": {
+  "actions": 68,
+  "deckCards": 10,
+  "ms": 23057
+ },
+ "found": "2026-11-25T23:07:20.453Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "False positive (Ekko recycled itself publicly; 'Resolving Ekko' names a known card). Knowledge tracking added."
+ }
+}

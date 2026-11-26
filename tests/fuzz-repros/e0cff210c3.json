@@ -1,0 +1,818 @@
+{
+ "hash": "e0cff210c3",
+ "signature": "legal-rollback|listed choose rolled back: a required target is no longer available|",
+ "kind": "legal-rollback",
+ "message": "listed choose rolled back: a required target is no longer available",
+ "cards": [
+  "Wallop"
+ ],
+ "cardIds": [
+  "ogn-146-298"
+ ],
+ "spec": {
+  "seed": 3372,
+  "decks": [
+   {
+    "legend": "ogn-267-298",
+    "champion": "ogn-162-298",
+    "main": [
+     "ven-095-166",
+     "ven-095-166",
+     "ven-095-166",
+     "sfd-136-221",
+     "sfd-136-221",
+     "ven-080-166",
+     "sfd-128-221",
+     "sfd-128-221",
+     "sfd-128-221",
+     "sfd-091-221",
+     "sfd-091-221",
+     "sfd-091-221",
+     "ogn-171-298",
+     "ogn-182-298",
+     "ogn-182-298",
+     "unl-108-219",
+     "unl-108-219",
+     "ogn-171-298",
+     "ogn-171-298",
+     "ven-115-166",
+     "ven-115-166",
+     "ven-115-166",
+     "sfd-093-221",
+     "unl-091-219",
+     "ogs-011-024",
+     "ogs-011-024",
+     "ogn-168-298",
+     "ogn-168-298",
+     "ogn-168-298",
+     "ogn-188-298",
+     "unl-144-219",
+     "ven-112-166",
+     "ven-112-166",
+     "ven-112-166",
+     "ogn-146-298",
+     "ogn-146-298",
+     "ogn-146-298",
+     "ogn-205-298",
+     "ogn-205-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "sfd-216-221",
+     "unl-212-219",
+     "unl-214-219"
+    ]
+   },
+   {
+    "legend": "unl-197-219",
+    "champion": "unl-149-219",
+    "main": [
+     "ogn-116-298",
+     "ogn-109-298",
+     "ogn-109-298",
+     "unl-086-219",
+     "ogn-113-298",
+     "rad-113-167",
+     "rad-113-167",
+     "rad-113-167",
+     "ogn-096-298",
+     "ogn-096-298",
+     "ogn-096-298",
+     "sfd-136-221",
+     "sfd-136-221",
+     "sfd-136-221",
+     "unl-067-219",
+     "rad-102-167",
+     "ogn-091-298",
+     "unl-132-219",
+     "sfd-062-221",
+     "sfd-062-221",
+     "ogn-203-298",
+     "ogn-203-298",
+     "ogn-203-298",
+     "rad-104-167",
+     "rad-104-167",
+     "rad-104-167",
+     "ogn-108-298",
+     "ogn-108-298",
+     "ogn-108-298",
+     "unl-198-219",
+     "unl-198-219",
+     "unl-198-219",
+     "sfd-078-221",
+     "unl-128-219",
+     "unl-128-219",
+     "unl-128-219",
+     "unl-080-219",
+     "unl-080-219",
+     "rad-111-167"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "ven-163-166",
+     "sfd-214-221",
+     "ven-157-166"
+    ]
+   }
+  ],
+  "policies": [
+   "random",
+   "random"
+  ],
+  "manualPay": [
+   true,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o54"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o112"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o69",
+    "o87"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o32",
+    "o17"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o106",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o100",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o102",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o104",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o104",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o43",
+   "abilityIndex": 950
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o13",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "1"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o105",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o108",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o49",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 951
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o27"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o49",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o13"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o57",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "hide",
+   "player": 0,
+   "obj": "o31",
+   "battlefieldIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o107",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o99",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o99",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o13"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o53",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o109",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o98",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o10",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o13"
+   ],
+   "to": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o44",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o57",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o13"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o101",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o103",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o13"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o48",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o8",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o13"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o57",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o10"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o100",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o100",
+   "abilityIndex": 951
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o67",
+   "destination": "base"
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o106",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o8"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o43",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o51",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o13"
+   ],
+   "to": "base"
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o8"
+   ],
+   "to": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o37"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "no"
+   ]
+  }
+ ],
+ "original": {
+  "seed": 3372,
+  "steps": 128,
+  "turn": 14,
+  "policies": [
+   "random",
+   "random"
+  ]
+ },
+ "minimized": {
+  "actions": 114,
+  "deckCards": 38,
+  "ms": 249
+ },
+ "found": "2026-11-25T23:21:00.174Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "wontfix",
+  "note": "Not a bug: Wallop was listed assuming the optional 'spend a buff' discount; the player declined it, so the play became unaffordable and was undone (CR 358). The fuzzer now only flags rollbacks of top-level listed actions."
+ }
+}

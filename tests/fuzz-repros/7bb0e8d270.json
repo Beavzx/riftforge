@@ -1,0 +1,1128 @@
+{
+  "hash": "7bb0e8d270",
+  "signature": "bot-invalid|bot policy produced an invalid chooseTargets answer: all choices must be at the same location|",
+  "kind": "bot-invalid",
+  "message": "bot policy produced an invalid chooseTargets answer: all choices must be at the same location",
+  "cards": [
+    "Emperor's Divide",
+    "Herald of Spring",
+    "First Mate"
+  ],
+  "cardIds": [
+    "sfd-043-221",
+    "unl-034-219",
+    "ogn-132-298"
+  ],
+  "spec": {
+    "seed": 15095,
+    "decks": [
+      {
+        "legend": "rad-147-167",
+        "champion": "rad-045-167",
+        "main": [
+          "unl-116-219",
+          "unl-116-219",
+          "unl-116-219",
+          "ven-024-166",
+          "ogn-132-298",
+          "ven-034-166",
+          "ven-034-166",
+          "ven-034-166",
+          "ogn-075-298",
+          "ogn-075-298",
+          "ogn-075-298",
+          "unl-036-219",
+          "unl-036-219",
+          "unl-036-219",
+          "ogn-130-298",
+          "rad-044-167",
+          "rad-044-167",
+          "rad-044-167",
+          "sfd-093-221",
+          "ogn-154-298",
+          "ogn-154-298",
+          "ven-083-166",
+          "ven-083-166",
+          "unl-054-219",
+          "unl-054-219",
+          "ogn-045-298",
+          "ogn-045-298",
+          "ogn-045-298",
+          "rad-071-167",
+          "rad-071-167",
+          "sfd-043-221",
+          "sfd-043-221",
+          "sfd-043-221",
+          "ogn-151-298",
+          "ven-028-166",
+          "ven-028-166",
+          "unl-034-219",
+          "unl-034-219",
+          "unl-040-219"
+        ],
+        "runes": [
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04",
+          "rad-r04"
+        ],
+        "battlefields": [
+          "ogn-287-298",
+          "unl-209-219",
+          "sfd-220-221"
+        ]
+      },
+      {
+        "legend": "unl-199-219",
+        "champion": "unl-172-219",
+        "main": [
+          "rad-052-167",
+          "rad-052-167",
+          "ogn-221-298",
+          "ogn-221-298",
+          "ven-131-166",
+          "ven-131-166",
+          "ogn-244-298",
+          "rad-062-167",
+          "sfd-163-221",
+          "sfd-163-221",
+          "sfd-163-221",
+          "unl-080-219",
+          "unl-080-219",
+          "unl-080-219",
+          "ven-118-166",
+          "ven-118-166",
+          "unl-066-219",
+          "ogn-216-298",
+          "ogn-100-298",
+          "ogn-100-298",
+          "ogn-100-298",
+          "unl-089-219",
+          "rad-130-167",
+          "rad-130-167",
+          "ogn-120-298",
+          "ogn-120-298",
+          "rad-126-167",
+          "rad-126-167",
+          "ogn-090-298",
+          "ogn-090-298",
+          "rad-056-167",
+          "rad-056-167",
+          "rad-056-167",
+          "ogn-098-298",
+          "ven-064-166",
+          "ven-064-166",
+          "ven-064-166",
+          "rad-122-167",
+          "unl-171-219"
+        ],
+        "runes": [
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06",
+          "rad-r06"
+        ],
+        "battlefields": [
+          "unl-219-219",
+          "ogn-284-298",
+          "unl-213-219"
+        ]
+      }
+    ],
+    "policies": [
+      "bot",
+      "bot"
+    ],
+    "manualPay": [
+      true,
+      false
+    ],
+    "battlefieldSelection": "random",
+    "dense": false,
+    "validateDecks": false
+  },
+  "actions": [
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "first"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": []
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o11"
+      ]
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o76",
+      "destination": "base"
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o17",
+      "destination": "base"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "move",
+      "player": 1,
+      "units": [
+        "o76"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o84"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o58",
+      "destination": "base"
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o17"
+      ],
+      "to": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o2",
+      "destination": "base"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o1",
+      "abilityIndex": 0
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o2"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "hide",
+      "player": 0,
+      "obj": "o34",
+      "battlefieldIndex": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "0"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o76"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o68"
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "move",
+      "player": 1,
+      "units": [
+        "o58"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o68"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o71",
+      "destination": 0
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o7",
+      "destination": "base"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o2"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o14",
+      "destination": "base"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o34"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o17"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "0"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o71"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o69"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o85",
+      "destination": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o67"
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o58"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o115"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o87",
+      "destination": "base"
+    },
+    {
+      "type": "activate",
+      "player": 1,
+      "obj": "o87",
+      "abilityIndex": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o2"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "activate",
+      "player": 1,
+      "obj": "o103",
+      "abilityIndex": 951
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o7"
+      ],
+      "to": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o13",
+      "destination": "base"
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o2",
+        "o14"
+      ],
+      "to": 0
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o2"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "assignDamage",
+      "player": 0,
+      "assignment": {
+        "o85": 2,
+        "o115": 3
+      }
+    },
+    {
+      "type": "assignDamage",
+      "player": 1,
+      "assignment": {
+        "o14": 1,
+        "o2": 3
+      }
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "0"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o17"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "hide",
+      "player": 0,
+      "obj": "o8",
+      "battlefieldIndex": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o52",
+      "abilityIndex": 951
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o70",
+      "destination": "base"
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o97",
+      "destination": "base"
+    },
+    {
+      "type": "activate",
+      "player": 1,
+      "obj": "o87",
+      "abilityIndex": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o13"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o13"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o39",
+      "destination": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o38",
+      "destination": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "auto"
+      ]
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o49",
+      "abilityIndex": 951
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o7"
+      ],
+      "to": "base"
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o48",
+      "abilityIndex": 951
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o80",
+      "destination": "base"
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": []
+    },
+    {
+      "type": "move",
+      "player": 1,
+      "units": [
+        "o70",
+        "o97"
+      ],
+      "to": 1
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o64"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o50",
+      "abilityIndex": 951
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "activate",
+      "player": 0,
+      "obj": "o42",
+      "abilityIndex": 951
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o8"
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "assignDamage",
+      "player": 1,
+      "assignment": {
+        "o38": 2,
+        "o39": 3
+      }
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o77",
+      "destination": "base"
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": []
+    },
+    {
+      "type": "activate",
+      "player": 1,
+      "obj": "o87",
+      "abilityIndex": 0
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o13"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "activate",
+      "player": 1,
+      "obj": "o108",
+      "abilityIndex": 951
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "yes"
+      ]
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o7"
+      ],
+      "to": 0
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o35"
+    }
+  ],
+  "probe": {
+    "action": {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "o39",
+        "o7"
+      ]
+    },
+    "expect": "reject"
+  },
+  "original": {
+    "seed": 15095,
+    "steps": 179,
+    "turn": 12,
+    "policies": [
+      "bot",
+      "bot"
+    ]
+  },
+  "minimized": {
+    "actions": 173,
+    "deckCards": 40,
+    "ms": 28363
+  },
+  "found": "2026-11-26T00:36:01.156Z",
+  "count": 1,
+  "triage": {
+    "owner": "engine",
+    "status": "fixed",
+    "note": "bot.ts answerInStep ignores decision validators (data.check 'sameLocation' / 'groupRules'): the bot answered a sameLocation target choice with units at different locations; applyAction throws EngineError (a vs-bot game crashes). Earlier seen with Bellows Breath (bot vs bot).",
+    "ref": "F-4",
+    "fixedBy": "ENGINE phase 2 (F-1/F-3/F-4)"
+  }
+}

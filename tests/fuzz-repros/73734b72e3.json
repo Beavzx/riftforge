@@ -1,0 +1,306 @@
+{
+  "hash": "73734b72e3",
+  "signature": "view-leak|view p0: facedown object oN shows cardId ogn-N-N|",
+  "kind": "view-leak",
+  "message": "view p0: facedown object o62 shows cardId ogn-121-298",
+  "cards": [],
+  "cardIds": [],
+  "spec": {
+    "seed": 348731,
+    "decks": [
+      {
+        "legend": "unl-189-219",
+        "champion": "unl-082-219",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "unl-053-219",
+          "unl-053-219",
+          "unl-053-219",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r02",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03"
+        ],
+        "battlefields": [
+          "unl-208-219",
+          "ven-159-166",
+          "sfd-215-221"
+        ]
+      },
+      {
+        "legend": "ogn-263-298",
+        "champion": "ogn-121-298",
+        "main": [
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "sfd-072-221",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ven-058-166",
+          "ven-058-166",
+          "ven-058-166",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298",
+          "ogn-175-298"
+        ],
+        "runes": [
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r03",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05",
+          "rad-r05"
+        ],
+        "battlefields": [
+          "unl-206-219",
+          "rad-165-167",
+          "ogn-288-298"
+        ]
+      }
+    ],
+    "policies": [
+      "chaos",
+      "bot"
+    ],
+    "manualPay": [
+      false,
+      false
+    ],
+    "battlefieldSelection": "random",
+    "dense": true,
+    "validateDecks": false
+  },
+  "actions": [
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": [
+        "second"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 1,
+      "optionIds": [
+        "o65",
+        "o66"
+      ]
+    },
+    {
+      "type": "choose",
+      "player": 0,
+      "optionIds": []
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o68",
+      "destination": "base"
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "playCard",
+      "player": 0,
+      "obj": "o6",
+      "destination": "base"
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "endTurn",
+      "player": 0
+    },
+    {
+      "type": "move",
+      "player": 1,
+      "units": [
+        "o68"
+      ],
+      "to": 1
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "playCard",
+      "player": 1,
+      "obj": "o67",
+      "destination": "base"
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "move",
+      "player": 1,
+      "units": [
+        "o67"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "hide",
+      "player": 1,
+      "obj": "o62",
+      "battlefieldIndex": 1
+    },
+    {
+      "type": "endTurn",
+      "player": 1
+    },
+    {
+      "type": "move",
+      "player": 0,
+      "units": [
+        "o6"
+      ],
+      "to": 0
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    },
+    {
+      "type": "pass",
+      "player": 0
+    },
+    {
+      "type": "pass",
+      "player": 1
+    }
+  ],
+  "original": {
+    "seed": 348731,
+    "steps": 32,
+    "turn": 4,
+    "policies": [
+      "chaos",
+      "bot"
+    ]
+  },
+  "minimized": {
+    "actions": 25,
+    "deckCards": 5,
+    "ms": 11916
+  },
+  "found": "2026-11-26T01:12:48.718Z",
+  "count": 1,
+  "triage": {
+    "status": "wontfix",
+    "note": "Not a leak: Scuttle Crab's Deathknell (\"You can look at their facedown cards this turn\") is a seeFacedown rule for the viewer; getView shows those cards by design. The leak checker should honour ruleApplies(state, \"seeFacedown\", viewer, id). (ENGINE)"
+  }
+}

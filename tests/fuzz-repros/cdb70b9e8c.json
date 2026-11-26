@@ -1,0 +1,331 @@
+{
+ "hash": "cdb70b9e8c",
+ "signature": "invariant|trigger chain item source oN missing|",
+ "kind": "invariant",
+ "message": "trigger chain item source o115 missing",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 2015,
+  "decks": [
+   {
+    "legend": "rad-141-167",
+    "champion": "rad-112-167",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "ogn-279-298",
+     "rad-166-167",
+     "ogn-289-298"
+    ]
+   },
+   {
+    "legend": "ogn-247-298",
+    "champion": "ogn-112-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03"
+    ],
+    "battlefields": [
+     "ogn-278-298",
+     "ven-160-166",
+     "rad-157-167"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "chaos"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o56"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o110"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "second"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o26"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o73",
+    "o81"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o71",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "1"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o71"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "1"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "0"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o57",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "Fury"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  }
+ ],
+ "original": {
+  "seed": 2015,
+  "steps": 88,
+  "turn": 10,
+  "policies": [
+   "chaos",
+   "chaos"
+  ]
+ },
+ "minimized": {
+  "actions": 29,
+  "deckCards": 2,
+  "ms": 15540
+ },
+ "found": "2026-11-25T23:03:53.000Z",
+ "count": 2,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "False positive: abilities on the chain are independent of their source; a Bomb token that ceased to exist (CR 179) leaves its Deploy trigger on the chain. Invariant now only requires spell sources."
+ }
+}

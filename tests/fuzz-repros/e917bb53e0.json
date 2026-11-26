@@ -1,0 +1,285 @@
+{
+ "hash": "e917bb53e0",
+ "signature": "legal-rollback|listed activate rolled back: could not pay Exhaust a unit you control|",
+ "kind": "legal-rollback",
+ "message": "listed activate rolled back: could not pay Exhaust a unit you control",
+ "cards": [
+  "Forgotten Signpost"
+ ],
+ "cardIds": [
+  "unl-045-219"
+ ],
+ "spec": {
+  "seed": 77144,
+  "decks": [
+   {
+    "legend": "rad-145-167",
+    "champion": "rad-042-167",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-045-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03"
+    ],
+    "battlefields": [
+     "ogn-275-298",
+     "unl-212-219",
+     "unl-211-219"
+    ]
+   },
+   {
+    "legend": "ven-153-166",
+    "champion": "ven-136-166",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-293-298",
+     "ogn-297-298",
+     "rad-157-167"
+    ]
+   }
+  ],
+  "policies": [
+   "random",
+   "random"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o56"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o112"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o59",
+    "o61"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o5"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o2",
+   "destination": "base"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o10",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o2"
+   ],
+   "to": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o10",
+   "abilityIndex": 0
+  }
+ ],
+ "original": {
+  "seed": 77144,
+  "steps": 109,
+  "turn": 12,
+  "policies": [
+   "random",
+   "random"
+  ]
+ },
+ "minimized": {
+  "actions": 19,
+  "deckCards": 3,
+  "ms": 19747
+ },
+ "found": "2026-11-26T03:44:55.024Z",
+ "count": 1,
+ "triage": {
+  "owner": "script",
+  "status": "fixed",
+  "note": "ENGINE-3: Forgotten Signpost's exhaust cost no longer counts the Signpost itself (made a unit by Lady of Clockwork; [T] exhausts it first)",
+  "fixedBy": "ENGINE-3"
+ }
+}

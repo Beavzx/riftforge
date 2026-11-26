@@ -1,0 +1,263 @@
+{
+ "hash": "z0e7a1b2c3",
+ "signature": "apply-throw|RangeError: Maximum call stack size exceeded|src/engine/chars.ts#computeChars",
+ "kind": "apply-throw",
+ "message": "RangeError: Maximum call stack size exceeded",
+ "stack": "RangeError: Maximum call stack size exceeded\n    at computeChars (/tmp/riftforge-fuzz-snap/src/engine/chars.ts:167:10)\n    at chars (/tmp/riftforge-fuzz-snap/src/engine/chars.ts:164:10)\n    at isUnit (/tmp/riftforge-fuzz-snap/src/engine/chars.ts:314:10)\n    at Ctx.isUnit (/tmp/riftforge-fuzz-snap/src/engine/context.ts:41:39)\n    at unit (/tmp/riftforge-fuzz-snap/src/cards/dsl.ts:103:23)\n    at <anonymous> (/tmp/riftforge-fuzz-snap/src/cards/dsl.ts:138:62)\n    at Array.every (<anonymous>)\n    at <anonymous> (/tmp/riftforge-fuzz-snap/src/cards/dsl.ts:138:51)\n    at Object.match (/tmp/riftforge-fuzz-snap/src/cards/dsl.ts:485:72)\n    at <anonymous> (/tmp/riftforge-fuzz-snap/src/engine/replace.ts:53:17)",
+ "cards": [
+  "Dancing Grenade"
+ ],
+ "cardIds": [
+  "unl-020-219"
+ ],
+ "spec": {
+  "seed": 5477,
+  "decks": [
+   {
+    "legend": "rad-145-167",
+    "champion": "rad-068-167",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-077-298",
+     "ogn-077-298",
+     "ogn-077-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03"
+    ],
+    "battlefields": [
+     "rad-158-167",
+     "ogn-284-298",
+     "ven-163-166"
+    ]
+   },
+   {
+    "legend": "ogn-251-298",
+    "champion": "ogn-202-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-020-219",
+     "unl-020-219",
+     "unl-020-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "rad-162-167",
+     "unl-209-219",
+     "sfd-215-221"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "random",
+  "dense": true,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "second"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o74",
+    "o92"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o27",
+    "o4"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "no"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o22",
+   "destination": "base"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o81"
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  }
+ ],
+ "original": {
+  "seed": 5477,
+  "steps": 40,
+  "turn": 5,
+  "policies": [
+   "chaos",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 15,
+  "deckCards": 4,
+  "ms": 3131
+ },
+ "found": "2026-11-25T23:46:28.145Z",
+ "note": "zhonya",
+ "count": 1,
+ "triage": {
+  "owner": "script",
+  "status": "fixed",
+  "note": "Zhonya's Hourglass (batch-B4): when the Hourglass is itself a unit (gear made a unit), 'kill this instead' re-entered its own die replacement forever (stack overflow, seen with Dancing Grenade). Fixed: the replacement only applies to OTHER friendly units (F.other)."
+ }
+}

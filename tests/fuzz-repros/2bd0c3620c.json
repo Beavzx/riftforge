@@ -1,0 +1,379 @@
+{
+ "hash": "2bd0c3620c",
+ "signature": "view-throw|undefined|",
+ "kind": "view-throw",
+ "message": "undefined",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 2016,
+  "decks": [
+   {
+    "legend": "ven-139-166",
+    "champion": "ven-021-166",
+    "main": [
+     "rad-015-167",
+     "ogn-012-298",
+     "ogn-012-298",
+     "ogn-012-298",
+     "ogn-014-298",
+     "ogn-014-298",
+     "ogn-014-298",
+     "unl-031-219",
+     "ven-002-166",
+     "ven-021-166",
+     "ven-042-166",
+     "ven-042-166",
+     "ven-042-166",
+     "rad-015-167",
+     "rad-015-167",
+     "rad-041-167",
+     "rad-041-167",
+     "rad-041-167",
+     "ogn-018-298",
+     "unl-053-219",
+     "rad-011-167",
+     "rad-011-167",
+     "ogn-027-298",
+     "unl-004-219",
+     "unl-004-219",
+     "unl-004-219",
+     "ogn-074-298",
+     "ogn-074-298",
+     "ogn-074-298",
+     "rad-029-167",
+     "rad-029-167",
+     "rad-029-167",
+     "ogn-059-298",
+     "rad-046-167",
+     "rad-046-167",
+     "sfd-058-221",
+     "sfd-058-221",
+     "sfd-058-221",
+     "ven-022-166"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02"
+    ],
+    "battlefields": [
+     "unl-209-219",
+     "sfd-216-221",
+     "ven-162-166"
+    ]
+   },
+   {
+    "legend": "rad-151-167",
+    "champion": "rad-065-167",
+    "main": [
+     "unl-176-219",
+     "unl-176-219",
+     "sfd-157-221",
+     "sfd-157-221",
+     "ogs-013-024",
+     "ogs-013-024",
+     "ven-136-166",
+     "ven-136-166",
+     "unl-177-219",
+     "unl-177-219",
+     "sfd-176-221",
+     "sfd-176-221",
+     "rad-120-167",
+     "rad-120-167",
+     "sfd-067-221",
+     "sfd-067-221",
+     "sfd-067-221",
+     "unl-086-219",
+     "unl-175-219",
+     "unl-175-219",
+     "sfd-090-221",
+     "sfd-090-221",
+     "rad-060-167",
+     "rad-051-167",
+     "sfd-179-221",
+     "sfd-179-221",
+     "sfd-179-221",
+     "ven-116-166",
+     "rad-131-167",
+     "rad-131-167",
+     "ven-132-166",
+     "ven-132-166",
+     "ven-129-166",
+     "ven-129-166",
+     "ven-129-166",
+     "sfd-082-221",
+     "unl-082-219",
+     "unl-082-219",
+     "rad-127-167"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-287-298",
+     "unl-205-219",
+     "rad-160-167"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   true
+  ],
+  "battlefieldSelection": "choose",
+  "dense": true,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o56"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o110"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o71",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 951,
+   "payment": {
+    "exhaust": [
+     "o47"
+    ],
+    "recycle": []
+   }
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o47",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o44",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o44",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o71"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o87",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o50",
+   "abilityIndex": 951
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 950
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o46",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o66",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o87"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o109"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  }
+ ],
+ "original": {
+  "seed": 2016,
+  "steps": 36,
+  "turn": 7,
+  "policies": [
+   "chaos",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 36,
+  "deckCards": 40,
+  "ms": 162
+ },
+ "found": "2026-11-25T23:03:48.449Z",
+ "count": 1,
+ "triage": {
+  "owner": "script",
+  "status": "fixed",
+  "note": "Same as 3b413a260b, reached through getView (which enumerates legal actions)."
+ }
+}

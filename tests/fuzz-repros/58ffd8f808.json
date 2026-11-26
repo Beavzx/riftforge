@@ -1,0 +1,348 @@
+{
+ "hash": "58ffd8f808",
+ "signature": "view-leak|view p0: internal id of hidden hand object oN appears: :N\":N,\"powerSpent:N\":N,\"played:N\":N,\"playedToBf:N\":N,\"B4:mv:mfCaptain:oN#N\":N,\"chose:N\":N|",
+ "kind": "view-leak",
+ "message": "view p0: internal id of hidden hand object o58 appears: :1\":8,\"powerSpent:1\":2,\"played:1\":2,\"playedToBf:1\":1,\"B4:mv:mfCaptain:o58#5\":1,\"chose:1\":1",
+ "cards": [
+  "Bounty Hunter"
+ ],
+ "cardIds": [
+  "ogn-267-298"
+ ],
+ "spec": {
+  "seed": 727426,
+  "decks": [
+   {
+    "legend": "sfd-201-221",
+    "champion": "sfd-088-221",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-278-298",
+     "ogn-287-298",
+     "ogn-282-298"
+    ]
+   },
+   {
+    "legend": "ogn-267-298",
+    "champion": "ogn-162-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "sfd-207-221",
+     "ogn-288-298",
+     "ogn-290-298"
+    ]
+   }
+  ],
+  "policies": [
+   "bot",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o54"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o110"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": []
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o63",
+   "destination": "base"
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o45",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o58",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o58"
+   ],
+   "to": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o100"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o4",
+   "destination": "base"
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o64",
+   "destination": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o58"
+   ],
+   "to": 1
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o64"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  }
+ ],
+ "original": {
+  "seed": 727426,
+  "steps": 113,
+  "turn": 10,
+  "policies": [
+   "bot",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 32,
+  "deckCards": 2,
+  "ms": 28273
+ },
+ "found": "2026-11-26T14:43:24.802Z",
+ "count": 1,
+ "triage": {
+  "owner": "engine",
+  "status": "fixed",
+  "note": "HIDDEN-IDS: a hidden internal id embedded inside a view key (ex.counts \"B4:mv:mfCaptain:oN#5\" / ex.combat.roleEpochs \"a:oN\") was not matched (only exact keys / an id at the start were). aliasView now drops any key and replaces any value token that embeds a hidden id, in a final pass over the whole view (also pending/costs). Regression: tests/rules/hidden-ids.test.ts."
+ }
+}

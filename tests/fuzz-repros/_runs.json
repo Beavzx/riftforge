@@ -1,0 +1,2299 @@
+[
+ {
+  "date": "2026-11-25T23:10:28.001Z",
+  "seed": 2000,
+  "games": 276,
+  "workers": 2,
+  "seconds": 435,
+  "steps": 40534,
+  "turns": 5020,
+  "ended": 257,
+  "newRepros": 17,
+  "stats": {
+   "probesIllegal": 137630,
+   "probesLegal": 6001,
+   "enumChecks": 2808,
+   "jsonChecks": 2442,
+   "viewChecks": 6275,
+   "rollbacks": 3088
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 244,
+    "cards": [
+     "Blind Monk",
+     "Fury Rune",
+     "Mind Rune",
+     "Body Rune",
+     "Hexplosives Expert",
+     "Calm Rune",
+     "Order Rune",
+     "Whirling Twirligig",
+     "Daughter of the Void",
+     "Veteran Poro",
+     "Chaos Rune",
+     "Altar of Memories"
+    ],
+    "seeds": [
+     2000,
+     2003,
+     2002,
+     2005,
+     2004
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 86,
+    "cards": [
+     "Blind Monk",
+     "Pride of Nazumah",
+     "Hexplosives Expert",
+     "Bloodharbor Ripper",
+     "Rogue Assassin",
+     "Daughter of the Void",
+     "Boy Who Shattered Time",
+     "Bounty Hunter",
+     "Herald of the Arcane",
+     "Eye of Twilight",
+     "Scorn of the Moon",
+     "Bashful Bloom"
+    ],
+    "seeds": [
+     2000,
+     2005,
+     2006,
+     2008,
+     2012
+    ]
+   },
+   {
+    "hash": "cdb70b9e8c",
+    "sig": "invariant|trigger chain item source oN missing|",
+    "kind": "invariant",
+    "soft": false,
+    "games": 7,
+    "cards": [
+     "Deceiver"
+    ],
+    "seeds": [
+     2012,
+     2015,
+     2117,
+     2131,
+     2096
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Convergent Mutation",
+     "Startipped Peak",
+     "Smoke and Mirrors",
+     "Flash",
+     "Dancing Grenade",
+     "Resonating Strike",
+     "Deathgrip"
+    ],
+    "seeds": [
+     2042,
+     2056,
+     2179,
+     2203,
+     2233
+    ]
+   },
+   {
+    "hash": "3b413a260b",
+    "sig": "legal-throw|undefined|",
+    "kind": "legal-throw",
+    "soft": false,
+    "games": 3,
+    "cards": [],
+    "seeds": [
+     2032,
+     2211,
+     2264
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 3,
+    "cards": [],
+    "seeds": [
+     2141,
+     2140,
+     2195
+    ]
+   },
+   {
+    "hash": "2bd0c3620c",
+    "sig": "view-throw|undefined|",
+    "kind": "view-throw",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     2016
+    ]
+   },
+   {
+    "hash": "a7b0d64141",
+    "sig": "apply-throw|RangeError: Maximum call stack size exceeded|src/engine/chars.ts#computeChars",
+    "kind": "apply-throw",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Blood Rose"
+    ],
+    "seeds": [
+     2034
+    ]
+   },
+   {
+    "hash": "06a3d8350b",
+    "sig": "nondeterminism|replaying the action log produced a different final state at $.ex.turnFacts.B8|",
+    "kind": "nondeterminism",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     2099
+    ]
+   },
+   {
+    "hash": "c032475767",
+    "sig": "view-leak|view p1: log \"Resolving Runeblade Anvil: When this leaves the board, banish the top card of yo\" names hidden hand object oN|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     2205
+    ]
+   },
+   {
+    "hash": "fa9621a622",
+    "sig": "view-leak|view p0: log \"Resolving Ekko: Deathknell — Recycle me to ready your runes.\" names hidden mainDeck object oN|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     2158
+    ]
+   },
+   {
+    "hash": "d09ae46bc6",
+    "sig": "invariant|oN attached but not at host location|",
+    "kind": "invariant",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     2238
+    ]
+   },
+   {
+    "hash": "8b44040171",
+    "sig": "step-cap|game did not end within N actions (turn N)|",
+    "kind": "step-cap",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Smoke and Mirrors"
+    ],
+    "seeds": [
+     2263
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-25T23:16:32.811Z",
+  "seed": 826242,
+  "games": 0,
+  "workers": 2,
+  "seconds": 0,
+  "steps": 0,
+  "turns": 0,
+  "ended": 0,
+  "newRepros": 0,
+  "stats": {},
+  "signatures": []
+ },
+ {
+  "date": "2026-11-25T23:24:46.286Z",
+  "seed": 3000,
+  "games": 457,
+  "workers": 2,
+  "seconds": 446,
+  "steps": 85480,
+  "turns": 8531,
+  "ended": 447,
+  "newRepros": 2,
+  "stats": {
+   "probesIllegal": 286291,
+   "probesLegal": 13482,
+   "enumChecks": 5468,
+   "jsonChecks": 5075,
+   "viewChecks": 13308,
+   "rollbacks": 16804
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 411,
+    "cards": [
+     "Body Rune",
+     "Ivern, Nurturer",
+     "Calm Rune",
+     "Chaos Rune",
+     "First Mate",
+     "Mind Rune",
+     "Pride of Nazumah",
+     "Concert Poster",
+     "Seat of Power",
+     "Battle Mistress",
+     "Butcher of the Sands",
+     "Fury Rune"
+    ],
+    "seeds": [
+     3001,
+     3003,
+     3000,
+     3002,
+     3005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 150,
+    "cards": [
+     "Hexplosives Expert",
+     "Pride of Nazumah",
+     "Defender of Tomorrow",
+     "Butcher of the Sands",
+     "Bloodharbor Ripper",
+     "Bounty Hunter",
+     "Eye of Twilight",
+     "Herald of the Arcane",
+     "Fire Below the Mountain",
+     "Scorn of the Moon",
+     "Boy Who Shattered Time",
+     "Daughter of the Void"
+    ],
+    "seeds": [
+     3000,
+     3009,
+     3008,
+     3013,
+     3014
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 27,
+    "cards": [
+     "Wages of Pain",
+     "Blood Money",
+     "Lillia, Fae Fawn",
+     "Convergent Mutation",
+     "Deathgrip",
+     "Resonating Strike",
+     "Ki Barrier",
+     "Bellows Breath",
+     "Smoke and Mirrors",
+     "Improvised Projectile",
+     "Shadow's Call",
+     "Unforgiven"
+    ],
+    "seeds": [
+     3003,
+     3002,
+     3130,
+     3156,
+     3160
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 5,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     3023,
+     3278,
+     3294,
+     3312,
+     3275
+    ]
+   },
+   {
+    "hash": "8b44040171",
+    "sig": "step-cap|game did not end within N actions (turn N)|",
+    "kind": "step-cap",
+    "soft": false,
+    "games": 5,
+    "cards": [
+     "Repulse",
+     "Temptation",
+     "Smoke and Mirrors"
+    ],
+    "seeds": [
+     3087,
+     3248,
+     3141,
+     3277,
+     3315
+    ]
+   },
+   {
+    "hash": "b08d17fb4b",
+    "sig": "legal-rollback|listed playCard rolled back: cannot pay N O|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Salvage"
+    ],
+    "seeds": [
+     3316
+    ]
+   },
+   {
+    "hash": "e0cff210c3",
+    "sig": "legal-rollback|listed choose rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Wallop"
+    ],
+    "seeds": [
+     3372
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-25T23:40:06.014Z",
+  "seed": 5000,
+  "games": 620,
+  "workers": 2,
+  "seconds": 483,
+  "steps": 87035,
+  "turns": 11962,
+  "ended": 611,
+  "newRepros": 5,
+  "stats": {
+   "probesIllegal": 303486,
+   "probesLegal": 11906,
+   "enumChecks": 6049,
+   "jsonChecks": 5333,
+   "viewChecks": 13546,
+   "rollbacks": 243
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 541,
+    "cards": [
+     "Body Rune",
+     "Mind Rune",
+     "Bloodharbor Ripper",
+     "Fury Rune",
+     "Boy Who Shattered Time",
+     "Calm Rune",
+     "Rogue Assassin",
+     "Chaos Rune",
+     "Teemo, Scout",
+     "Herald of the Arcane",
+     "Forge of the Future",
+     "Legion Marauder"
+    ],
+    "seeds": [
+     5001,
+     5000,
+     5002,
+     5003,
+     5005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 227,
+    "cards": [
+     "Herald of the Arcane",
+     "Overzealous Fan",
+     "Iron Revenant",
+     "Butcher of the Sands",
+     "Scorn of the Moon",
+     "Downstage Dramatics",
+     "Unforgiven",
+     "Pride of Nazumah",
+     "Blind Monk",
+     "Fire Below the Mountain",
+     "Defender of Tomorrow",
+     "Bashful Bloom"
+    ],
+    "seeds": [
+     5011,
+     5015,
+     5019,
+     5012,
+     5021
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 8,
+    "cards": [
+     "Shakedown",
+     "Deathgrip",
+     "Dancing Grenade",
+     "Enthralling Protector"
+    ],
+    "seeds": [
+     5004,
+     5097,
+     5152,
+     5159,
+     5259
+    ]
+   },
+   {
+    "hash": "a2c84ba076",
+    "sig": "bot-loop|bot re-picks a listed choose that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 8,
+    "cards": [
+     "Atakhan",
+     "Called Shot",
+     "Commander Ledros",
+     "Gust Monk"
+    ],
+    "seeds": [
+     5080,
+     5106,
+     5202,
+     5250,
+     5318
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Dusk Rose Lab"
+    ],
+    "seeds": [
+     5036,
+     5179,
+     5275,
+     5397,
+     5526
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 6,
+    "cards": [
+     "Shakedown",
+     "Atakhan",
+     "Commander Ledros",
+     "Deathgrip"
+    ],
+    "seeds": [
+     5004,
+     5106,
+     5250,
+     5320,
+     5315
+    ]
+   },
+   {
+    "hash": "0da79fc084",
+    "sig": "apply-throw|EngineError: all choices must be at the same location|src/engine/game.ts#applyAction",
+    "kind": "apply-throw",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Bellows Breath",
+     "LeBlanc, Everywhere at Once",
+     "Leona, Determined",
+     "Bandle Soldier"
+    ],
+    "seeds": [
+     5376
+    ]
+   },
+   {
+    "hash": "a7b0d64141",
+    "sig": "apply-throw|RangeError: Maximum call stack size exceeded|src/engine/chars.ts#computeChars",
+    "kind": "apply-throw",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Dancing Grenade"
+    ],
+    "seeds": [
+     5477
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-25T23:55:38.201Z",
+  "seed": 7000,
+  "games": 340,
+  "workers": 2,
+  "seconds": 482,
+  "steps": 49023,
+  "turns": 6746,
+  "ended": 336,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 170127,
+   "probesLegal": 6779,
+   "enumChecks": 3562,
+   "jsonChecks": 2965,
+   "viewChecks": 7809,
+   "rollbacks": 210
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 306,
+    "cards": [
+     "Hallowed Tomb",
+     "Deceiver",
+     "Mind Rune",
+     "Body Rune",
+     "Seal of Rage",
+     "Calm Rune",
+     "Eye of Twilight",
+     "Fire Below the Mountain",
+     "Boy Who Shattered Time",
+     "Battle Mistress",
+     "Fury Rune",
+     "Apprentice Smith"
+    ],
+    "seeds": [
+     7000,
+     7001,
+     7003,
+     7002,
+     7005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 115,
+    "cards": [
+     "Eye of Twilight",
+     "Keeper of Masks",
+     "Fire Below the Mountain",
+     "Boy Who Shattered Time",
+     "Rogue Assassin",
+     "Daughter of the Void",
+     "Bloodharbor Ripper",
+     "Iron Revenant",
+     "Defender of Tomorrow",
+     "Hexplosives Expert",
+     "Bounty Hunter",
+     "Blind Monk"
+    ],
+    "seeds": [
+     7007,
+     7004,
+     7009,
+     7006,
+     7011
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 11,
+    "cards": [
+     "Smoke and Mirrors",
+     "Dancing Grenade",
+     "Resonating Strike",
+     "Deathgrip",
+     "Startipped Peak",
+     "Lady of Clockwork"
+    ],
+    "seeds": [
+     7006,
+     7130,
+     7125,
+     7168,
+     7182
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Atakhan",
+     "Heroic Charge",
+     "Smoke and Mirrors",
+     "Resonating Strike",
+     "Cruel Patron"
+    ],
+    "seeds": [
+     7042,
+     7041,
+     7112,
+     7130,
+     7125
+    ]
+   },
+   {
+    "hash": "a2c84ba076",
+    "sig": "bot-loop|bot re-picks a listed choose that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 4,
+    "cards": [
+     "Atakhan",
+     "Heroic Charge",
+     "Morgana, Vindictive",
+     "Guttural Roar",
+     "Daring Poro"
+    ],
+    "seeds": [
+     7042,
+     7041,
+     7112,
+     7242
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 3,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     7160,
+     7164,
+     7231
+    ]
+   },
+   {
+    "hash": "0da79fc084",
+    "sig": "apply-throw|EngineError: all choices must be at the same location|src/engine/game.ts#applyAction",
+    "kind": "apply-throw",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Emperor's Divide",
+     "Shen, Scourge of Shadows",
+     "Jhin, Murderous Artist"
+    ],
+    "seeds": [
+     7104
+    ]
+   },
+   {
+    "hash": "96e3c2b0b8",
+    "sig": "bot-loop|bot re-picks a listed activate that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Forgotten Signpost"
+    ],
+    "seeds": [
+     7176
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T00:11:44.091Z",
+  "seed": 9000,
+  "games": 307,
+  "workers": 2,
+  "seconds": 482,
+  "steps": 43519,
+  "turns": 5966,
+  "ended": 302,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 151183,
+   "probesLegal": 5981,
+   "enumChecks": 3008,
+   "jsonChecks": 2627,
+   "viewChecks": 6855,
+   "rollbacks": 160
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 267,
+    "cards": [
+     "Daughter of the Void",
+     "Seal of Insight",
+     "Calm Rune",
+     "Fury Rune",
+     "Frozen Fortress",
+     "Mind Rune",
+     "Chaos Rune",
+     "Bloodharbor Ripper",
+     "Dark Child, Starter",
+     "Order Rune",
+     "Cull the Weak",
+     "Body Rune"
+    ],
+    "seeds": [
+     9000,
+     9002,
+     9003,
+     9004,
+     9005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 118,
+    "cards": [
+     "Daughter of the Void",
+     "Agony's Embrace",
+     "Fire Below the Mountain",
+     "Bloodharbor Ripper",
+     "Rogue Assassin",
+     "Butcher of the Sands",
+     "Pride of Nazumah",
+     "Cull the Weak",
+     "Hand of Noxus",
+     "Scorn of the Moon",
+     "Unforgiven",
+     "Chakram Dancer"
+    ],
+    "seeds": [
+     9000,
+     9003,
+     9006,
+     9009,
+     9010
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 9,
+    "cards": [
+     "Blossoming Dreamroot",
+     "Resonating Strike",
+     "Deathgrip",
+     "Irresistible Faefolk",
+     "Smoke and Mirrors",
+     "Nine-Tailed Fox",
+     "Teemo, Strategist",
+     "Sprite Fountain"
+    ],
+    "seeds": [
+     9027,
+     9043,
+     9056,
+     9099,
+     9153
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 6,
+    "cards": [
+     "Incorrigible Construct",
+     "Commander Ledros",
+     "Bard, Mercurial",
+     "Resonating Strike",
+     "Smoke and Mirrors"
+    ],
+    "seeds": [
+     9038,
+     9157,
+     9159,
+     9146,
+     9311
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 5,
+    "cards": [
+     "Dusk Rose Lab",
+     "Loose Cannon"
+    ],
+    "seeds": [
+     9046,
+     9058,
+     9118,
+     9148,
+     9211
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T00:20:21.871Z",
+  "seed": 11000,
+  "games": 157,
+  "workers": 2,
+  "seconds": 483,
+  "steps": 20841,
+  "turns": 3006,
+  "ended": 155,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 73008,
+   "probesLegal": 2901,
+   "enumChecks": 1591,
+   "jsonChecks": 1267,
+   "viewChecks": 3293,
+   "rollbacks": 125
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 139,
+    "cards": [
+     "Fury Rune",
+     "Black Market",
+     "Calm Rune",
+     "Mind Rune",
+     "Body Rune",
+     "Honest Broker",
+     "Butcher of the Sands",
+     "Wallop",
+     "Order Rune",
+     "Defender of Tomorrow",
+     "Jinx, Demolitionist",
+     "Runeblade Anvil"
+    ],
+    "seeds": [
+     11001,
+     11003,
+     11000,
+     11002,
+     11005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 55,
+    "cards": [
+     "Rogue Assassin",
+     "Bloodharbor Ripper",
+     "Meditation",
+     "Hand of Noxus",
+     "Scorn of the Moon",
+     "Butcher of the Sands",
+     "Unforgiven",
+     "Blind Monk",
+     "Bashful Bloom",
+     "Hexplosives Expert",
+     "Bounty Hunter",
+     "Herald of the Arcane"
+    ],
+    "seeds": [
+     11001,
+     11003,
+     11005,
+     11004,
+     11006
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Sprite",
+     "Smoke and Mirrors",
+     "Forbidden Technique",
+     "Convergent Mutation",
+     "Resonating Strike",
+     "Hallowed Tomb"
+    ],
+    "seeds": [
+     11017,
+     11042,
+     11062,
+     11087,
+     11096
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 6,
+    "cards": [
+     "Atakhan",
+     "Gust",
+     "Gangplank, Naval",
+     "Smoke and Mirrors"
+    ],
+    "seeds": [
+     11009,
+     11032,
+     11041,
+     11047,
+     11064
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Loose Cannon"
+    ],
+    "seeds": [
+     11011,
+     11088
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T00:31:21.553Z",
+  "seed": 13000,
+  "games": 241,
+  "workers": 2,
+  "seconds": 480,
+  "steps": 31448,
+  "turns": 4453,
+  "ended": 239,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 110732,
+   "probesLegal": 4452,
+   "enumChecks": 2280,
+   "jsonChecks": 1874,
+   "viewChecks": 4926,
+   "rollbacks": 83
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 207,
+    "cards": [
+     "Calm Rune",
+     "Body Rune",
+     "Pyke, Dockside Butcher",
+     "Fury Rune",
+     "Mind Rune",
+     "Chaos Rune",
+     "Teemo, Strategist",
+     "Order Rune",
+     "Lucian, Merciless",
+     "Dragonsoul Sage",
+     "Baccai Witherclaw",
+     "Combat Experience"
+    ],
+    "seeds": [
+     13000,
+     13002,
+     13003,
+     13004,
+     13005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 69,
+    "cards": [
+     "Bashful Bloom",
+     "Fire Below the Mountain",
+     "Zaun Warrens",
+     "Scorn of the Moon",
+     "Pride of Nazumah",
+     "Blind Monk",
+     "Sacred Shears",
+     "Hand of Noxus",
+     "Unforgiven",
+     "Iron Revenant",
+     "Hexplosives Expert",
+     "Daughter of the Void"
+    ],
+    "seeds": [
+     13000,
+     13003,
+     13012,
+     13018,
+     13019
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 6,
+    "cards": [
+     "Convergent Mutation",
+     "Dragon Form",
+     "Defiant Dance",
+     "Resonating Strike",
+     "Honest Broker",
+     "Deathgrip"
+    ],
+    "seeds": [
+     13053,
+     13076,
+     13077,
+     13080,
+     13107
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 3,
+    "cards": [
+     "Smoke and Mirrors",
+     "Resonating Strike",
+     "Bard, Mercurial"
+    ],
+    "seeds": [
+     13044,
+     13056,
+     13119
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Loose Cannon"
+    ],
+    "seeds": [
+     13080,
+     13175
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T00:40:32.375Z",
+  "seed": 15000,
+  "games": 215,
+  "workers": 2,
+  "seconds": 482,
+  "steps": 29529,
+  "turns": 4068,
+  "ended": 213,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 410110,
+   "probesLegal": 12180,
+   "enumChecks": 7945,
+   "jsonChecks": 14877,
+   "viewChecks": 29529,
+   "rollbacks": 112
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 210,
+    "cards": [
+     "Glowstone",
+     "Calm Rune",
+     "Chaos Rune",
+     "Mind Rune",
+     "Order Rune",
+     "Grim Resolve",
+     "Body Rune",
+     "Battle Mistress",
+     "Demacian Diplomat",
+     "Defender of Tomorrow",
+     "Pyke, Dockside Butcher",
+     "Fury Rune"
+    ],
+    "seeds": [
+     15000,
+     15002,
+     15003,
+     15004,
+     15006
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 88,
+    "cards": [
+     "Bounty Hunter",
+     "Eye of Twilight",
+     "Unforgiven",
+     "Defender of Tomorrow",
+     "Blind Monk",
+     "Herald of Spring",
+     "Fire Below the Mountain",
+     "Runeblade Anvil",
+     "Hand of Noxus",
+     "Hexplosives Expert",
+     "Herald of the Arcane",
+     "Daughter of the Void"
+    ],
+    "seeds": [
+     15010,
+     15009,
+     15012,
+     15011,
+     15014
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 11,
+    "cards": [
+     "Resonating Strike",
+     "Deathgrip",
+     "Heroic Charge",
+     "Convergent Mutation"
+    ],
+    "seeds": [
+     15009,
+     15023,
+     15027,
+     15049,
+     15057
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 5,
+    "cards": [
+     "Resonating Strike",
+     "Ambessa, The Wolf",
+     "Atakhan",
+     "Commander Ledros"
+    ],
+    "seeds": [
+     15023,
+     15062,
+     15095,
+     15136,
+     15159
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Wizened Elder"
+    ],
+    "seeds": [
+     15097,
+     15146
+    ]
+   },
+   {
+    "hash": "7bb0e8d270",
+    "sig": "bot-invalid|bot policy produced an invalid chooseTargets answer: all choices must be at the same location|",
+    "kind": "bot-invalid",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Emperor's Divide",
+     "Herald of Spring",
+     "First Mate"
+    ],
+    "seeds": [
+     15095
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T00:49:20.067Z",
+  "seed": 17000,
+  "games": 150,
+  "workers": 2,
+  "seconds": 483,
+  "steps": 21773,
+  "turns": 3043,
+  "ended": 147,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 302625,
+   "probesLegal": 9095,
+   "enumChecks": 5898,
+   "jsonChecks": 10822,
+   "viewChecks": 21773,
+   "rollbacks": 43
+  },
+  "signatures": [
+   {
+    "hash": "970f013312",
+    "sig": "enum-missing|validateAction accepts activate(opponent's object) but getLegalActions does not list it|",
+    "kind": "enum-missing",
+    "soft": true,
+    "games": 149,
+    "cards": [
+     "Chaos Rune",
+     "Body Rune",
+     "Fury Rune",
+     "Insightful Investigator",
+     "Order Rune",
+     "Calm Rune",
+     "Rogue Assassin",
+     "Stacked Deck",
+     "Daughter of the Void",
+     "Combat Experience",
+     "Seal of Rage",
+     "Herald of the Arcane"
+    ],
+    "seeds": [
+     17001,
+     17000,
+     17002,
+     17003,
+     17005
+    ]
+   },
+   {
+    "hash": "6e5ee7f045",
+    "sig": "illegal-accepted|validateAction accepted activate(opponent's object)|",
+    "kind": "illegal-accepted",
+    "soft": true,
+    "games": 54,
+    "cards": [
+     "Pride of Nazumah",
+     "Unforgiven",
+     "Bashful Bloom",
+     "Bloodharbor Ripper",
+     "Rogue Assassin",
+     "Daughter of the Void",
+     "Blind Monk",
+     "Herald of the Arcane",
+     "Trifarian Captain",
+     "Hand of Noxus",
+     "The Arena's Greatest",
+     "Bounty Hunter"
+    ],
+    "seeds": [
+     17000,
+     17003,
+     17004,
+     17007,
+     17009
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 3,
+    "cards": [],
+    "seeds": [
+     17019,
+     17102,
+     17127
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Monster Harpoon",
+     "Smoke and Mirrors",
+     "Convergent Mutation"
+    ],
+    "seeds": [
+     17056,
+     17070
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Determined Sentry"
+    ],
+    "seeds": [
+     17097
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T01:02:46.681Z",
+  "seed": 546573,
+  "games": 200,
+  "workers": 2,
+  "seconds": 247,
+  "steps": 28866,
+  "turns": 3961,
+  "ended": 197,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 101018,
+   "probesLegal": 3971,
+   "enumChecks": 2092,
+   "jsonChecks": 1715,
+   "viewChecks": 4563,
+   "rollbacks": 70
+  },
+  "signatures": [
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 4,
+    "cards": [
+     "Smoke and Mirrors",
+     "Teemo, Strategist",
+     "Amateur Demolitionist"
+    ],
+    "seeds": [
+     546626,
+     546641,
+     546649,
+     546739
+    ]
+   },
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 3,
+    "cards": [],
+    "seeds": [
+     546605,
+     546622,
+     546679
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T01:04:04.589Z",
+  "seed": 546626,
+  "games": 1,
+  "workers": 1,
+  "seconds": 2,
+  "steps": 287,
+  "turns": 36,
+  "ended": 1,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 950,
+   "probesLegal": 41,
+   "enumChecks": 28,
+   "jsonChecks": 17,
+   "viewChecks": 43,
+   "rollbacks": 4
+  },
+  "signatures": [
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Smoke and Mirrors"
+    ],
+    "seeds": [
+     546626
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T01:13:18.152Z",
+  "seed": 348578,
+  "games": 200,
+  "workers": 2,
+  "seconds": 226,
+  "steps": 27319,
+  "turns": 3843,
+  "ended": 195,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 94248,
+   "probesLegal": 3844,
+   "enumChecks": 1907,
+   "jsonChecks": 1627,
+   "viewChecks": 4242,
+   "rollbacks": 54
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 4,
+    "cards": [
+     "Loose Cannon"
+    ],
+    "seeds": [
+     348596,
+     348605,
+     348607,
+     348772
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Commander Ledros",
+     "Atakhan"
+    ],
+    "seeds": [
+     348619,
+     348642
+    ]
+   },
+   {
+    "hash": "73734b72e3",
+    "sig": "view-leak|view p0: facedown object oN shows cardId ogn-N-N|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     348731
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T02:32:46.463Z",
+  "seed": 146168,
+  "games": 200,
+  "workers": 2,
+  "seconds": 106,
+  "steps": 27898,
+  "turns": 3830,
+  "ended": 199,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 97469,
+   "probesLegal": 3880,
+   "enumChecks": 1959,
+   "jsonChecks": 1610,
+   "viewChecks": 4350,
+   "rollbacks": 46
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     146188
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T02:58:04.080Z",
+  "seed": 205791,
+  "games": 200,
+  "workers": 2,
+  "seconds": 93,
+  "steps": 27593,
+  "turns": 3842,
+  "ended": 197,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 96895,
+   "probesLegal": 3690,
+   "enumChecks": 1955,
+   "jsonChecks": 1697,
+   "viewChecks": 4320,
+   "rollbacks": 38
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 3,
+    "cards": [],
+    "seeds": [
+     205811,
+     205895,
+     205917
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T03:46:13.310Z",
+  "seed": 77000,
+  "games": 250,
+  "workers": 2,
+  "seconds": 233,
+  "steps": 34060,
+  "turns": 4770,
+  "ended": 248,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 117655,
+   "probesLegal": 4851,
+   "enumChecks": 2486,
+   "jsonChecks": 2050,
+   "viewChecks": 5201,
+   "rollbacks": 63
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     77015,
+     77061
+    ]
+   },
+   {
+    "hash": "e917bb53e0",
+    "sig": "legal-rollback|listed activate rolled back: could not pay Exhaust a unit you control|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Forgotten Signpost"
+    ],
+    "seeds": [
+     77144
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Discipline",
+     "Crimson Pigeons"
+    ],
+    "seeds": [
+     77212
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T04:06:24.668Z",
+  "seed": 91000,
+  "games": 250,
+  "workers": 2,
+  "seconds": 239,
+  "steps": 35461,
+  "turns": 4936,
+  "ended": 249,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 123015,
+   "probesLegal": 5022,
+   "enumChecks": 2508,
+   "jsonChecks": 2090,
+   "viewChecks": 5472,
+   "rollbacks": 51
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     91032
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T04:54:40.922Z",
+  "seed": 696140,
+  "games": 200,
+  "workers": 2,
+  "seconds": 242,
+  "steps": 25944,
+  "turns": 3603,
+  "ended": 200,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 88577,
+   "probesLegal": 3619,
+   "enumChecks": 1814,
+   "jsonChecks": 1616,
+   "viewChecks": 4106,
+   "rollbacks": 43
+  },
+  "signatures": [
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Factory Recall",
+     "Cull"
+    ],
+    "seeds": [
+     696329
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T05:44:34.300Z",
+  "seed": 985917,
+  "games": 200,
+  "workers": 2,
+  "seconds": 228,
+  "steps": 27498,
+  "turns": 3748,
+  "ended": 197,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 94647,
+   "probesLegal": 3795,
+   "enumChecks": 1959,
+   "jsonChecks": 1625,
+   "viewChecks": 4393,
+   "rollbacks": 41
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [],
+    "seeds": [
+     985941,
+     986091
+    ]
+   },
+   {
+    "hash": "2022100893",
+    "sig": "invariant|oN zone base but not in any array|",
+    "kind": "invariant",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Shadow Clone",
+     "Zed, From the Shadows"
+    ],
+    "seeds": [
+     986086
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T06:50:12.422Z",
+  "seed": 287387,
+  "games": 200,
+  "workers": 2,
+  "seconds": 195,
+  "steps": 28402,
+  "turns": 4013,
+  "ended": 198,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 98500,
+   "probesLegal": 3911,
+   "enumChecks": 1973,
+   "jsonChecks": 1760,
+   "viewChecks": 4383,
+   "rollbacks": 52
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     287491,
+     287482
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T07:55:21.278Z",
+  "seed": 515151,
+  "games": 200,
+  "workers": 2,
+  "seconds": 194,
+  "steps": 27911,
+  "turns": 3865,
+  "ended": 195,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 95837,
+   "probesLegal": 3816,
+   "enumChecks": 2103,
+   "jsonChecks": 1724,
+   "viewChecks": 4371,
+   "rollbacks": 25
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 5,
+    "cards": [],
+    "seeds": [
+     515164,
+     515177,
+     515281,
+     515309,
+     515337
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T08:56:26.105Z",
+  "seed": 626262,
+  "games": 200,
+  "workers": 2,
+  "seconds": 373,
+  "steps": 26386,
+  "turns": 3719,
+  "ended": 197,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 91824,
+   "probesLegal": 3646,
+   "enumChecks": 1845,
+   "jsonChecks": 1592,
+   "viewChecks": 4153,
+   "rollbacks": 42
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [],
+    "seeds": [
+     626326,
+     626381
+    ]
+   },
+   {
+    "hash": "0a6ca849a3",
+    "sig": "invariant|token oN in setAside|",
+    "kind": "invariant",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Shadow Clone",
+     "Zed, From the Shadows"
+    ],
+    "seeds": [
+     626376
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T10:07:42.023Z",
+  "seed": 737373,
+  "games": 159,
+  "workers": 2,
+  "seconds": 483,
+  "steps": 21600,
+  "turns": 2990,
+  "ended": 158,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 75865,
+   "probesLegal": 2940,
+   "enumChecks": 1596,
+   "jsonChecks": 1333,
+   "viewChecks": 3386,
+   "rollbacks": 35
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     737406
+    ]
+   },
+   {
+    "hash": "d2d4803d9e",
+    "sig": "legal-rollback|listed playCard rolled back: a required target is no longer available|",
+    "kind": "legal-rollback",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Fate Weaver",
+     "Mesmerize"
+    ],
+    "seeds": [
+     737526
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T13:03:46.827Z",
+  "seed": 424200,
+  "games": 210,
+  "workers": 1,
+  "seconds": 391,
+  "steps": 37989,
+  "turns": 4090,
+  "ended": 203,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 132465,
+   "probesLegal": 5039,
+   "enumChecks": 2596,
+   "jsonChecks": 2307,
+   "viewChecks": 5825,
+   "rollbacks": 65
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     424242,
+     424244,
+     424276,
+     424315,
+     424326
+    ]
+   }
+  ],
+  "note": "META-AUDIT: FUZZ_META=1 (20 Bologna lists)"
+ },
+ {
+  "date": "2026-11-26T13:12:03.339Z",
+  "seed": 525200,
+  "games": 162,
+  "workers": 1,
+  "seconds": 391,
+  "steps": 29009,
+  "turns": 3189,
+  "ended": 155,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 100661,
+   "probesLegal": 3742,
+   "enumChecks": 2034,
+   "jsonChecks": 1767,
+   "viewChecks": 4562,
+   "rollbacks": 52
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 7,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     525204,
+     525235,
+     525257,
+     525262,
+     525308
+    ]
+   }
+  ],
+  "note": "META-AUDIT: FUZZ_META=1 (20 Bologna lists)"
+ },
+ {
+  "date": "2026-11-26T13:22:43.694Z",
+  "seed": 626262,
+  "games": 200,
+  "workers": 2,
+  "seconds": 477,
+  "steps": 27111,
+  "turns": 3789,
+  "ended": 198,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 94551,
+   "probesLegal": 3781,
+   "enumChecks": 1883,
+   "jsonChecks": 1632,
+   "viewChecks": 4220,
+   "rollbacks": 37
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [],
+    "seeds": [
+     626326,
+     626381
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T14:26:39.021Z",
+  "seed": 424200,
+  "games": 200,
+  "workers": 2,
+  "seconds": 414,
+  "steps": 28193,
+  "turns": 3907,
+  "ended": 197,
+  "newRepros": 1,
+  "stats": {
+   "probesIllegal": 97601,
+   "probesLegal": 4043,
+   "enumChecks": 1933,
+   "jsonChecks": 1655,
+   "viewChecks": 4292,
+   "rollbacks": 29
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     424228,
+     424398
+    ]
+   },
+   {
+    "hash": "44d2fa80a5",
+    "sig": "view-leak|view p0: runeDeck object oN shows cardId rad-r03|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Parallel Convergence",
+     "Aspiring Engineer"
+    ],
+    "seeds": [
+     424274
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T14:44:34.777Z",
+  "seed": 727272,
+  "games": 200,
+  "workers": 2,
+  "seconds": 424,
+  "steps": 28108,
+  "turns": 3825,
+  "ended": 197,
+  "newRepros": 2,
+  "stats": {
+   "probesIllegal": 98841,
+   "probesLegal": 4026,
+   "enumChecks": 2006,
+   "jsonChecks": 1624,
+   "viewChecks": 4464,
+   "rollbacks": 29
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     727277
+    ]
+   },
+   {
+    "hash": "58ffd8f808",
+    "sig": "view-leak|view p0: internal id of hidden hand object oN appears: :N\":N,\"powerSpent:N\":N,\"played:N\":N,\"playedToBf:N\":N,\"B4:mv:mfCaptain:oN#N\":N,\"chose:N\":N|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [
+     "Bounty Hunter"
+    ],
+    "seeds": [
+     727426
+    ]
+   },
+   {
+    "hash": "55e5a57e1f",
+    "sig": "view-leak|view p0: internal id of hidden hand object oN appears: [\"hidden\"],\"defenders\":[\"oN\",\"oN\"],\"recalled\":false,\"roleEpochs\":{\"a:oN\":N,\"d:oN\":N,\"d:o|",
+    "kind": "view-leak",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     727444
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T15:04:39.499Z",
+  "seed": 737373,
+  "games": 200,
+  "workers": 2,
+  "seconds": 263,
+  "steps": 27166,
+  "turns": 3766,
+  "ended": 198,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 94116,
+   "probesLegal": 3853,
+   "enumChecks": 1968,
+   "jsonChecks": 1706,
+   "viewChecks": 4218,
+   "rollbacks": 42
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 2,
+    "cards": [
+     "Frozen Fortress"
+    ],
+    "seeds": [
+     737388,
+     737559
+    ]
+   },
+   {
+    "hash": "4cd09eb45b",
+    "sig": "bot-loop|bot re-picks a listed playCard that rolls back|",
+    "kind": "bot-loop",
+    "soft": true,
+    "games": 1,
+    "cards": [
+     "Shadow's Call",
+     "Rumble, Scrapper"
+    ],
+    "seeds": [
+     737526
+    ]
+   }
+  ]
+ },
+ {
+  "date": "2026-11-26T15:29:33.906Z",
+  "seed": 515100,
+  "games": 200,
+  "workers": 2,
+  "seconds": 297,
+  "steps": 27374,
+  "turns": 3755,
+  "ended": 196,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 95663,
+   "probesLegal": 3914,
+   "enumChecks": 1931,
+   "jsonChecks": 1594,
+   "viewChecks": 4306,
+   "rollbacks": 30
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 4,
+    "cards": [
+     "Pirate's Haven"
+    ],
+    "seeds": [
+     515117,
+     515122,
+     515201,
+     515281
+    ]
+   }
+  ]
+ }
+]

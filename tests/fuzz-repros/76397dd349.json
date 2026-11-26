@@ -1,0 +1,352 @@
+{
+ "hash": "76397dd349",
+ "signature": "view-leak|view p1: facedown object oN shows cardId ven-N-N|",
+ "kind": "view-leak",
+ "message": "view p1: facedown object o10 shows cardId ven-066-166",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 23097,
+  "decks": [
+   {
+    "legend": "sfd-189-221",
+    "champion": "sfd-085-221",
+    "main": [
+     "ven-066-166",
+     "ven-066-166",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-053-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03"
+    ],
+    "battlefields": [
+     "sfd-211-221",
+     "sfd-220-221",
+     "sfd-216-221"
+    ],
+    "extraLegends": [
+     "ogs-019-024",
+     "ven-149-166",
+     "ogn-249-298"
+    ]
+   },
+   {
+    "legend": "ogn-257-298",
+    "champion": "ogn-078-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "unl-053-219",
+     "unl-053-219",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r02",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04"
+    ],
+    "battlefields": [
+     "unl-218-219",
+     "sfd-208-221",
+     "ogn-275-298"
+    ]
+   }
+  ],
+  "policies": [
+   "bot",
+   "random"
+  ],
+  "manualPay": [
+   true,
+   true
+  ],
+  "battlefieldSelection": "random",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": []
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o62",
+    "o65"
+   ]
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o4",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o67",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o4"
+   ],
+   "to": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o3",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "move",
+   "player": 1,
+   "units": [
+    "o67"
+   ],
+   "to": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o105",
+   "abilityIndex": 950
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "move",
+   "player": 0,
+   "units": [
+    "o3"
+   ],
+   "to": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o1",
+   "abilityIndex": 0
+  },
+  {
+   "type": "hide",
+   "player": 0,
+   "obj": "o10",
+   "battlefieldIndex": 1
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "auto"
+   ]
+  }
+ ],
+ "original": {
+  "seed": 23097,
+  "steps": 48,
+  "turn": 5,
+  "policies": [
+   "bot",
+   "random"
+  ]
+ },
+ "minimized": {
+  "actions": 32,
+  "deckCards": 5,
+  "ms": 30304
+ },
+ "found": "2026-11-26T06:44:12.036Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "Scuttle Crab's Deathknell lets its controller look at the opponent's facedown cards this turn (seeFacedown rule); the view-leak check ignored that rule — tools/fuzz-lib.ts hiddenFor now applies it (ENGINE-4)"
+ }
+}

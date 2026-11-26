@@ -1,0 +1,4516 @@
+[
+ {
+  "id": "activated:ability",
+  "count": 86,
+  "desc": "COST: EFFECT activated ability (uses the chain).",
+  "examples": [
+   "ogn-017-298",
+   "ogn-021-298",
+   "ogn-023-298"
+  ]
+ },
+ {
+  "id": "activated:mana",
+  "count": 21,
+  "desc": "Activated ability that [Add]s resources (no chain, can't be reacted to).",
+  "examples": [
+   "ogn-040-298",
+   "ogn-081-298",
+   "ogn-098-298"
+  ]
+ },
+ {
+  "id": "choice:any-number",
+  "count": 14,
+  "desc": "Any number of targets.",
+  "examples": [
+   "ogn-041-298",
+   "ogn-078-298",
+   "ogn-150-298"
+  ]
+ },
+ {
+  "id": "choice:choose-one",
+  "count": 20,
+  "desc": "Modal: choose one.",
+  "examples": [
+   "ogn-025-298",
+   "ogn-157-298",
+   "ogn-200-298"
+  ]
+ },
+ {
+  "id": "choice:choose-two",
+  "count": 1,
+  "desc": "Modal: choose two.",
+  "examples": [
+   "rad-152-167"
+  ]
+ },
+ {
+  "id": "choice:mode-not-chosen-this-turn",
+  "count": 5,
+  "desc": "Modal with \"not already chosen this turn\" memory.",
+  "examples": [
+   "ogn-157-298",
+   "ogn-237-298",
+   "rad-043-167"
+  ]
+ },
+ {
+  "id": "choice:opponent-decides",
+  "count": 24,
+  "desc": "An opponent makes a decision.",
+  "examples": [
+   "ogn-025-298",
+   "ogn-033-298",
+   "ogn-071-298"
+  ]
+ },
+ {
+  "id": "choice:optional",
+  "count": 205,
+  "desc": "Optional (\"you may\").",
+  "examples": [
+   "ogn-002-298",
+   "ogn-006-298",
+   "ogn-023-298"
+  ]
+ },
+ {
+  "id": "choice:total-might",
+  "count": 5,
+  "desc": "Targets constrained by total Might.",
+  "examples": [
+   "ogn-256-298",
+   "unl-054-219",
+   "unl-097-219"
+  ]
+ },
+ {
+  "id": "choice:up-to",
+  "count": 31,
+  "desc": "Up to N targets.",
+  "examples": [
+   "ogn-073-298",
+   "ogn-105-298",
+   "ogn-141-298"
+  ]
+ },
+ {
+  "id": "condition:control-type",
+  "count": 12,
+  "desc": "You control a card with a property.",
+  "examples": [
+   "ogn-061-298",
+   "ogn-101-298",
+   "rad-072-167"
+  ]
+ },
+ {
+  "id": "condition:count-hand",
+  "count": 3,
+  "desc": "Hand size.",
+  "examples": [
+   "ogn-251-298",
+   "sfd-027-221",
+   "unl-088-219"
+  ]
+ },
+ {
+  "id": "condition:count-runes",
+  "count": 8,
+  "desc": "Number of runes controlled.",
+  "examples": [
+   "ogs-004-024",
+   "rad-160-167",
+   "ven-016-166"
+  ]
+ },
+ {
+  "id": "condition:count-units",
+  "count": 22,
+  "desc": "Count / solitude of units at a location.",
+  "examples": [
+   "ogn-055-298",
+   "ogn-293-298",
+   "ogs-019-024"
+  ]
+ },
+ {
+  "id": "condition:domain-of-revealed",
+  "count": 2,
+  "desc": "Branch on revealed card's domain/type.",
+  "examples": [
+   "ogn-200-298",
+   "unl-080-219"
+  ]
+ },
+ {
+  "id": "condition:empowered",
+  "count": 39,
+  "desc": "Empowered state of this or another object.",
+  "examples": [
+   "ven-001-166",
+   "ven-007-166",
+   "ven-014-166"
+  ]
+ },
+ {
+  "id": "condition:excess-damage",
+  "count": 5,
+  "desc": "Excess combat damage assigned.",
+  "examples": [
+   "ogn-034-298",
+   "sfd-120-221",
+   "unl-018-219"
+  ]
+ },
+ {
+  "id": "condition:if-killed",
+  "count": 7,
+  "desc": "Depends on result of the effect / the dead card's properties.",
+  "examples": [
+   "ogn-005-298",
+   "sfd-036-221",
+   "sfd-162-221"
+  ]
+ },
+ {
+  "id": "condition:if-paid-additional",
+  "count": 40,
+  "desc": "If an optional cost was paid / \"if you do\".",
+  "examples": [
+   "ogn-002-298",
+   "ogn-044-298",
+   "ogn-048-298"
+  ]
+ },
+ {
+  "id": "condition:intervening-if",
+  "count": 48,
+  "desc": "Trigger with an intervening \"if\" right after the trigger clause (check on trigger and on resolution).",
+  "examples": [
+   "ogn-034-298",
+   "ogn-044-298",
+   "ogn-061-298"
+  ]
+ },
+ {
+  "id": "condition:legion",
+  "count": 10,
+  "desc": "Legion: you've played another card this turn.",
+  "examples": [
+   "ogn-012-298",
+   "ogn-016-298",
+   "ogn-020-298"
+  ]
+ },
+ {
+  "id": "condition:level",
+  "count": 14,
+  "desc": "Level N: you have N+ XP.",
+  "examples": [
+   "unl-016-219",
+   "unl-031-219",
+   "unl-038-219"
+  ]
+ },
+ {
+  "id": "condition:mighty",
+  "count": 7,
+  "desc": "Mighty: 5+ Might.",
+  "examples": [
+   "ogn-038-298",
+   "ogn-232-298",
+   "rad-074-167"
+  ]
+ },
+ {
+  "id": "condition:name-in-trash",
+  "count": 3,
+  "desc": "Cards with this name in trash.",
+  "examples": [
+   "ven-010-166",
+   "ven-013-166",
+   "ven-096-166"
+  ]
+ },
+ {
+  "id": "condition:once-per-turn",
+  "count": 25,
+  "desc": "Once per turn limit.",
+  "examples": [
+   "ogn-118-298",
+   "ogn-162-298",
+   "ogn-205-298"
+  ]
+ },
+ {
+  "id": "condition:played-this-turn",
+  "count": 19,
+  "desc": "Something happened earlier this turn.",
+  "examples": [
+   "ogn-019-298",
+   "ogn-144-298",
+   "rad-005-167"
+  ]
+ },
+ {
+  "id": "condition:score-near-victory",
+  "count": 5,
+  "desc": "Score within 3 of victory.",
+  "examples": [
+   "ogn-047-298",
+   "ogn-079-298",
+   "sfd-201-221"
+  ]
+ },
+ {
+  "id": "condition:showed-off",
+  "count": 6,
+  "desc": "Show Off was used.",
+  "examples": [
+   "rad-011-167",
+   "rad-032-167",
+   "rad-060-167"
+  ]
+ },
+ {
+  "id": "condition:tags",
+  "count": 7,
+  "desc": "Tag-tribe synergy (Bird/Cat/Dog/Poro).",
+  "examples": [
+   "unl-046-219",
+   "unl-051-219",
+   "unl-166-219"
+  ]
+ },
+ {
+  "id": "condition:target-state",
+  "count": 16,
+  "desc": "State of the chosen object.",
+  "examples": [
+   "ogn-107-298",
+   "ogn-131-298",
+   "ogn-225-298"
+  ]
+ },
+ {
+  "id": "condition:turn-number",
+  "count": 3,
+  "desc": "Turn number of the player.",
+  "examples": [
+   "sfd-209-221",
+   "ven-029-166",
+   "ven-053-166"
+  ]
+ },
+ {
+  "id": "condition:turn-owner",
+  "count": 8,
+  "desc": "Whose turn / which phase.",
+  "examples": [
+   "rad-095-167",
+   "rad-100-167",
+   "rad-153-167"
+  ]
+ },
+ {
+  "id": "condition:unless",
+  "count": 6,
+  "desc": "\"Unless\" clause.",
+  "examples": [
+   "ogn-033-298",
+   "rad-042-167",
+   "sfd-136-221"
+  ]
+ },
+ {
+  "id": "condition:use-only",
+  "count": 12,
+  "desc": "Activation restriction (only while / only if / once per turn).",
+  "examples": [
+   "ogn-068-298",
+   "ogn-247-298",
+   "rad-114-167"
+  ]
+ },
+ {
+  "id": "condition:while-attacking",
+  "count": 4,
+  "desc": "While attacking/defending.",
+  "examples": [
+   "ogn-055-298",
+   "ogs-019-024",
+   "unl-154-219"
+  ]
+ },
+ {
+  "id": "condition:while-buffed",
+  "count": 6,
+  "desc": "Buffed state.",
+  "examples": [
+   "ogn-063-298",
+   "ogn-065-298",
+   "ogn-125-298"
+  ]
+ },
+ {
+  "id": "condition:while-location",
+  "count": 27,
+  "desc": "Location / combat state of this card.",
+  "examples": [
+   "ogn-068-298",
+   "ogn-070-298",
+   "ogn-073-298"
+  ]
+ },
+ {
+  "id": "condition:zone-origin",
+  "count": 4,
+  "desc": "Depends on the zone the card was played from.",
+  "examples": [
+   "rad-081-167",
+   "rad-100-167",
+   "rad-154-167"
+  ]
+ },
+ {
+  "id": "cost:discard",
+  "count": 7,
+  "desc": "Discard as cost.",
+  "examples": [
+   "ogn-023-298",
+   "rad-021-167",
+   "unl-017-219"
+  ]
+ },
+ {
+  "id": "cost:disempower",
+  "count": 8,
+  "desc": "Disempower this as cost.",
+  "examples": [
+   "rad-139-167",
+   "ven-054-166",
+   "ven-087-166"
+  ]
+ },
+ {
+  "id": "cost:energy",
+  "count": 103,
+  "desc": "Generic Energy [N].",
+  "examples": [
+   "ogn-099-298",
+   "ogn-184-298",
+   "ogn-242-298"
+  ]
+ },
+ {
+  "id": "cost:exhaust-other",
+  "count": 4,
+  "desc": "Exhaust another permanent you control.",
+  "examples": [
+   "rad-035-167",
+   "rad-114-167",
+   "rad-150-167"
+  ]
+ },
+ {
+  "id": "cost:exhaust-self",
+  "count": 89,
+  "desc": "Exhaust this ([E]/[T]).",
+  "examples": [
+   "ogn-017-298",
+   "ogn-021-298",
+   "ogn-023-298"
+  ]
+ },
+ {
+  "id": "cost:kill-other",
+  "count": 4,
+  "desc": "Kill a friendly unit/gear as cost (sacrifice).",
+  "examples": [
+   "ogn-113-298",
+   "rad-022-167",
+   "sfd-178-221"
+  ]
+ },
+ {
+  "id": "cost:kill-self",
+  "count": 6,
+  "desc": "Kill / banish this as cost.",
+  "examples": [
+   "ogn-212-298",
+   "sfd-046-221",
+   "sfd-090-221"
+  ]
+ },
+ {
+  "id": "cost:power-any",
+  "count": 24,
+  "desc": "Power of any domain [A].",
+  "examples": [
+   "rad-141-167",
+   "rad-150-167",
+   "rad-158-167"
+  ]
+ },
+ {
+  "id": "cost:power-domain",
+  "count": 71,
+  "desc": "Power of this card's domain [C] or a specific domain.",
+  "examples": [
+   "ogn-186-298",
+   "ogn-242-298",
+   "rad-012-167"
+  ]
+ },
+ {
+  "id": "cost:recycle-trash",
+  "count": 5,
+  "desc": "Recycle / banish card(s) from your trash as cost.",
+  "examples": [
+   "ogn-036-298",
+   "ogn-099-298",
+   "rad-143-167"
+  ]
+ },
+ {
+  "id": "cost:spend-buff",
+  "count": 2,
+  "desc": "Spend a buff as cost.",
+  "examples": [
+   "ogn-157-298",
+   "ogn-164-298"
+  ]
+ },
+ {
+  "id": "cost:spend-xp",
+  "count": 7,
+  "desc": "Spend XP as cost.",
+  "examples": [
+   "unl-102-219",
+   "unl-109-219",
+   "unl-126-219"
+  ]
+ },
+ {
+  "id": "duration:end-of-turn",
+  "count": 5,
+  "desc": "Delayed until end of turn.",
+  "examples": [
+   "ogn-289-298",
+   "rad-142-167",
+   "sfd-202-221"
+  ]
+ },
+ {
+  "id": "duration:next-main-phase",
+  "count": 2,
+  "desc": "Delayed until your next Main Phase.",
+  "examples": [
+   "unl-050-219",
+   "unl-087-219"
+  ]
+ },
+ {
+  "id": "duration:next-time",
+  "count": 15,
+  "desc": "Until the next occurrence (\"the next time it would die\", \"the next spell you play\").",
+  "examples": [
+   "ogn-021-298",
+   "ogn-023-298",
+   "ogn-031-298"
+  ]
+ },
+ {
+  "id": "duration:this-combat",
+  "count": 3,
+  "desc": "Until end of combat.",
+  "examples": [
+   "ogn-279-298",
+   "rad-161-167",
+   "sfd-110-221"
+  ]
+ },
+ {
+  "id": "duration:this-turn",
+  "count": 210,
+  "desc": "Until end of turn.",
+  "examples": [
+   "ogn-004-298",
+   "ogn-016-298",
+   "ogn-019-298"
+  ]
+ },
+ {
+  "id": "duration:until-next-ending",
+  "count": 2,
+  "desc": "Until your next Ending Phase.",
+  "examples": [
+   "rad-012-167",
+   "rad-015-167"
+  ]
+ },
+ {
+  "id": "duration:while-attached",
+  "count": 2,
+  "desc": "While attached.",
+  "examples": [
+   "sfd-059-221",
+   "ven-137-166"
+  ]
+ },
+ {
+  "id": "duration:while-source-on-board",
+  "count": 3,
+  "desc": "While source remains on board.",
+  "examples": [
+   "rad-145-167",
+   "rad-167-167",
+   "sfd-109-221"
+  ]
+ },
+ {
+  "id": "effect:add-battlefield",
+  "count": 1,
+  "desc": "Add a battlefield token to the board.",
+  "examples": [
+   "unl-147-219"
+  ]
+ },
+ {
+  "id": "effect:add-resource",
+  "count": 29,
+  "desc": "Add Energy/Power to rune pool (resource ability, no chain).",
+  "examples": [
+   "ogn-040-298",
+   "ogn-081-298",
+   "ogn-098-298"
+  ]
+ },
+ {
+  "id": "effect:attach",
+  "count": 8,
+  "desc": "Attach an Equipment to a unit.",
+  "examples": [
+   "sfd-011-221",
+   "sfd-024-221",
+   "sfd-050-221"
+  ]
+ },
+ {
+  "id": "effect:banish",
+  "count": 33,
+  "desc": "Banish a card (exile).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-062-298",
+   "ogn-102-298"
+  ]
+ },
+ {
+  "id": "effect:become-unit",
+  "count": 1,
+  "desc": "Turn a gear into a unit.",
+  "examples": [
+   "rad-145-167"
+  ]
+ },
+ {
+  "id": "effect:bonus-damage",
+  "count": 6,
+  "desc": "Bonus Damage modifier (+N to each instance).",
+  "examples": [
+   "ogn-032-298",
+   "ogn-296-298",
+   "ogs-001-024"
+  ]
+ },
+ {
+  "id": "effect:buff",
+  "count": 39,
+  "desc": "Buff: give a +1 Might buff counter if it has none.",
+  "examples": [
+   "ogn-053-298",
+   "ogn-056-298",
+   "ogn-061-298"
+  ]
+ },
+ {
+  "id": "effect:burn",
+  "count": 9,
+  "desc": "Burn N: mill top N of Main Deck to trash.",
+  "examples": [
+   "rad-124-167",
+   "ven-002-166",
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "effect:cant-act",
+  "count": 10,
+  "desc": "Prohibition: can't move / play / be chosen / ready / score.",
+  "examples": [
+   "ogn-026-298",
+   "rad-026-167",
+   "rad-034-167"
+  ]
+ },
+ {
+  "id": "effect:channel",
+  "count": 31,
+  "desc": "Channel rune(s) from rune deck (usually exhausted).",
+  "examples": [
+   "ogn-047-298",
+   "ogn-071-298",
+   "ogn-075-298"
+  ]
+ },
+ {
+  "id": "effect:choose-player",
+  "count": 20,
+  "desc": "Choose a player / opponent, or an opponent makes a choice.",
+  "examples": [
+   "ogn-071-298",
+   "ogn-156-298",
+   "ogn-192-298"
+  ]
+ },
+ {
+  "id": "effect:copy",
+  "count": 6,
+  "desc": "Copy a unit (become a copy) / copy text / duplicate a token.",
+  "examples": [
+   "sfd-059-221",
+   "unl-081-219",
+   "unl-086-219"
+  ]
+ },
+ {
+  "id": "effect:cost-modify-next",
+  "count": 4,
+  "desc": "Modify cost/damage of the next card you play this turn.",
+  "examples": [
+   "ogn-031-298",
+   "ogn-032-298",
+   "rad-139-167"
+  ]
+ },
+ {
+  "id": "effect:counter",
+  "count": 12,
+  "desc": "Counter a spell / ability on the chain.",
+  "examples": [
+   "ogn-045-298",
+   "ogn-064-298",
+   "rad-041-167"
+  ]
+ },
+ {
+  "id": "effect:deal-damage",
+  "count": 65,
+  "desc": "Deal N damage to target(s).",
+  "examples": [
+   "ogn-005-298",
+   "ogn-009-298",
+   "ogn-014-298"
+  ]
+ },
+ {
+  "id": "effect:deal-damage-variable",
+  "count": 31,
+  "desc": "Deal damage equal to a value (Might, Energy cost, Shield, X, excess, marked damage).",
+  "examples": [
+   "ogn-008-298",
+   "ogn-041-298",
+   "ogn-068-298"
+  ]
+ },
+ {
+  "id": "effect:deck-top-bottom",
+  "count": 3,
+  "desc": "Put card(s) on top/bottom of deck.",
+  "examples": [
+   "ogn-291-298",
+   "sfd-169-221",
+   "unl-204-219"
+  ]
+ },
+ {
+  "id": "effect:delayed-trigger",
+  "count": 11,
+  "desc": "Create a delayed / this-turn trigger.",
+  "examples": [
+   "ogn-221-298",
+   "ogn-289-298",
+   "rad-047-167"
+  ]
+ },
+ {
+  "id": "effect:detach",
+  "count": 4,
+  "desc": "Detach an Equipment.",
+  "examples": [
+   "sfd-011-221",
+   "sfd-107-221",
+   "sfd-193-221"
+  ]
+ },
+ {
+  "id": "effect:discard",
+  "count": 28,
+  "desc": "Discard card(s) (chooser varies).",
+  "examples": [
+   "ogn-002-298",
+   "ogn-003-298",
+   "ogn-008-298"
+  ]
+ },
+ {
+  "id": "effect:discard-hand",
+  "count": 3,
+  "desc": "Discard / banish whole hand.",
+  "examples": [
+   "ogn-201-298",
+   "rad-069-167",
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "effect:disempower",
+  "count": 5,
+  "desc": "Disempower something.",
+  "examples": [
+   "ven-035-166",
+   "ven-037-166",
+   "ven-082-166"
+  ]
+ },
+ {
+  "id": "effect:double-damage",
+  "count": 1,
+  "desc": "Double damage dealt to a unit.",
+  "examples": [
+   "unl-013-219"
+  ]
+ },
+ {
+  "id": "effect:double-might",
+  "count": 4,
+  "desc": "Double a unit's Might.",
+  "examples": [
+   "ogn-069-298",
+   "sfd-110-221",
+   "unl-030-219"
+  ]
+ },
+ {
+  "id": "effect:draw",
+  "count": 148,
+  "desc": "Draw card(s).",
+  "examples": [
+   "ogn-005-298",
+   "ogn-020-298",
+   "ogn-024-298"
+  ]
+ },
+ {
+  "id": "effect:each-player",
+  "count": 18,
+  "desc": "Each player / each opponent performs an action (APNAP order).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-071-298",
+   "ogn-115-298"
+  ]
+ },
+ {
+  "id": "effect:empower",
+  "count": 11,
+  "desc": "Empower something (sets Empowered state).",
+  "examples": [
+   "ven-028-166",
+   "ven-035-166",
+   "ven-062-166"
+  ]
+ },
+ {
+  "id": "effect:enter-ready-grant",
+  "count": 31,
+  "desc": "Make units enter ready (this turn / next unit).",
+  "examples": [
+   "ogn-021-298",
+   "ogn-035-298",
+   "ogn-079-298"
+  ]
+ },
+ {
+  "id": "effect:exhaust",
+  "count": 15,
+  "desc": "Exhaust (tap) something as an effect.",
+  "examples": [
+   "ogn-023-298",
+   "ogn-077-298",
+   "ogn-123-298"
+  ]
+ },
+ {
+  "id": "effect:extra-turn",
+  "count": 1,
+  "desc": "Take an extra turn.",
+  "examples": [
+   "ogn-122-298"
+  ]
+ },
+ {
+  "id": "effect:fight",
+  "count": 8,
+  "desc": "Two units deal damage equal to their Might to each other (fight).",
+  "examples": [
+   "ogn-128-298",
+   "ogn-149-298",
+   "ogn-258-298"
+  ]
+ },
+ {
+  "id": "effect:gain-control-spell",
+  "count": 2,
+  "desc": "Gain control of a spell on the chain.",
+  "examples": [
+   "ogn-080-298",
+   "ven-152-166"
+  ]
+ },
+ {
+  "id": "effect:gain-tag",
+  "count": 1,
+  "desc": "Gain a tag.",
+  "examples": [
+   "unl-177-219"
+  ]
+ },
+ {
+  "id": "effect:gain-xp",
+  "count": 17,
+  "desc": "Gain XP.",
+  "examples": [
+   "unl-034-219",
+   "unl-053-219",
+   "unl-092-219"
+  ]
+ },
+ {
+  "id": "effect:grant-ability",
+  "count": 7,
+  "desc": "Grant a quoted ability.",
+  "examples": [
+   "rad-040-167",
+   "rad-139-167",
+   "rad-147-167"
+  ]
+ },
+ {
+  "id": "effect:grant-keyword",
+  "count": 36,
+  "desc": "Give a keyword (usually this turn): Assault N, Ganking, Tank, Shield N, Deflect, Temporary, Repeat, Flow.",
+  "examples": [
+   "ogn-004-298",
+   "ogn-057-298",
+   "ogn-069-298"
+  ]
+ },
+ {
+  "id": "effect:heal",
+  "count": 9,
+  "desc": "Heal (remove damage).",
+  "examples": [
+   "ogn-023-298",
+   "ogn-077-298",
+   "ogn-269-298"
+  ]
+ },
+ {
+  "id": "effect:ignore-cost",
+  "count": 33,
+  "desc": "Play ignoring cost (or part of it).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-102-298",
+   "ogn-107-298"
+  ]
+ },
+ {
+  "id": "effect:kill",
+  "count": 58,
+  "desc": "Kill (destroy) a unit / gear / tokens.",
+  "examples": [
+   "ogn-022-298",
+   "ogn-056-298",
+   "ogn-159-298"
+  ]
+ },
+ {
+  "id": "effect:kill-self",
+  "count": 8,
+  "desc": "Kill this card (self-sacrifice).",
+  "examples": [
+   "ogn-077-298",
+   "ogn-186-298",
+   "rad-012-167"
+  ]
+ },
+ {
+  "id": "effect:look-top",
+  "count": 17,
+  "desc": "Look at top N cards of Main Deck.",
+  "examples": [
+   "ogn-062-298",
+   "ogn-115-298",
+   "ogn-183-298"
+  ]
+ },
+ {
+  "id": "effect:lose-control",
+  "count": 1,
+  "desc": "Lose control (end temporary control).",
+  "examples": [
+   "sfd-202-221"
+  ]
+ },
+ {
+  "id": "effect:might-min-1",
+  "count": 9,
+  "desc": "Might reduction floored at 1.",
+  "examples": [
+   "ogn-079-298",
+   "ogn-090-298",
+   "ogn-093-298"
+  ]
+ },
+ {
+  "id": "effect:might-minus",
+  "count": 25,
+  "desc": "Give -N Might (usually this turn).",
+  "examples": [
+   "ogn-090-298",
+   "ogn-093-298",
+   "ogn-095-298"
+  ]
+ },
+ {
+  "id": "effect:might-plus",
+  "count": 96,
+  "desc": "Give +N Might (usually this turn).",
+  "examples": [
+   "ogn-016-298",
+   "ogn-027-298",
+   "ogn-036-298"
+  ]
+ },
+ {
+  "id": "effect:mill",
+  "count": 3,
+  "desc": "Put cards from deck into trash (non-keyword).",
+  "examples": [
+   "sfd-212-221",
+   "ven-033-166",
+   "ven-156-166"
+  ]
+ },
+ {
+  "id": "effect:move",
+  "count": 60,
+  "desc": "Move unit(s) to a battlefield / base / location.",
+  "examples": [
+   "ogn-043-298",
+   "ogn-067-298",
+   "ogn-168-298"
+  ]
+ },
+ {
+  "id": "effect:must",
+  "count": 5,
+  "desc": "Requirement: must kill / must move / must pay / must be assigned.",
+  "examples": [
+   "ogn-287-298",
+   "rad-113-167",
+   "unl-164-219"
+  ]
+ },
+ {
+  "id": "effect:name",
+  "count": 3,
+  "desc": "Name a card / tag as you play.",
+  "examples": [
+   "unl-138-219",
+   "unl-177-219",
+   "ven-132-166"
+  ]
+ },
+ {
+  "id": "effect:play-card-from-zone",
+  "count": 47,
+  "desc": "Play a card from a non-hand zone or out of turn as an effect (trash, banished, deck, hand-as-effect).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-037-298",
+   "ogn-062-298"
+  ]
+ },
+ {
+  "id": "effect:play-token",
+  "count": 94,
+  "desc": "Create a token (Recruit, Gold, Mech, Bomb, Sprite, Bird, Sand Soldier, Shadow Clone, Tentacle, Reflection).",
+  "examples": [
+   "ogn-094-298",
+   "ogn-106-298",
+   "ogn-117-298"
+  ]
+ },
+ {
+  "id": "effect:predict",
+  "count": 14,
+  "desc": "Predict N: look at top N, recycle any, rest back in any order.",
+  "examples": [
+   "rad-025-167",
+   "rad-050-167",
+   "rad-053-167"
+  ]
+ },
+ {
+  "id": "effect:prevent-damage",
+  "count": 6,
+  "desc": "Prevent damage.",
+  "examples": [
+   "ogn-145-298",
+   "ogn-189-298",
+   "sfd-194-221"
+  ]
+ },
+ {
+  "id": "effect:ready",
+  "count": 65,
+  "desc": "Ready (untap) a unit / gear / rune / legend.",
+  "examples": [
+   "ogn-027-298",
+   "ogn-059-298",
+   "ogn-073-298"
+  ]
+ },
+ {
+  "id": "effect:recall",
+  "count": 13,
+  "desc": "Recall: send unit to base (not a move).",
+  "examples": [
+   "ogn-023-298",
+   "ogn-077-298",
+   "ogn-203-298"
+  ]
+ },
+ {
+  "id": "effect:recycle",
+  "count": 41,
+  "desc": "Recycle: put a card on the bottom of its owner's deck (main or rune).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-062-298",
+   "ogn-109-298"
+  ]
+ },
+ {
+  "id": "effect:reduce-play-cost",
+  "count": 6,
+  "desc": "Play with an explicit cost reduction.",
+  "examples": [
+   "ogn-062-298",
+   "rad-139-167",
+   "sfd-026-221"
+  ]
+ },
+ {
+  "id": "effect:repeat-effect",
+  "count": 3,
+  "desc": "Repeat / re-trigger effects.",
+  "examples": [
+   "ogn-286-298",
+   "unl-020-219",
+   "unl-078-219"
+  ]
+ },
+ {
+  "id": "effect:replace-battlefield",
+  "count": 2,
+  "desc": "Replace a battlefield with a battlefield token.",
+  "examples": [
+   "unl-195-219",
+   "unl-t03"
+  ]
+ },
+ {
+  "id": "effect:return-from-trash",
+  "count": 10,
+  "desc": "Return card(s) from trash to hand.",
+  "examples": [
+   "ogn-165-298",
+   "ogn-170-298",
+   "ogn-252-298"
+  ]
+ },
+ {
+  "id": "effect:return-to-hand",
+  "count": 36,
+  "desc": "Return a card on the board / chain to owner's hand (bounce).",
+  "examples": [
+   "ogn-035-298",
+   "ogn-067-298",
+   "ogn-104-298"
+  ]
+ },
+ {
+  "id": "effect:reveal-hand",
+  "count": 13,
+  "desc": "Reveal hand / a card from hand.",
+  "examples": [
+   "ogn-156-298",
+   "ogn-192-298",
+   "rad-033-167"
+  ]
+ },
+ {
+  "id": "effect:reveal-top",
+  "count": 15,
+  "desc": "Reveal top card(s) of a deck (main or rune).",
+  "examples": [
+   "ogn-025-298",
+   "ogn-121-298",
+   "ogn-160-298"
+  ]
+ },
+ {
+  "id": "effect:score",
+  "count": 16,
+  "desc": "Score a point (or opponent scores).",
+  "examples": [
+   "ogn-034-298",
+   "ogn-066-298",
+   "ogn-205-298"
+  ]
+ },
+ {
+  "id": "effect:select-from-revealed",
+  "count": 17,
+  "desc": "Choose card(s) from a looked-at/revealed set.",
+  "examples": [
+   "ogn-025-298",
+   "ogn-062-298",
+   "ogn-156-298"
+  ]
+ },
+ {
+  "id": "effect:set-base-might",
+  "count": 4,
+  "desc": "Set base Might to a value.",
+  "examples": [
+   "rad-057-167",
+   "rad-110-167",
+   "rad-118-167"
+  ]
+ },
+ {
+  "id": "effect:set-might-to-other",
+  "count": 2,
+  "desc": "Increase Might to match another unit.",
+  "examples": [
+   "ogn-108-298",
+   "ven-079-166"
+  ]
+ },
+ {
+  "id": "effect:shuffle-or-order",
+  "count": 1,
+  "desc": "Put cards back in any order.",
+  "examples": [
+   "ogn-291-298"
+  ]
+ },
+ {
+  "id": "effect:skip-phase",
+  "count": 1,
+  "desc": "Skip a phase.",
+  "examples": [
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "effect:spend-buff",
+  "count": 9,
+  "desc": "Spend (remove) a buff as cost or effect.",
+  "examples": [
+   "ogn-146-298",
+   "ogn-147-298",
+   "ogn-150-298"
+  ]
+ },
+ {
+  "id": "effect:spend-xp",
+  "count": 5,
+  "desc": "Spend XP (as cost or effect).",
+  "examples": [
+   "unl-119-219",
+   "unl-135-219",
+   "unl-140-219"
+  ]
+ },
+ {
+  "id": "effect:split-damage",
+  "count": 3,
+  "desc": "Deal N damage divided among targets (player assigns).",
+  "examples": [
+   "ogn-041-298",
+   "rad-006-167",
+   "unl-192-219"
+  ]
+ },
+ {
+  "id": "effect:stun",
+  "count": 26,
+  "desc": "Stun a unit (no combat damage this turn).",
+  "examples": [
+   "ogn-050-298",
+   "ogn-051-298",
+   "ogn-157-298"
+  ]
+ },
+ {
+  "id": "effect:swap-locations",
+  "count": 4,
+  "desc": "Swap two units' locations.",
+  "examples": [
+   "ogn-199-298",
+   "sfd-050-221",
+   "unl-083-219"
+  ]
+ },
+ {
+  "id": "effect:swap-might",
+  "count": 1,
+  "desc": "Swap Mights of two units.",
+  "examples": [
+   "sfd-145-221"
+  ]
+ },
+ {
+  "id": "effect:take-control",
+  "count": 5,
+  "desc": "Gain control of a unit / gear.",
+  "examples": [
+   "ogn-203-298",
+   "sfd-109-221",
+   "sfd-202-221"
+  ]
+ },
+ {
+  "id": "effect:to-base",
+  "count": 46,
+  "desc": "Destination is base (play token / move / play card to base).",
+  "examples": [
+   "ogn-102-298",
+   "ogn-117-298",
+   "ogn-168-298"
+  ]
+ },
+ {
+  "id": "effect:win-game",
+  "count": 2,
+  "desc": "Win the game immediately.",
+  "examples": [
+   "ogn-293-298",
+   "unl-088-219"
+  ]
+ },
+ {
+  "id": "keyword:Accelerate",
+  "count": 31,
+  "desc": "Optional additional cost [1][C]: enters ready.",
+  "examples": [
+   "ogn-001-298",
+   "ogn-010-298",
+   "ogn-030-298"
+  ]
+ },
+ {
+  "id": "keyword:Action",
+  "count": 91,
+  "desc": "Play on your turn or in showdowns.",
+  "examples": [
+   "ogn-004-298",
+   "ogn-005-298",
+   "ogn-008-298"
+  ]
+ },
+ {
+  "id": "keyword:Ambush",
+  "count": 15,
+  "desc": "May be played as a [Reaction] to a battlefield where you have units.",
+  "examples": [
+   "rad-090-167",
+   "unl-002-219",
+   "unl-012-219"
+  ]
+ },
+ {
+  "id": "keyword:Assault",
+  "count": 22,
+  "desc": "Assault N: +N Might while attacking.",
+  "examples": [
+   "ogn-003-298",
+   "ogn-030-298",
+   "ogn-035-298"
+  ]
+ },
+ {
+  "id": "keyword:Backline",
+  "count": 4,
+  "desc": "Must be assigned combat damage last.",
+  "examples": [
+   "unl-043-219",
+   "unl-090-219",
+   "unl-141-219"
+  ]
+ },
+ {
+  "id": "keyword:Deflect",
+  "count": 29,
+  "desc": "Deflect N: opponents pay N x [A] to choose this with a spell/ability.",
+  "examples": [
+   "ogn-013-298",
+   "ogn-041-298",
+   "ogn-155-298"
+  ]
+ },
+ {
+  "id": "keyword:Deploy",
+  "count": 14,
+  "desc": "Play only to a battlefield; kill this when an opponent holds there.",
+  "examples": [
+   "rad-002-167",
+   "rad-017-167",
+   "rad-024-167"
+  ]
+ },
+ {
+  "id": "keyword:Disarm",
+  "count": 8,
+  "desc": "Disarm N: when I attack, give an enemy unit here -N Might this turn.",
+  "examples": [
+   "rad-038-167",
+   "rad-050-167",
+   "rad-054-167"
+  ]
+ },
+ {
+  "id": "keyword:Empower",
+  "count": 40,
+  "desc": "Empower COST: empower this (use only if not Empowered).",
+  "examples": [
+   "rad-139-167",
+   "ven-001-166",
+   "ven-007-166"
+  ]
+ },
+ {
+  "id": "keyword:Equip",
+  "count": 43,
+  "desc": "Equip COST: attach this Equipment to a unit you control (cost may be non-mana / reduced).",
+  "examples": [
+   "rad-071-167",
+   "rad-123-167",
+   "rad-150-167"
+  ]
+ },
+ {
+  "id": "keyword:Flow",
+  "count": 15,
+  "desc": "Flow COST: may play this from your trash for its Flow cost, then banish it.",
+  "examples": [
+   "ven-003-166",
+   "ven-012-166",
+   "ven-031-166"
+  ]
+ },
+ {
+  "id": "keyword:Ganking",
+  "count": 18,
+  "desc": "Can move battlefield to battlefield.",
+  "examples": [
+   "ogn-036-298",
+   "ogn-112-298",
+   "ogn-162-298"
+  ]
+ },
+ {
+  "id": "keyword:Hidden",
+  "count": 45,
+  "desc": "Hide face down for [A]; later play it for [0] as a reaction.",
+  "examples": [
+   "ogn-053-298",
+   "ogn-057-298",
+   "ogn-077-298"
+  ]
+ },
+ {
+  "id": "keyword:Hunt",
+  "count": 12,
+  "desc": "Hunt N: when I conquer or hold, gain N XP.",
+  "examples": [
+   "unl-016-219",
+   "unl-034-219",
+   "unl-040-219"
+  ]
+ },
+ {
+  "id": "keyword:Quick-Draw",
+  "count": 5,
+  "desc": "Has [Reaction]; when played, attach to a unit you control.",
+  "examples": [
+   "rad-123-167",
+   "sfd-022-221",
+   "sfd-056-221"
+  ]
+ },
+ {
+  "id": "keyword:Reaction",
+  "count": 75,
+  "desc": "Play any time, even before spells/abilities resolve.",
+  "examples": [
+   "ogn-033-298",
+   "ogn-045-298",
+   "ogn-046-298"
+  ]
+ },
+ {
+  "id": "keyword:Repeat",
+  "count": 20,
+  "desc": "Repeat COST: optional additional cost to repeat the spell's effect (new choices allowed).",
+  "examples": [
+   "sfd-003-221",
+   "sfd-023-221",
+   "sfd-031-221"
+  ]
+ },
+ {
+  "id": "keyword:Shield",
+  "count": 25,
+  "desc": "Shield N: +N Might while defending.",
+  "examples": [
+   "ogn-052-298",
+   "ogn-054-298",
+   "ogn-074-298"
+  ]
+ },
+ {
+  "id": "keyword:Show Off",
+  "count": 6,
+  "desc": "As you play, may reveal a matching card from hand or pick a friendly one on board.",
+  "examples": [
+   "rad-011-167",
+   "rad-032-167",
+   "rad-060-167"
+  ]
+ },
+ {
+  "id": "keyword:Tank",
+  "count": 23,
+  "desc": "Must be assigned combat damage first.",
+  "examples": [
+   "ogn-054-298",
+   "ogn-067-298",
+   "ogn-074-298"
+  ]
+ },
+ {
+  "id": "keyword:Temporary",
+  "count": 6,
+  "desc": "Kill at the start of its controller's Beginning Phase, before scoring.",
+  "examples": [
+   "sfd-104-221",
+   "sfd-186-221",
+   "unl-078-219"
+  ]
+ },
+ {
+  "id": "keyword:Unique",
+  "count": 3,
+  "desc": "Deck may contain only 1 card with this name.",
+  "examples": [
+   "sfd-190-221",
+   "sfd-191-221",
+   "sfd-192-221"
+  ]
+ },
+ {
+  "id": "keyword:Vision",
+  "count": 8,
+  "desc": "On play, look at top card of Main Deck; may recycle it.",
+  "examples": [
+   "ogn-086-298",
+   "ogn-100-298",
+   "ogn-171-298"
+  ]
+ },
+ {
+  "id": "keyword:Weaponmaster",
+  "count": 11,
+  "desc": "On play, may Equip one of your Equipment to me for [A] less, even if attached.",
+  "examples": [
+   "sfd-002-221",
+   "sfd-008-221",
+   "sfd-085-221"
+  ]
+ },
+ {
+  "id": "kind:activated",
+  "count": 107,
+  "desc": "Activated ability (COST: EFFECT).",
+  "examples": [
+   "ogn-017-298",
+   "ogn-021-298",
+   "ogn-023-298"
+  ]
+ },
+ {
+  "id": "kind:keyword",
+  "count": 387,
+  "desc": "Line made only of keyword abilities.",
+  "examples": [
+   "ogn-001-298",
+   "ogn-003-298",
+   "ogn-004-298"
+  ]
+ },
+ {
+  "id": "kind:keyword-cost",
+  "count": 118,
+  "desc": "Keyword followed by its cost (Equip / Empower / Repeat / Flow).",
+  "examples": [
+   "rad-071-167",
+   "rad-123-167",
+   "rad-139-167"
+  ]
+ },
+ {
+  "id": "kind:play-modifier",
+  "count": 116,
+  "desc": "Affects how the card is played: additional/alt/X costs, cost changes, play location, enters ready/exhausted.",
+  "examples": [
+   "ogn-002-298",
+   "ogn-012-298",
+   "ogn-014-298"
+  ]
+ },
+ {
+  "id": "kind:reminder",
+  "count": 2,
+  "desc": "Rules-reminder pseudo-card text (no script).",
+  "examples": [
+   "unl-t04",
+   "unl-t08"
+  ]
+ },
+ {
+  "id": "kind:replacement",
+  "count": 15,
+  "desc": "Replacement / prevention effect on a permanent (\"would ... instead\").",
+  "examples": [
+   "ogn-077-298",
+   "ogn-227-298",
+   "ogn-269-298"
+  ]
+ },
+ {
+  "id": "kind:spell-effect",
+  "count": 270,
+  "desc": "Spell resolution text (incl. spell-created delayed triggers and shields).",
+  "examples": [
+   "ogn-004-298",
+   "ogn-005-298",
+   "ogn-008-298"
+  ]
+ },
+ {
+  "id": "kind:static",
+  "count": 169,
+  "desc": "Continuous ability on a permanent.",
+  "examples": [
+   "ogn-011-298",
+   "ogn-015-298",
+   "ogn-018-298"
+  ]
+ },
+ {
+  "id": "kind:triggered",
+  "count": 474,
+  "desc": "Triggered ability (When / At / The first time / [Deathknell]).",
+  "examples": [
+   "ogn-003-298",
+   "ogn-006-298",
+   "ogn-016-298"
+  ]
+ },
+ {
+  "id": "play:additional-cost-mandatory",
+  "count": 10,
+  "desc": "Mandatory additional cost to play.",
+  "examples": [
+   "ogn-208-298",
+   "rad-028-167",
+   "rad-029-167"
+  ]
+ },
+ {
+  "id": "play:additional-cost-optional",
+  "count": 30,
+  "desc": "Optional additional cost to play.",
+  "examples": [
+   "ogn-002-298",
+   "ogn-044-298",
+   "ogn-048-298"
+  ]
+ },
+ {
+  "id": "play:alt-cost",
+  "count": 6,
+  "desc": "Alternative cost to play.",
+  "examples": [
+   "ogn-194-298",
+   "rad-010-167",
+   "rad-120-167"
+  ]
+ },
+ {
+  "id": "play:as-you-play",
+  "count": 11,
+  "desc": "Choice made as the card is played.",
+  "examples": [
+   "ogn-002-298",
+   "ogn-146-298",
+   "ogn-150-298"
+  ]
+ },
+ {
+  "id": "play:from-banishment",
+  "count": 6,
+  "desc": "Play from banishment / linked banished cards.",
+  "examples": [
+   "rad-012-167",
+   "rad-015-167",
+   "rad-136-167"
+  ]
+ },
+ {
+  "id": "play:from-deck",
+  "count": 36,
+  "desc": "References the main/rune deck.",
+  "examples": [
+   "ogn-025-298",
+   "ogn-062-298",
+   "ogn-115-298"
+  ]
+ },
+ {
+  "id": "play:from-trash",
+  "count": 31,
+  "desc": "References trash zone (play/return/banish/recycle from trash).",
+  "examples": [
+   "ogn-037-298",
+   "ogn-109-298",
+   "ogn-112-298"
+  ]
+ },
+ {
+  "id": "play:show-off",
+  "count": 6,
+  "desc": "Show Off: as you play, reveal a card from hand or pick a friendly one.",
+  "examples": [
+   "rad-011-167",
+   "rad-032-167",
+   "rad-060-167"
+  ]
+ },
+ {
+  "id": "play:x-cost",
+  "count": 4,
+  "desc": "X cost: pay any amount.",
+  "examples": [
+   "ogn-268-298",
+   "rad-140-167",
+   "sfd-083-221"
+  ]
+ },
+ {
+  "id": "prefix:Action",
+  "count": 12,
+  "desc": "Permission: this ability may be used at Action timing.",
+  "examples": [
+   "ogn-113-298",
+   "rad-021-167",
+   "sfd-050-221"
+  ]
+ },
+ {
+  "id": "prefix:Deathknell",
+  "count": 27,
+  "desc": "Keyword trigger: when I die, get the effect.",
+  "examples": [
+   "ogn-075-298",
+   "ogn-096-298",
+   "ogn-110-298"
+  ]
+ },
+ {
+  "id": "prefix:Empowered",
+  "count": 28,
+  "desc": "Dependent: active while this is Empowered.",
+  "examples": [
+   "ven-001-166",
+   "ven-007-166",
+   "ven-014-166"
+  ]
+ },
+ {
+  "id": "prefix:Legion",
+  "count": 10,
+  "desc": "Dependent: active if you've played another card this turn.",
+  "examples": [
+   "ogn-012-298",
+   "ogn-016-298",
+   "ogn-020-298"
+  ]
+ },
+ {
+  "id": "prefix:Level",
+  "count": 14,
+  "desc": "Dependent: active while you have N+ XP.",
+  "examples": [
+   "unl-016-219",
+   "unl-031-219",
+   "unl-038-219"
+  ]
+ },
+ {
+  "id": "prefix:Reaction",
+  "count": 21,
+  "desc": "Permission: this ability may be used at Reaction timing.",
+  "examples": [
+   "ogn-040-298",
+   "ogn-081-298",
+   "ogn-098-298"
+  ]
+ },
+ {
+  "id": "replacement:instead",
+  "count": 27,
+  "desc": "Contains \"instead\" (replacement or upgraded mode).",
+  "examples": [
+   "ogn-077-298",
+   "ogn-227-298",
+   "ogn-254-298"
+  ]
+ },
+ {
+  "id": "replacement:tie-recall",
+  "count": 1,
+  "desc": "Combat result replacement.",
+  "examples": [
+   "ogn-227-298"
+  ]
+ },
+ {
+  "id": "replacement:would-be-affected",
+  "count": 2,
+  "desc": "Replace a hostile effect choosing this unit.",
+  "examples": [
+   "ven-069-166",
+   "ven-086-166"
+  ]
+ },
+ {
+  "id": "replacement:would-be-dealt-damage",
+  "count": 4,
+  "desc": "Damage replacement / prevention.",
+  "examples": [
+   "sfd-194-221",
+   "unl-013-219",
+   "ven-025-166"
+  ]
+ },
+ {
+  "id": "replacement:would-channel",
+  "count": 1,
+  "desc": "Channel replacement.",
+  "examples": [
+   "rad-092-167"
+  ]
+ },
+ {
+  "id": "replacement:would-die",
+  "count": 8,
+  "desc": "If a unit would die, do X instead (heal, exhaust, recall; kill this instead; banish instead).",
+  "examples": [
+   "ogn-077-298",
+   "ogn-269-298",
+   "ogs-020-024"
+  ]
+ },
+ {
+  "id": "replacement:would-go-to-trash",
+  "count": 1,
+  "desc": "Zone-change replacement (trash -> banish).",
+  "examples": [
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "replacement:would-play-token",
+  "count": 2,
+  "desc": "Token creation replacement.",
+  "examples": [
+   "rad-132-167",
+   "unl-086-219"
+  ]
+ },
+ {
+  "id": "replacement:would-reveal",
+  "count": 1,
+  "desc": "Reveal replacement.",
+  "examples": [
+   "sfd-018-221"
+  ]
+ },
+ {
+  "id": "replacement:would-score",
+  "count": 1,
+  "desc": "Score replacement.",
+  "examples": [
+   "ven-053-166"
+  ]
+ },
+ {
+  "id": "scaling:equal-to",
+  "count": 47,
+  "desc": "Amount equal to a value.",
+  "examples": [
+   "ogn-008-298",
+   "ogn-068-298",
+   "ogn-076-298"
+  ]
+ },
+ {
+  "id": "scaling:for-each",
+  "count": 40,
+  "desc": "Scales with a count (\"for each\").",
+  "examples": [
+   "ogn-038-298",
+   "ogn-071-298",
+   "ogn-121-298"
+  ]
+ },
+ {
+  "id": "static:activation-restriction",
+  "count": 1,
+  "desc": "Restriction on activating this card's abilities.",
+  "examples": [
+   "sfd-088-221"
+  ]
+ },
+ {
+  "id": "static:anthem-keyword",
+  "count": 28,
+  "desc": "Other cards have keyword / quoted ability.",
+  "examples": [
+   "ogn-015-298",
+   "ogn-063-298",
+   "ogn-074-298"
+  ]
+ },
+ {
+  "id": "static:anthem-might",
+  "count": 17,
+  "desc": "Other units have +N Might (anthem).",
+  "examples": [
+   "ogn-079-298",
+   "ogn-151-298",
+   "ogn-243-298"
+  ]
+ },
+ {
+  "id": "static:buff-rule",
+  "count": 3,
+  "desc": "Buff rule change.",
+  "examples": [
+   "ogn-078-298",
+   "unl-t04",
+   "unl-t08"
+  ]
+ },
+ {
+  "id": "static:cant",
+  "count": 18,
+  "desc": "Prohibition (move, play, score, be chosen, be readied...).",
+  "examples": [
+   "ogn-018-298",
+   "ogn-070-298",
+   "ogn-295-298"
+  ]
+ },
+ {
+  "id": "static:combat-damage-rule",
+  "count": 10,
+  "desc": "Combat damage modification.",
+  "examples": [
+   "ogn-068-298",
+   "rad-042-167",
+   "rad-085-167"
+  ]
+ },
+ {
+  "id": "static:copy",
+  "count": 3,
+  "desc": "Copy / ability-sharing static.",
+  "examples": [
+   "ogn-111-298",
+   "sfd-059-221",
+   "ven-137-166"
+  ]
+ },
+ {
+  "id": "static:cost-mod-other",
+  "count": 18,
+  "desc": "Other cards' costs modified / cost rules changed.",
+  "examples": [
+   "ogn-084-298",
+   "ogn-140-298",
+   "ogn-263-298"
+  ]
+ },
+ {
+  "id": "static:cost-mod-self",
+  "count": 28,
+  "desc": "This card's / ability's cost is modified.",
+  "examples": [
+   "ogn-012-298",
+   "ogn-014-298",
+   "ogn-047-298"
+  ]
+ },
+ {
+  "id": "static:damage-mod",
+  "count": 4,
+  "desc": "Damage dealt/taken modified (Bonus Damage, prevention).",
+  "examples": [
+   "ogn-189-298",
+   "ogn-296-298",
+   "ogs-001-024"
+  ]
+ },
+ {
+  "id": "static:deck-rule",
+  "count": 1,
+  "desc": "Deck construction rule.",
+  "examples": [
+   "ven-097-166"
+  ]
+ },
+ {
+  "id": "static:empower-rule",
+  "count": 1,
+  "desc": "Empower rule change.",
+  "examples": [
+   "ven-134-166"
+  ]
+ },
+ {
+  "id": "static:enter-exhausted",
+  "count": 5,
+  "desc": "Enters exhausted.",
+  "examples": [
+   "ogn-017-298",
+   "unl-049-219",
+   "unl-136-219"
+  ]
+ },
+ {
+  "id": "static:enter-ready",
+  "count": 33,
+  "desc": "Enters ready (self or others, conditional).",
+  "examples": [
+   "ogn-011-298",
+   "ogn-035-298",
+   "ogn-079-298"
+  ]
+ },
+ {
+  "id": "static:equipment-mod",
+  "count": 2,
+  "desc": "Equipment bonus modification.",
+  "examples": [
+   "sfd-068-221",
+   "sfd-183-221"
+  ]
+ },
+ {
+  "id": "static:grant-play-option",
+  "count": 1,
+  "desc": "Grants a play option to players.",
+  "examples": [
+   "ven-157-166"
+  ]
+ },
+ {
+  "id": "static:hide-rule",
+  "count": 3,
+  "desc": "Hidden / facedown rule change.",
+  "examples": [
+   "ogn-018-298",
+   "ogn-278-298",
+   "rad-108-167"
+  ]
+ },
+ {
+  "id": "static:must",
+  "count": 4,
+  "desc": "Requirement (combat damage order, payment to move/choose).",
+  "examples": [
+   "ogn-068-298",
+   "rad-062-167",
+   "sfd-173-221"
+  ]
+ },
+ {
+  "id": "static:play-from-trash-permission",
+  "count": 2,
+  "desc": "Permission to play from trash.",
+  "examples": [
+   "unl-025-219",
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "static:play-location",
+  "count": 13,
+  "desc": "Where a card may/must be played.",
+  "examples": [
+   "ogn-070-298",
+   "ogn-161-298",
+   "ogn-174-298"
+  ]
+ },
+ {
+  "id": "static:resource-mod",
+  "count": 1,
+  "desc": "Resource production modified.",
+  "examples": [
+   "sfd-201-221"
+  ]
+ },
+ {
+  "id": "static:self-keyword",
+  "count": 15,
+  "desc": "This unit has keyword(s) (often conditional).",
+  "examples": [
+   "ogn-019-298",
+   "ogn-111-298",
+   "ogn-125-298"
+  ]
+ },
+ {
+  "id": "static:self-might",
+  "count": 38,
+  "desc": "This unit has +N Might (possibly conditional/scaling).",
+  "examples": [
+   "ogn-028-298",
+   "ogn-055-298",
+   "ogn-065-298"
+  ]
+ },
+ {
+  "id": "static:trigger-doubling",
+  "count": 5,
+  "desc": "Triggers fire extra times / don't fire.",
+  "examples": [
+   "ogn-236-298",
+   "rad-017-167",
+   "unl-029-219"
+  ]
+ },
+ {
+  "id": "static:turn-structure",
+  "count": 3,
+  "desc": "Turn structure modification.",
+  "examples": [
+   "rad-019-167",
+   "ven-022-166",
+   "ven-036-166"
+  ]
+ },
+ {
+  "id": "static:victory-rule",
+  "count": 3,
+  "desc": "Changes scoring / victory.",
+  "examples": [
+   "ogn-276-298",
+   "sfd-060-221",
+   "sfd-209-221"
+  ]
+ },
+ {
+  "id": "target:all|gear|any",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ogn-022-298"
+  ]
+ },
+ {
+  "id": "target:all|unit|any",
+  "count": 4,
+  "desc": "verbs: kill (1), return (1), deal N to (1), recall (1)",
+  "examples": [
+   "ogn-190-298",
+   "ogn-227-298",
+   "sfd-147-221"
+  ]
+ },
+ {
+  "id": "target:all|unit|any|@base",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "rad-079-167"
+  ]
+ },
+ {
+  "id": "target:all|unit|any|@battlefield",
+  "count": 3,
+  "desc": "verbs: deal N to (3)",
+  "examples": [
+   "ogn-123-298",
+   "ogn-133-298",
+   "ogs-018-024"
+  ]
+ },
+ {
+  "id": "target:all|unit|any|@here",
+  "count": 2,
+  "desc": "verbs: buff (1), deal N to (1)",
+  "examples": [
+   "unl-043-219",
+   "unl-212-219"
+  ]
+ },
+ {
+  "id": "target:all|unit|any|@trash",
+  "count": 1,
+  "desc": "verbs: banish (1)",
+  "examples": [
+   "unl-148-219"
+  ]
+ },
+ {
+  "id": "target:all|unit|any|might<=2",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "unl-132-219"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "rad-019-167"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy+damaged|@here",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ogn-159-298"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy|@battlefield",
+  "count": 2,
+  "desc": "verbs: deal damage equal to its might to (1), deal N to (1)",
+  "examples": [
+   "ogn-250-298",
+   "ogs-002-024"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy|@battlefield|might<ref",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "unl-107-219"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy|@combat",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "ogn-127-298"
+  ]
+ },
+ {
+  "id": "target:all|unit|enemy|@here",
+  "count": 3,
+  "desc": "verbs: deal N to (2), deal damage equal to my might to (1)",
+  "examples": [
+   "ogn-148-298",
+   "rad-085-167",
+   "ven-019-166"
+  ]
+ },
+ {
+  "id": "target:all|unit|friendly",
+  "count": 3,
+  "desc": "verbs: deal N to (1), exhaust (1), buff (1)",
+  "examples": [
+   "ogn-123-298",
+   "ogn-153-298",
+   "ven-133-166"
+  ]
+ },
+ {
+  "id": "target:all|unit|friendly+other|@there",
+  "count": 1,
+  "desc": "verbs: buff (1)",
+  "examples": [
+   "ogn-223-298"
+  ]
+ },
+ {
+  "id": "target:any|token|friendly",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "rad-142-167"
+  ]
+ },
+ {
+  "id": "target:any|unit|any|@battlefield|totalMight",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ogn-256-298"
+  ]
+ },
+ {
+  "id": "target:any|unit|enemy",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "unl-054-219"
+  ]
+ },
+ {
+  "id": "target:any|unit|enemy+domain:order|totalMight",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "ven-107-166"
+  ]
+ },
+ {
+  "id": "target:any|unit|enemy|@here",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "ven-091-166"
+  ]
+ },
+ {
+  "id": "target:any|unit|friendly",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ogn-231-298"
+  ]
+ },
+ {
+  "id": "target:any|unit|friendly|@battlefield",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "sfd-043-221"
+  ]
+ },
+ {
+  "id": "target:one|battlefield|any",
+  "count": 7,
+  "desc": "verbs: choose (7)",
+  "examples": [
+   "ogn-266-298",
+   "rad-107-167",
+   "rad-117-167"
+  ]
+ },
+ {
+  "id": "target:one|battlefield|enemy+occupied",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "rad-007-167"
+  ]
+ },
+ {
+  "id": "target:one|battlefield|friendly",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ven-034-166"
+  ]
+ },
+ {
+  "id": "target:one|card|any",
+  "count": 5,
+  "desc": "verbs: choose (4), banish (1)",
+  "examples": [
+   "ogn-192-298",
+   "unl-135-219",
+   "unl-169-219"
+  ]
+ },
+ {
+  "id": "target:one|card|domain:mind",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ven-085-166"
+  ]
+ },
+ {
+  "id": "target:one|equipment|any",
+  "count": 2,
+  "desc": "verbs: choose (1), detach (1)",
+  "examples": [
+   "sfd-011-221",
+   "sfd-107-221"
+  ]
+ },
+ {
+  "id": "target:one|equipment|friendly",
+  "count": 1,
+  "desc": "verbs: attach (2)",
+  "examples": [
+   "sfd-193-221"
+  ]
+ },
+ {
+  "id": "target:one|gear|any",
+  "count": 12,
+  "desc": "verbs: kill (8), ready (2), give (1), return (1)",
+  "examples": [
+   "ogn-056-298",
+   "rad-013-167",
+   "rad-100-167"
+  ]
+ },
+ {
+  "id": "target:one|gear|any|@trash",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "sfd-061-221"
+  ]
+ },
+ {
+  "id": "target:one|gear|any|cost<=N",
+  "count": 3,
+  "desc": "verbs: kill (3)",
+  "examples": [
+   "rad-083-167",
+   "sfd-074-221",
+   "ven-080-166"
+  ]
+ },
+ {
+  "id": "target:one|gear|enemy",
+  "count": 2,
+  "desc": "verbs: choose (1), move (1)",
+  "examples": [
+   "sfd-109-221",
+   "ven-037-166"
+  ]
+ },
+ {
+  "id": "target:one|gear|friendly",
+  "count": 9,
+  "desc": "verbs: return (3), kill (3), choose (2), ready (1)",
+  "examples": [
+   "rad-056-167",
+   "rad-066-167",
+   "rad-075-167"
+  ]
+ },
+ {
+  "id": "target:one|gear|friendly+deploy",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "rad-033-167"
+  ]
+ },
+ {
+  "id": "target:one|gear|friendly+other",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "ogn-181-298"
+  ]
+ },
+ {
+  "id": "target:one|gear|other",
+  "count": 2,
+  "desc": "verbs: choose (1), empower (1)",
+  "examples": [
+   "rad-145-167",
+   "ven-062-166"
+  ]
+ },
+ {
+  "id": "target:one|legend|any",
+  "count": 4,
+  "desc": "verbs: exhaust (2), empower (1), ready (1)",
+  "examples": [
+   "sfd-039-221",
+   "sfd-079-221",
+   "sfd-210-221"
+  ]
+ },
+ {
+  "id": "target:one|legend|friendly",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "rad-040-167"
+  ]
+ },
+ {
+  "id": "target:one|opponent|any",
+  "count": 14,
+  "desc": "verbs: choose (14)",
+  "examples": [
+   "ogn-156-298",
+   "ogn-192-298",
+   "rad-064-167"
+  ]
+ },
+ {
+  "id": "target:one|player|any",
+  "count": 3,
+  "desc": "verbs: choose (3)",
+  "examples": [
+   "unl-121-219",
+   "ven-002-166",
+   "ven-133-166"
+  ]
+ },
+ {
+  "id": "target:one|rune|any",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "ogn-110-298"
+  ]
+ },
+ {
+  "id": "target:one|something|any",
+  "count": 2,
+  "desc": "verbs: ready (2)",
+  "examples": [
+   "ogn-162-298",
+   "ven-068-166"
+  ]
+ },
+ {
+  "id": "target:one|something|any|@here",
+  "count": 1,
+  "desc": "verbs: empower (1)",
+  "examples": [
+   "ven-099-166"
+  ]
+ },
+ {
+  "id": "target:one|something|friendly",
+  "count": 1,
+  "desc": "verbs: disempower (1)",
+  "examples": [
+   "ven-082-166"
+  ]
+ },
+ {
+  "id": "target:one|spell|any",
+  "count": 9,
+  "desc": "verbs: counter (7), choose (1), gain control of (1)",
+  "examples": [
+   "ogn-045-298",
+   "ogn-064-298",
+   "ogn-080-298"
+  ]
+ },
+ {
+  "id": "target:one|spell|any|@trash",
+  "count": 2,
+  "desc": "verbs: give (1), return (1)",
+  "examples": [
+   "ogs-010-024",
+   "ven-113-166"
+  ]
+ },
+ {
+  "id": "target:one|spell|any|cost<=N",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ven-152-166"
+  ]
+ },
+ {
+  "id": "target:one|spell|any|powerCost",
+  "count": 1,
+  "desc": "verbs: counter (1)",
+  "examples": [
+   "rad-041-167"
+  ]
+ },
+ {
+  "id": "target:one|spell|enemy",
+  "count": 1,
+  "desc": "verbs: counter (1)",
+  "examples": [
+   "unl-106-219"
+  ]
+ },
+ {
+  "id": "target:one|spell|friendly+enemy++gear",
+  "count": 1,
+  "desc": "verbs: counter (1)",
+  "examples": [
+   "sfd-045-221"
+  ]
+ },
+ {
+  "id": "target:one|unit:BCDP|any",
+  "count": 2,
+  "desc": "verbs: choose (2)",
+  "examples": [
+   "unl-168-219",
+   "unl-177-219"
+  ]
+ },
+ {
+  "id": "target:one|unit:BCDP|any|@trash",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "unl-167-219"
+  ]
+ },
+ {
+  "id": "target:one|unit:BCDP|friendly",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "unl-166-219"
+  ]
+ },
+ {
+  "id": "target:one|unit:Dragon|any",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "ven-115-166"
+  ]
+ },
+ {
+  "id": "target:one|unit:Mech|any",
+  "count": 1,
+  "desc": "verbs: give (1)",
+  "examples": [
+   "sfd-182-221"
+  ]
+ },
+ {
+  "id": "target:one|unit:Mech|friendly+other",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "sfd-062-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|+gear",
+  "count": 2,
+  "desc": "verbs: kill (1), banish (1)",
+  "examples": [
+   "rad-137-167",
+   "ven-089-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|+gear|@here",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "rad-126-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|+gear|@trash",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "sfd-035-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|+gear|might<=3",
+  "count": 1,
+  "desc": "verbs: banish (1)",
+  "examples": [
+   "rad-124-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|any",
+  "count": 93,
+  "desc": "verbs: give (42), deal N to (16), choose (12), ready (11), stun (5)",
+  "examples": [
+   "ogn-004-298",
+   "ogn-016-298",
+   "ogn-029-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@base",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "sfd-077-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@battlefield",
+  "count": 33,
+  "desc": "verbs: deal N to (23), kill (4), give (3), choose (1), move (1)",
+  "examples": [
+   "ogn-005-298",
+   "ogn-009-298",
+   "ogn-014-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@battlefield|might<=2",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "sfd-162-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@battlefield|might<=3",
+  "count": 2,
+  "desc": "verbs: kill (1), return (1)",
+  "examples": [
+   "ogn-169-298",
+   "unl-159-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@here",
+  "count": 7,
+  "desc": "verbs: give (2), ready (1), banish (1), choose (1), heal (1)",
+  "examples": [
+   "ogn-283-298",
+   "rad-087-167",
+   "rad-136-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@there",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "ogn-250-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@trash",
+  "count": 2,
+  "desc": "verbs: return (2)",
+  "examples": [
+   "ogn-165-298",
+   "ogn-170-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|@trash|cost<=N",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ven-104-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|any|might<=3",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "ven-105-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|attacking",
+  "count": 2,
+  "desc": "verbs: stun (1), move (1)",
+  "examples": [
+   "sfd-040-221",
+   "sfd-128-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy",
+  "count": 38,
+  "desc": "verbs: move (14), stun (8), choose (5), give (4), deal N to (3)",
+  "examples": [
+   "ogn-033-298",
+   "ogn-043-298",
+   "ogn-067-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy+attacking",
+  "count": 1,
+  "desc": "verbs: stun (1)",
+  "examples": [
+   "unl-134-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy+domain:body",
+  "count": 1,
+  "desc": "verbs: give (1)",
+  "examples": [
+   "ven-061-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy+domain:calm",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "ven-015-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy+domain:chaos++gear",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ven-131-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy+other",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ogn-258-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@base",
+  "count": 1,
+  "desc": "verbs: deal damage equal to my might to (1)",
+  "examples": [
+   "sfd-116-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@battlefield",
+  "count": 8,
+  "desc": "verbs: choose (3), stun (2), deal N to (2), take control of (1)",
+  "examples": [
+   "ogn-092-298",
+   "ogn-149-298",
+   "ogn-203-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@battlefield|might<=3",
+  "count": 2,
+  "desc": "verbs: banish (1), choose (1)",
+  "examples": [
+   "unl-140-219",
+   "ven-110-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@here",
+  "count": 15,
+  "desc": "verbs: deal N to (4), deal damage equal to my might to (3), stun (3), choose (2), give (1)",
+  "examples": [
+   "ogn-076-298",
+   "ogn-119-298",
+   "ogn-121-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@here|might<ref",
+  "count": 2,
+  "desc": "verbs: kill (1), move (1)",
+  "examples": [
+   "unl-105-219",
+   "ven-136-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@same-location",
+  "count": 1,
+  "desc": "verbs: stun (1)",
+  "examples": [
+   "ogn-220-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|@there",
+  "count": 3,
+  "desc": "verbs: return (1), choose (1), give (1)",
+  "examples": [
+   "rad-107-167",
+   "unl-072-219",
+   "unl-198-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|might<=3",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "sfd-158-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|enemy|might<ref",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ven-154-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly",
+  "count": 77,
+  "desc": "verbs: give (17), choose (15), move (12), buff (11), kill (7)",
+  "examples": [
+   "ogn-023-298",
+   "ogn-046-298",
+   "ogn-048-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly++gear",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "rad-014-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+equipped",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "sfd-107-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+exhausted",
+  "count": 2,
+  "desc": "verbs: move (1), buff (1)",
+  "examples": [
+   "ogn-124-298",
+   "unl-201-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+mighty",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "unl-173-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+other",
+  "count": 7,
+  "desc": "verbs: give (2), buff (2), ready (1), choose (1), return (1)",
+  "examples": [
+   "ogn-136-298",
+   "ogn-228-298",
+   "sfd-038-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+other++gear",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "rad-017-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly+temporary",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "unl-165-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@anywhere",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "sfd-114-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@base",
+  "count": 2,
+  "desc": "verbs: choose (1), buff (1)",
+  "examples": [
+   "ogn-250-298",
+   "ogn-270-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@battlefield",
+  "count": 5,
+  "desc": "verbs: return (2), choose (1), give (1), move (1)",
+  "examples": [
+   "ogn-184-298",
+   "sfd-001-221",
+   "unl-021-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@here",
+  "count": 4,
+  "desc": "verbs: choose (1), kill (1), return (1), move (1)",
+  "examples": [
+   "ogn-285-298",
+   "rad-161-167",
+   "sfd-207-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@showdown",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "ven-139-166"
+  ]
+ },
+ {
+  "id": "target:one|unit|friendly|@there",
+  "count": 2,
+  "desc": "verbs: give (2)",
+  "examples": [
+   "ogn-266-298",
+   "rad-117-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|other",
+  "count": 3,
+  "desc": "verbs: move (1), give (1), ready (1)",
+  "examples": [
+   "ogn-132-298",
+   "sfd-175-221",
+   "unl-215-219"
+  ]
+ },
+ {
+  "id": "target:one|unit|other+friendly",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "ogn-199-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|other+friendly|@here",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "rad-031-167"
+  ]
+ },
+ {
+  "id": "target:one|unit|other|@battlefield",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "ogn-188-298"
+  ]
+ },
+ {
+  "id": "target:one|unit|other|@battlefield|might<=3",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "sfd-138-221"
+  ]
+ },
+ {
+  "id": "target:one|unit|other|@here",
+  "count": 2,
+  "desc": "verbs: give (2)",
+  "examples": [
+   "unl-012-219",
+   "unl-071-219"
+  ]
+ },
+ {
+  "id": "target:ref|equipment|any",
+  "count": 1,
+  "desc": "verbs: attach (1), detach (1)",
+  "examples": [
+   "sfd-011-221"
+  ]
+ },
+ {
+  "id": "target:ref|ref|any",
+  "count": 175,
+  "desc": "verbs: give (63), ready (31), exhaust (26), buff (17), banish (12)",
+  "examples": [
+   "ogn-023-298",
+   "ogn-025-298",
+   "ogn-027-298"
+  ]
+ },
+ {
+  "id": "target:ref|ref|any|@there",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "sfd-126-221"
+  ]
+ },
+ {
+  "id": "target:ref|spell|any",
+  "count": 1,
+  "desc": "verbs: counter (1)",
+  "examples": [
+   "sfd-206-221"
+  ]
+ },
+ {
+  "id": "target:two|unit|any",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "unl-110-219"
+  ]
+ },
+ {
+  "id": "target:two|unit|friendly",
+  "count": 2,
+  "desc": "verbs: give (2)",
+  "examples": [
+   "ogn-206-298",
+   "sfd-151-221"
+  ]
+ },
+ {
+  "id": "target:upTo1|equipment|any",
+  "count": 1,
+  "desc": "verbs: attach (1)",
+  "examples": [
+   "sfd-184-221"
+  ]
+ },
+ {
+  "id": "target:upTo1|gear|any",
+  "count": 1,
+  "desc": "verbs: kill (1)",
+  "examples": [
+   "ogn-224-298"
+  ]
+ },
+ {
+  "id": "target:upTo1|unit|enemy",
+  "count": 2,
+  "desc": "verbs: choose (1), move (1)",
+  "examples": [
+   "unl-118-219",
+   "unl-198-219"
+  ]
+ },
+ {
+  "id": "target:upTo1|unit|enemy|@battlefield",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "ven-140-166"
+  ]
+ },
+ {
+  "id": "target:upTo1|unit|enemy|@here",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "sfd-053-221"
+  ]
+ },
+ {
+  "id": "target:upTo1|unit|other",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "sfd-023-221"
+  ]
+ },
+ {
+  "id": "target:upTo2|card|hidden|@trash",
+  "count": 1,
+  "desc": "verbs: return (1)",
+  "examples": [
+   "ogn-264-298"
+  ]
+ },
+ {
+  "id": "target:upTo2|rune|any",
+  "count": 6,
+  "desc": "verbs: ready (6)",
+  "examples": [
+   "ogn-289-298",
+   "ogs-017-024",
+   "rad-032-167"
+  ]
+ },
+ {
+  "id": "target:upTo2|unit|any",
+  "count": 2,
+  "desc": "verbs: give (1), return (1)",
+  "examples": [
+   "rad-152-167",
+   "ven-103-166"
+  ]
+ },
+ {
+  "id": "target:upTo2|unit|friendly",
+  "count": 1,
+  "desc": "verbs: move (1)",
+  "examples": [
+   "ogs-011-024"
+  ]
+ },
+ {
+  "id": "target:upTo2|unit|friendly+other",
+  "count": 1,
+  "desc": "verbs: buff (1)",
+  "examples": [
+   "ogn-141-298"
+  ]
+ },
+ {
+  "id": "target:upTo3|card|any",
+  "count": 1,
+  "desc": "verbs: choose (1)",
+  "examples": [
+   "unl-103-219"
+  ]
+ },
+ {
+  "id": "target:upTo3|unit|any|@same-location",
+  "count": 1,
+  "desc": "verbs: deal N to (1)",
+  "examples": [
+   "sfd-080-221"
+  ]
+ },
+ {
+  "id": "target:upTo4|rune|friendly",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "ogn-073-298"
+  ]
+ },
+ {
+  "id": "target:upTo4|unit|any",
+  "count": 1,
+  "desc": "verbs: ready (1)",
+  "examples": [
+   "ven-150-166"
+  ]
+ },
+ {
+  "id": "target:upTo4|unit|friendly",
+  "count": 1,
+  "desc": "verbs: buff (1)",
+  "examples": [
+   "sfd-101-221"
+  ]
+ },
+ {
+  "id": "trigger:attach",
+  "count": 2,
+  "desc": "You attach an Equipment.",
+  "examples": [
+   "sfd-049-221",
+   "sfd-119-221"
+  ]
+ },
+ {
+  "id": "trigger:attach/self",
+  "count": 2,
+  "desc": "trigger:attach where the actor is self.",
+  "examples": [
+   "sfd-049-221",
+   "sfd-119-221"
+  ]
+ },
+ {
+  "id": "trigger:attack",
+  "count": 40,
+  "desc": "A unit attacks (declares/moves as attacker).",
+  "examples": [
+   "ogn-041-298",
+   "ogn-060-298",
+   "ogn-076-298"
+  ]
+ },
+ {
+  "id": "trigger:attack/opponent",
+  "count": 1,
+  "desc": "trigger:attack where the actor is opponent.",
+  "examples": [
+   "ogn-255-298"
+  ]
+ },
+ {
+  "id": "trigger:attack/self",
+  "count": 37,
+  "desc": "trigger:attack where the actor is self.",
+  "examples": [
+   "ogn-041-298",
+   "ogn-076-298",
+   "ogn-107-298"
+  ]
+ },
+ {
+  "id": "trigger:attack/you",
+  "count": 1,
+  "desc": "trigger:attack where the actor is you.",
+  "examples": [
+   "ogn-060-298"
+  ]
+ },
+ {
+  "id": "trigger:attack/you@here",
+  "count": 1,
+  "desc": "trigger:attack where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-156-167"
+  ]
+ },
+ {
+  "id": "trigger:banish",
+  "count": 1,
+  "desc": "You banish a card you own.",
+  "examples": [
+   "ven-143-166"
+  ]
+ },
+ {
+  "id": "trigger:become-exhausted",
+  "count": 7,
+  "desc": "A unit becomes exhausted.",
+  "examples": [
+   "rad-043-167",
+   "rad-046-167",
+   "rad-053-167"
+  ]
+ },
+ {
+  "id": "trigger:become-exhausted/self",
+  "count": 5,
+  "desc": "trigger:become-exhausted where the actor is self.",
+  "examples": [
+   "rad-043-167",
+   "rad-046-167",
+   "rad-053-167"
+  ]
+ },
+ {
+  "id": "trigger:become-exhausted/you",
+  "count": 2,
+  "desc": "trigger:become-exhausted where the actor is you.",
+  "examples": [
+   "rad-065-167",
+   "rad-114-167"
+  ]
+ },
+ {
+  "id": "trigger:become-mighty",
+  "count": 3,
+  "desc": "A unit becomes Mighty / reaches Might N.",
+  "examples": [
+   "sfd-180-221",
+   "sfd-205-221",
+   "ven-092-166"
+  ]
+ },
+ {
+  "id": "trigger:become-mighty/self",
+  "count": 1,
+  "desc": "trigger:become-mighty where the actor is self.",
+  "examples": [
+   "ven-092-166"
+  ]
+ },
+ {
+  "id": "trigger:become-mighty/you",
+  "count": 2,
+  "desc": "trigger:become-mighty where the actor is you.",
+  "examples": [
+   "sfd-180-221",
+   "sfd-205-221"
+  ]
+ },
+ {
+  "id": "trigger:become-ready",
+  "count": 4,
+  "desc": "A unit becomes ready.",
+  "examples": [
+   "ogn-143-298",
+   "sfd-057-221",
+   "ven-071-166"
+  ]
+ },
+ {
+  "id": "trigger:become-ready/self",
+  "count": 3,
+  "desc": "trigger:become-ready where the actor is self.",
+  "examples": [
+   "sfd-057-221",
+   "ven-071-166",
+   "ven-088-166"
+  ]
+ },
+ {
+  "id": "trigger:become-ready/you",
+  "count": 1,
+  "desc": "trigger:become-ready where the actor is you.",
+  "examples": [
+   "ogn-143-298"
+  ]
+ },
+ {
+  "id": "trigger:buff",
+  "count": 2,
+  "desc": "You buff a unit.",
+  "examples": [
+   "ogn-152-298",
+   "sfd-047-221"
+  ]
+ },
+ {
+  "id": "trigger:buff/self",
+  "count": 1,
+  "desc": "trigger:buff where the actor is self.",
+  "examples": [
+   "sfd-047-221"
+  ]
+ },
+ {
+  "id": "trigger:buff/you",
+  "count": 1,
+  "desc": "trigger:buff where the actor is you.",
+  "examples": [
+   "ogn-152-298"
+  ]
+ },
+ {
+  "id": "trigger:chosen",
+  "count": 4,
+  "desc": "A unit is chosen (targeted) by a spell/ability.",
+  "examples": [
+   "ogn-292-298",
+   "sfd-142-221",
+   "sfd-144-221"
+  ]
+ },
+ {
+  "id": "trigger:chosen/any@here",
+  "count": 1,
+  "desc": "trigger:chosen where the actor is any, at this battlefield / my battlefield.",
+  "examples": [
+   "ogn-292-298"
+  ]
+ },
+ {
+  "id": "trigger:chosen/self",
+  "count": 1,
+  "desc": "trigger:chosen where the actor is self.",
+  "examples": [
+   "sfd-142-221"
+  ]
+ },
+ {
+  "id": "trigger:chosen/you",
+  "count": 2,
+  "desc": "trigger:chosen where the actor is you.",
+  "examples": [
+   "sfd-144-221",
+   "sfd-195-221"
+  ]
+ },
+ {
+  "id": "trigger:combat-end",
+  "count": 2,
+  "desc": "A combat this unit was in ends.",
+  "examples": [
+   "ven-024-166",
+   "ven-028-166"
+  ]
+ },
+ {
+  "id": "trigger:combat-start",
+  "count": 2,
+  "desc": "Combat or showdown begins at a battlefield.",
+  "examples": [
+   "unl-079-219",
+   "ven-166-166"
+  ]
+ },
+ {
+  "id": "trigger:conquer",
+  "count": 49,
+  "desc": "Conquer a battlefield (self, any friendly, or \"here\" on battlefields).",
+  "examples": [
+   "ogn-034-298",
+   "ogn-035-298",
+   "ogn-039-298"
+  ]
+ },
+ {
+  "id": "trigger:conquer/self",
+  "count": 23,
+  "desc": "trigger:conquer where the actor is self.",
+  "examples": [
+   "ogn-034-298",
+   "ogn-035-298",
+   "ogn-039-298"
+  ]
+ },
+ {
+  "id": "trigger:conquer/you",
+  "count": 8,
+  "desc": "trigger:conquer where the actor is you.",
+  "examples": [
+   "ogn-252-298",
+   "ogn-269-298",
+   "ogs-023-024"
+  ]
+ },
+ {
+  "id": "trigger:conquer/you@here",
+  "count": 18,
+  "desc": "trigger:conquer where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "ogn-282-298",
+   "ogn-287-298",
+   "ogn-289-298"
+  ]
+ },
+ {
+  "id": "trigger:deathknell",
+  "count": 27,
+  "desc": "[Deathknell][>]: when I die, get the effect.",
+  "examples": [
+   "ogn-075-298",
+   "ogn-096-298",
+   "ogn-110-298"
+  ]
+ },
+ {
+  "id": "trigger:defend",
+  "count": 18,
+  "desc": "A unit / you defend at a battlefield.",
+  "examples": [
+   "ogn-060-298",
+   "ogn-119-298",
+   "ogn-121-298"
+  ]
+ },
+ {
+  "id": "trigger:defend/self",
+  "count": 12,
+  "desc": "trigger:defend where the actor is self.",
+  "examples": [
+   "ogn-119-298",
+   "ogn-121-298",
+   "rad-045-167"
+  ]
+ },
+ {
+  "id": "trigger:defend/you",
+  "count": 2,
+  "desc": "trigger:defend where the actor is you.",
+  "examples": [
+   "ogn-060-298",
+   "sfd-126-221"
+  ]
+ },
+ {
+  "id": "trigger:defend/you@here",
+  "count": 4,
+  "desc": "trigger:defend where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "ogn-279-298",
+   "ogn-285-298",
+   "rad-161-167"
+  ]
+ },
+ {
+  "id": "trigger:die",
+  "count": 43,
+  "desc": "A unit / gear dies (self = Deathknell, friendly, enemy, buffed, stunned, \"first time each turn\").",
+  "examples": [
+   "ogn-075-298",
+   "ogn-096-298",
+   "ogn-110-298"
+  ]
+ },
+ {
+  "id": "trigger:die/opponent",
+  "count": 2,
+  "desc": "trigger:die where the actor is opponent.",
+  "examples": [
+   "sfd-203-221",
+   "unl-145-219"
+  ]
+ },
+ {
+  "id": "trigger:die/opponent@here",
+  "count": 2,
+  "desc": "trigger:die where the actor is opponent, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-036-167",
+   "ven-063-166"
+  ]
+ },
+ {
+  "id": "trigger:die/self",
+  "count": 29,
+  "desc": "trigger:die where the actor is self.",
+  "examples": [
+   "ogn-075-298",
+   "ogn-096-298",
+   "ogn-110-298"
+  ]
+ },
+ {
+  "id": "trigger:die/you",
+  "count": 9,
+  "desc": "trigger:die where the actor is you.",
+  "examples": [
+   "ogn-118-298",
+   "ogn-228-298",
+   "ogn-246-298"
+  ]
+ },
+ {
+  "id": "trigger:die/you@here",
+  "count": 1,
+  "desc": "trigger:die where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-159-167"
+  ]
+ },
+ {
+  "id": "trigger:discard",
+  "count": 4,
+  "desc": "You discard (this card / one or more cards).",
+  "examples": [
+   "ogn-006-298",
+   "ogn-182-298",
+   "ogn-202-298"
+  ]
+ },
+ {
+  "id": "trigger:discard/self",
+  "count": 3,
+  "desc": "trigger:discard where the actor is self.",
+  "examples": [
+   "ogn-006-298",
+   "ogn-182-298",
+   "ven-094-166"
+  ]
+ },
+ {
+  "id": "trigger:discard/you",
+  "count": 1,
+  "desc": "trigger:discard where the actor is you.",
+  "examples": [
+   "ogn-202-298"
+  ]
+ },
+ {
+  "id": "trigger:draw",
+  "count": 2,
+  "desc": "You draw (e.g. your second card each turn, 1+ with 9+ in hand).",
+  "examples": [
+   "rad-069-167",
+   "unl-074-219"
+  ]
+ },
+ {
+  "id": "trigger:draw/you",
+  "count": 2,
+  "desc": "trigger:draw where the actor is you.",
+  "examples": [
+   "rad-069-167",
+   "unl-074-219"
+  ]
+ },
+ {
+  "id": "trigger:empower",
+  "count": 6,
+  "desc": "Something becomes Empowered / you empower something.",
+  "examples": [
+   "ven-047-166",
+   "ven-104-166",
+   "ven-110-166"
+  ]
+ },
+ {
+  "id": "trigger:empower/self",
+  "count": 4,
+  "desc": "trigger:empower where the actor is self.",
+  "examples": [
+   "ven-047-166",
+   "ven-104-166",
+   "ven-110-166"
+  ]
+ },
+ {
+  "id": "trigger:empower/you",
+  "count": 2,
+  "desc": "trigger:empower where the actor is you.",
+  "examples": [
+   "ven-151-166",
+   "ven-153-166"
+  ]
+ },
+ {
+  "id": "trigger:hide",
+  "count": 2,
+  "desc": "You hide a card (Hidden).",
+  "examples": [
+   "rad-157-167",
+   "unl-023-219"
+  ]
+ },
+ {
+  "id": "trigger:hide/you",
+  "count": 1,
+  "desc": "trigger:hide where the actor is you.",
+  "examples": [
+   "unl-023-219"
+  ]
+ },
+ {
+  "id": "trigger:hide/you@here",
+  "count": 1,
+  "desc": "trigger:hide where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-157-167"
+  ]
+ },
+ {
+  "id": "trigger:hold",
+  "count": 43,
+  "desc": "Hold a battlefield during Beginning Phase scoring.",
+  "examples": [
+   "ogn-066-298",
+   "ogn-067-298",
+   "ogn-275-298"
+  ]
+ },
+ {
+  "id": "trigger:hold/self",
+  "count": 21,
+  "desc": "trigger:hold where the actor is self.",
+  "examples": [
+   "ogn-066-298",
+   "ogn-067-298",
+   "rad-067-167"
+  ]
+ },
+ {
+  "id": "trigger:hold/you",
+  "count": 5,
+  "desc": "trigger:hold where the actor is you.",
+  "examples": [
+   "sfd-201-221",
+   "unl-193-219",
+   "unl-195-219"
+  ]
+ },
+ {
+  "id": "trigger:hold/you@here",
+  "count": 17,
+  "desc": "trigger:hold where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "ogn-275-298",
+   "ogn-280-298",
+   "ogn-281-298"
+  ]
+ },
+ {
+  "id": "trigger:kill",
+  "count": 2,
+  "desc": "You kill a unit (with a spell / a stunned enemy).",
+  "examples": [
+   "ogn-037-298",
+   "ogn-072-298"
+  ]
+ },
+ {
+  "id": "trigger:kill/you",
+  "count": 2,
+  "desc": "trigger:kill where the actor is you.",
+  "examples": [
+   "ogn-037-298",
+   "ogn-072-298"
+  ]
+ },
+ {
+  "id": "trigger:leaves-board",
+  "count": 2,
+  "desc": "This leaves the board.",
+  "examples": [
+   "ogn-186-298",
+   "rad-012-167"
+  ]
+ },
+ {
+  "id": "trigger:might-reduced",
+  "count": 1,
+  "desc": "You reduce an enemy unit's Might.",
+  "examples": [
+   "rad-038-167"
+  ]
+ },
+ {
+  "id": "trigger:move",
+  "count": 37,
+  "desc": "A unit moves (to / from a battlefield or location).",
+  "examples": [
+   "ogn-158-298",
+   "ogn-162-298",
+   "ogn-177-298"
+  ]
+ },
+ {
+  "id": "trigger:move/any@here",
+  "count": 1,
+  "desc": "trigger:move where the actor is any, at this battlefield / my battlefield.",
+  "examples": [
+   "ogn-277-298"
+  ]
+ },
+ {
+  "id": "trigger:move/opponent",
+  "count": 1,
+  "desc": "trigger:move where the actor is opponent.",
+  "examples": [
+   "ogn-158-298"
+  ]
+ },
+ {
+  "id": "trigger:move/self",
+  "count": 34,
+  "desc": "trigger:move where the actor is self.",
+  "examples": [
+   "ogn-162-298",
+   "ogn-185-298",
+   "ogn-205-298"
+  ]
+ },
+ {
+  "id": "trigger:move/you",
+  "count": 1,
+  "desc": "trigger:move where the actor is you.",
+  "examples": [
+   "ogn-177-298"
+  ]
+ },
+ {
+  "id": "trigger:phase",
+  "count": 17,
+  "desc": "Any phase-timed trigger (start/end of phase or turn).",
+  "examples": [
+   "ogn-073-298",
+   "ogn-101-298",
+   "ogn-109-298"
+  ]
+ },
+ {
+  "id": "trigger:phase-beginning",
+  "count": 13,
+  "desc": "Start of (your/each player's / first) Beginning Phase.",
+  "examples": [
+   "ogn-101-298",
+   "ogn-109-298",
+   "ogn-251-298"
+  ]
+ },
+ {
+  "id": "trigger:phase-end",
+  "count": 6,
+  "desc": "End of your turn / end of this turn (delayed).",
+  "examples": [
+   "ogn-073-298",
+   "ogn-160-298",
+   "ogs-017-024"
+  ]
+ },
+ {
+  "id": "trigger:phase-main",
+  "count": 2,
+  "desc": "Start of your Main Phase (incl. delayed \"next Main Phase\").",
+  "examples": [
+   "rad-145-167",
+   "ven-067-166"
+  ]
+ },
+ {
+  "id": "trigger:play-card",
+  "count": 41,
+  "desc": "A player plays a card matching a filter (spell / unit / gear / cost >= N / from face down / on opponent turn).",
+  "examples": [
+   "ogn-027-298",
+   "ogn-091-298",
+   "ogn-103-298"
+  ]
+ },
+ {
+  "id": "trigger:play-card-nth",
+  "count": 5,
+  "desc": "Nth card played this turn (first/second), or the next N plays.",
+  "examples": [
+   "ogn-027-298",
+   "rad-165-167",
+   "unl-215-219"
+  ]
+ },
+ {
+  "id": "trigger:play-card-nth/any@here",
+  "count": 2,
+  "desc": "trigger:play-card-nth where the actor is any, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-165-167",
+   "unl-215-219"
+  ]
+ },
+ {
+  "id": "trigger:play-card-nth/you",
+  "count": 3,
+  "desc": "trigger:play-card-nth where the actor is you.",
+  "examples": [
+   "ogn-027-298",
+   "ven-044-166",
+   "ven-068-166"
+  ]
+ },
+ {
+  "id": "trigger:play-card/any",
+  "count": 1,
+  "desc": "trigger:play-card where the actor is any.",
+  "examples": [
+   "unl-205-219"
+  ]
+ },
+ {
+  "id": "trigger:play-card/any@here",
+  "count": 1,
+  "desc": "trigger:play-card where the actor is any, at this battlefield / my battlefield.",
+  "examples": [
+   "unl-218-219"
+  ]
+ },
+ {
+  "id": "trigger:play-card/opponent",
+  "count": 2,
+  "desc": "trigger:play-card where the actor is opponent.",
+  "examples": [
+   "unl-150-219",
+   "ven-102-166"
+  ]
+ },
+ {
+  "id": "trigger:play-card/you",
+  "count": 36,
+  "desc": "trigger:play-card where the actor is you.",
+  "examples": [
+   "ogn-027-298",
+   "ogn-091-298",
+   "ogn-103-298"
+  ]
+ },
+ {
+  "id": "trigger:play-card/you@here",
+  "count": 1,
+  "desc": "trigger:play-card where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "unl-211-219"
+  ]
+ },
+ {
+  "id": "trigger:play-from-facedown",
+  "count": 5,
+  "desc": "You play any card from face down.",
+  "examples": [
+   "ogn-167-298",
+   "rad-090-167",
+   "rad-153-167"
+  ]
+ },
+ {
+  "id": "trigger:play-from-nonhand",
+  "count": 1,
+  "desc": "You play a card from a zone other than hand.",
+  "examples": [
+   "ven-155-166"
+  ]
+ },
+ {
+  "id": "trigger:play-self",
+  "count": 164,
+  "desc": "This card is played (ETB / on-play). \"When you play me/this\".",
+  "examples": [
+   "ogn-003-298",
+   "ogn-016-298",
+   "ogn-020-298"
+  ]
+ },
+ {
+  "id": "trigger:play-self-from-facedown",
+  "count": 3,
+  "desc": "This card is played from face down (Hidden).",
+  "examples": [
+   "sfd-139-221",
+   "unl-141-219",
+   "ven-099-166"
+  ]
+ },
+ {
+  "id": "trigger:play-self-to-battlefield",
+  "count": 3,
+  "desc": "This unit is played to a battlefield (not base).",
+  "examples": [
+   "ogn-067-298",
+   "rad-031-167",
+   "unl-003-219"
+  ]
+ },
+ {
+  "id": "trigger:recycle",
+  "count": 2,
+  "desc": "You recycle a rune / cards to your Main Deck.",
+  "examples": [
+   "ogn-235-298",
+   "sfd-203-221"
+  ]
+ },
+ {
+  "id": "trigger:recycle/you",
+  "count": 2,
+  "desc": "trigger:recycle where the actor is you.",
+  "examples": [
+   "ogn-235-298",
+   "sfd-203-221"
+  ]
+ },
+ {
+  "id": "trigger:returned-to-hand",
+  "count": 1,
+  "desc": "A unit is returned to hand.",
+  "examples": [
+   "unl-214-219"
+  ]
+ },
+ {
+  "id": "trigger:revealed-from-deck",
+  "count": 2,
+  "desc": "This card is looked at / revealed from the top of a deck.",
+  "examples": [
+   "ogn-194-298",
+   "sfd-175-221"
+  ]
+ },
+ {
+  "id": "trigger:score",
+  "count": 3,
+  "desc": "A player (or this unit) scores a point.",
+  "examples": [
+   "unl-085-219",
+   "unl-t03",
+   "ven-109-166"
+  ]
+ },
+ {
+  "id": "trigger:score/opponent",
+  "count": 1,
+  "desc": "trigger:score where the actor is opponent.",
+  "examples": [
+   "unl-085-219"
+  ]
+ },
+ {
+  "id": "trigger:score/self",
+  "count": 1,
+  "desc": "trigger:score where the actor is self.",
+  "examples": [
+   "ven-109-166"
+  ]
+ },
+ {
+  "id": "trigger:score/you@here",
+  "count": 1,
+  "desc": "trigger:score where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "unl-t03"
+  ]
+ },
+ {
+  "id": "trigger:spend-buff",
+  "count": 1,
+  "desc": "You spend a buff.",
+  "examples": [
+   "sfd-101-221"
+  ]
+ },
+ {
+  "id": "trigger:stun",
+  "count": 3,
+  "desc": "You stun one or more enemy units.",
+  "examples": [
+   "ogn-059-298",
+   "ogn-261-298",
+   "unl-055-219"
+  ]
+ },
+ {
+  "id": "trigger:stun/you",
+  "count": 3,
+  "desc": "trigger:stun where the actor is you.",
+  "examples": [
+   "ogn-059-298",
+   "ogn-261-298",
+   "unl-055-219"
+  ]
+ },
+ {
+  "id": "trigger:take-damage",
+  "count": 1,
+  "desc": "A unit takes damage.",
+  "examples": [
+   "ogn-221-298"
+  ]
+ },
+ {
+  "id": "trigger:use-gear-ability",
+  "count": 1,
+  "desc": "You use a gear activated ability.",
+  "examples": [
+   "sfd-075-221"
+  ]
+ },
+ {
+  "id": "trigger:win-combat",
+  "count": 7,
+  "desc": "A unit / you win a combat.",
+  "examples": [
+   "rad-024-167",
+   "sfd-020-221",
+   "sfd-123-221"
+  ]
+ },
+ {
+  "id": "trigger:win-combat/self",
+  "count": 4,
+  "desc": "trigger:win-combat where the actor is self.",
+  "examples": [
+   "sfd-020-221",
+   "sfd-123-221",
+   "sfd-148-221"
+  ]
+ },
+ {
+  "id": "trigger:win-combat/you",
+  "count": 2,
+  "desc": "trigger:win-combat where the actor is you.",
+  "examples": [
+   "sfd-185-221",
+   "unl-201-219"
+  ]
+ },
+ {
+  "id": "trigger:win-combat/you@here",
+  "count": 1,
+  "desc": "trigger:win-combat where the actor is you, at this battlefield / my battlefield.",
+  "examples": [
+   "rad-024-167"
+  ]
+ },
+ {
+  "id": "trigger:you-move-enemy",
+  "count": 1,
+  "desc": "You move an enemy unit.",
+  "examples": [
+   "unl-133-219"
+  ]
+ },
+ {
+  "id": "weird:ability-sharing-granting-to-other-card-types",
+  "count": 8,
+  "desc": "",
+  "examples": [
+   "ogn-111-298",
+   "rad-040-167",
+   "rad-139-167"
+  ]
+ },
+ {
+  "id": "weird:alternate-win-scoring-rules",
+  "count": 9,
+  "desc": "",
+  "examples": [
+   "ogn-276-298",
+   "ogn-293-298",
+   "ogs-011-024"
+  ]
+ },
+ {
+  "id": "weird:battlefield-tokens-replacing-battlefields",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "unl-147-219",
+   "unl-195-219",
+   "unl-t01"
+  ]
+ },
+ {
+  "id": "weird:chain-aware-targeting",
+  "count": 8,
+  "desc": "",
+  "examples": [
+   "ogn-292-298",
+   "sfd-045-221",
+   "sfd-141-221"
+  ]
+ },
+ {
+  "id": "weird:combat-damage-rules",
+  "count": 16,
+  "desc": "",
+  "examples": [
+   "ogn-068-298",
+   "ogn-189-298",
+   "ogn-227-298"
+  ]
+ },
+ {
+  "id": "weird:control-change-permanents",
+  "count": 5,
+  "desc": "",
+  "examples": [
+   "ogn-203-298",
+   "sfd-109-221",
+   "sfd-202-221"
+  ]
+ },
+ {
+  "id": "weird:control-change-spells-on-chain",
+  "count": 2,
+  "desc": "",
+  "examples": [
+   "ogn-080-298",
+   "ven-152-166"
+  ]
+ },
+ {
+  "id": "weird:copy-effects",
+  "count": 5,
+  "desc": "",
+  "examples": [
+   "sfd-059-221",
+   "unl-081-219",
+   "unl-199-219"
+  ]
+ },
+ {
+  "id": "weird:cost-rule-modifiers",
+  "count": 12,
+  "desc": "",
+  "examples": [
+   "ogn-014-298",
+   "rad-151-167",
+   "sfd-146-221"
+  ]
+ },
+ {
+  "id": "weird:deck-construction-exceptions",
+  "count": 5,
+  "desc": "",
+  "examples": [
+   "rad-167-167",
+   "sfd-190-221",
+   "sfd-191-221"
+  ]
+ },
+ {
+  "id": "weird:delayed-triggers-next-time-memory",
+  "count": 10,
+  "desc": "",
+  "examples": [
+   "ogn-023-298",
+   "ogn-221-298",
+   "ogn-254-298"
+  ]
+ },
+ {
+  "id": "weird:extra-legends",
+  "count": 1,
+  "desc": "",
+  "examples": [
+   "rad-167-167"
+  ]
+ },
+ {
+  "id": "weird:extra-turn",
+  "count": 1,
+  "desc": "",
+  "examples": [
+   "ogn-122-298"
+  ]
+ },
+ {
+  "id": "weird:hidden-card-rule-changes",
+  "count": 7,
+  "desc": "",
+  "examples": [
+   "ogn-018-298",
+   "ogn-263-298",
+   "ogn-264-298"
+  ]
+ },
+ {
+  "id": "weird:linked-banishment",
+  "count": 6,
+  "desc": "",
+  "examples": [
+   "rad-136-167",
+   "rad-140-167",
+   "sfd-090-221"
+  ]
+ },
+ {
+  "id": "weird:mode-memory",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "ogn-157-298",
+   "rad-043-167",
+   "sfd-049-221"
+  ]
+ },
+ {
+  "id": "weird:multi-empower",
+  "count": 1,
+  "desc": "",
+  "examples": [
+   "ven-134-166"
+  ]
+ },
+ {
+  "id": "weird:naming-cards-tags-gaining-tags",
+  "count": 3,
+  "desc": "",
+  "examples": [
+   "unl-138-219",
+   "unl-177-219",
+   "ven-132-166"
+  ]
+ },
+ {
+  "id": "weird:opponent-decisions-inside-effects",
+  "count": 19,
+  "desc": "",
+  "examples": [
+   "ogn-033-298",
+   "ogn-071-298",
+   "ogn-115-298"
+  ]
+ },
+ {
+  "id": "weird:play-permission-from-banishment-trash",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "rad-012-167",
+   "rad-015-167",
+   "ven-022-166"
+  ]
+ },
+ {
+  "id": "weird:prohibitions-on-ready-choose-play",
+  "count": 14,
+  "desc": "",
+  "examples": [
+   "ogn-026-298",
+   "ogn-070-298",
+   "ogn-295-298"
+  ]
+ },
+ {
+  "id": "weird:pseudo-cards",
+  "count": 2,
+  "desc": "",
+  "examples": [
+   "unl-t04",
+   "unl-t08"
+  ]
+ },
+ {
+  "id": "weird:repeat-flow-granting-and-multi-mode-repeat",
+  "count": 6,
+  "desc": "",
+  "examples": [
+   "sfd-078-221",
+   "unl-017-219",
+   "unl-146-219"
+  ]
+ },
+ {
+  "id": "weird:restricted-resources",
+  "count": 7,
+  "desc": "",
+  "examples": [
+   "ogn-247-298",
+   "ogs-014-024",
+   "rad-143-167"
+  ]
+ },
+ {
+  "id": "weird:reveal-from-deck-self-triggers",
+  "count": 2,
+  "desc": "",
+  "examples": [
+   "ogn-194-298",
+   "sfd-175-221"
+  ]
+ },
+ {
+  "id": "weird:rune-deck-interaction",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "ogn-200-298",
+   "ogn-287-298",
+   "rad-016-167"
+  ]
+ },
+ {
+  "id": "weird:timing-permission-granted-to-other-cards",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "ogn-129-298",
+   "rad-063-167",
+   "rad-091-167"
+  ]
+ },
+ {
+  "id": "weird:token-duplication-replacement",
+  "count": 2,
+  "desc": "",
+  "examples": [
+   "rad-132-167",
+   "unl-086-219"
+  ]
+ },
+ {
+  "id": "weird:trigger-multipliers-suppressors",
+  "count": 6,
+  "desc": "",
+  "examples": [
+   "ogn-236-298",
+   "ogn-286-298",
+   "rad-017-167"
+  ]
+ },
+ {
+  "id": "weird:turn-structure-modifications",
+  "count": 6,
+  "desc": "",
+  "examples": [
+   "ogn-284-298",
+   "ogn-290-298",
+   "rad-019-167"
+  ]
+ },
+ {
+  "id": "weird:type-change",
+  "count": 1,
+  "desc": "",
+  "examples": [
+   "rad-145-167"
+  ]
+ },
+ {
+  "id": "weird:zone-change-replacement",
+  "count": 4,
+  "desc": "",
+  "examples": [
+   "sfd-018-221",
+   "unl-007-219",
+   "unl-131-219"
+  ]
+ },
+ {
+  "id": "zone:functions-from-trash",
+  "count": 6,
+  "desc": "Triggered ability that works while the card is in the trash (or as it is discarded).",
+  "examples": [
+   "ogn-006-298",
+   "ogn-037-298",
+   "ogn-252-298"
+  ]
+ }
+]

@@ -1,0 +1,370 @@
+{
+ "hash": "c032475767",
+ "signature": "view-leak|view p1: log \"Resolving Runeblade Anvil: When this leaves the board, banish the top card of yo\" names hidden hand object oN|",
+ "kind": "view-leak",
+ "message": "view p1: log \"Resolving Runeblade Anvil: When this leaves the board, banish the top card of yo\" names hidden hand object o29",
+ "cards": [],
+ "cardIds": [],
+ "spec": {
+  "seed": 2205,
+  "decks": [
+   {
+    "legend": "ogn-263-298",
+    "champion": "ogn-197-298",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "rad-012-167",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-181-298",
+     "ogn-181-298",
+     "ogn-181-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "ogn-295-298",
+     "unl-218-219",
+     "ogn-285-298"
+    ]
+   },
+   {
+    "legend": "rad-155-167",
+    "champion": "rad-133-167",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r04",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "ogn-291-298",
+     "unl-215-219",
+     "rad-158-167"
+    ]
+   }
+  ],
+  "policies": [
+   "chaos",
+   "random"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": false,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o54"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o112"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o24"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o85",
+    "o77"
+   ]
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o42",
+   "abilityIndex": 951
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o104",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "endTurn",
+   "player": 0
+  },
+  {
+   "type": "activate",
+   "player": 1,
+   "obj": "o112",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "endTurn",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o29",
+   "destination": "base",
+   "payment": {
+    "exhaust": [
+     "o49",
+     "o52"
+    ],
+    "recycle": [
+     "o49"
+    ]
+   }
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o52",
+   "abilityIndex": 951
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o112",
+   "abilityIndex": 0
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "playCard",
+   "player": 0,
+   "obj": "o25"
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "activate",
+   "player": 0,
+   "obj": "o33",
+   "abilityIndex": 0
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o29"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "pass",
+   "player": 1
+  }
+ ],
+ "original": {
+  "seed": 2205,
+  "steps": 122,
+  "turn": 15,
+  "policies": [
+   "chaos",
+   "random"
+  ]
+ },
+ "minimized": {
+  "actions": 38,
+  "deckCards": 4,
+  "ms": 18134
+ },
+ "found": "2026-11-25T23:07:11.761Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "False positive: the log entry named a card the viewer had already seen face up (ids persist). Leak check now tracks per-viewer knowledge."
+ }
+}

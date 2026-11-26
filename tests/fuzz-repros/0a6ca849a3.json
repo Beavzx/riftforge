@@ -1,0 +1,274 @@
+{
+ "hash": "0a6ca849a3",
+ "signature": "invariant|token oN in setAside|",
+ "kind": "invariant",
+ "message": "token o113 in setAside",
+ "cards": [
+  "Shadow Clone",
+  "Zed, From the Shadows"
+ ],
+ "cardIds": [
+  "tok-shadow-clone",
+  "ven-023-166"
+ ],
+ "spec": {
+  "seed": 626376,
+  "decks": [
+   {
+    "legend": "sfd-199-221",
+    "champion": "sfd-149-221",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r03",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05",
+     "rad-r05"
+    ],
+    "battlefields": [
+     "sfd-218-221",
+     "ven-166-166",
+     "rad-159-167"
+    ]
+   },
+   {
+    "legend": "sfd-187-221",
+    "champion": "sfd-029-221",
+    "main": [
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ven-023-166",
+     "ven-023-166",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298",
+     "ogn-175-298"
+    ],
+    "runes": [
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r01",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06",
+     "rad-r06"
+    ],
+    "battlefields": [
+     "rad-162-167",
+     "ven-159-166",
+     "ogn-282-298"
+    ]
+   }
+  ],
+  "policies": [
+   "bot",
+   "bot"
+  ],
+  "manualPay": [
+   false,
+   false
+  ],
+  "battlefieldSelection": "choose",
+  "dense": true,
+  "validateDecks": false
+ },
+ "actions": [
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o54"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o110"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "first"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o62"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 0,
+   "optionIds": [
+    "o4",
+    "o5"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o58",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  },
+  {
+   "type": "playCard",
+   "player": 1,
+   "obj": "o59",
+   "destination": "base"
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "yes"
+   ]
+  },
+  {
+   "type": "choose",
+   "player": 1,
+   "optionIds": [
+    "o64"
+   ]
+  },
+  {
+   "type": "pass",
+   "player": 1
+  },
+  {
+   "type": "pass",
+   "player": 0
+  }
+ ],
+ "original": {
+  "seed": 626376,
+  "steps": 47,
+  "turn": 5,
+  "policies": [
+   "bot",
+   "bot"
+  ]
+ },
+ "minimized": {
+  "actions": 16,
+  "deckCards": 3,
+  "ms": 19561
+ },
+ "found": "2026-11-26T08:54:27.335Z",
+ "count": 1,
+ "triage": {
+  "owner": "fuzzer",
+  "status": "fixed",
+  "note": "ENGINE-5: not an engine bug — the Shadow Clone token is set aside on purpose while its own Accelerate decision (Rek'Sai, Breacher) is pending (actions.ts createTokenRaw, 2022100893); tests/fixtures/invariants.ts now allows a set-aside token that is the pending decision's source"
+ }
+}

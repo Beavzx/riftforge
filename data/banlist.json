@@ -1,0 +1,35 @@
+{
+  "source": "Official Rules Hub ban tables 'Last updated: November 23, 2026' (https://playriftbound.com/en-us/rules-hub/), built from https://playriftbound.com/en-us/news/announcements/announcing-riftbounds-first-bans/ (2026-03-31), https://playriftbound.com/en-us/news/announcements/july-ban-list-updates/ (2026-07-24), https://playriftbound.com/en-us/news/announcements/september-ban-list-updates-effective-september-18-2026/ (2026-09-18) and https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/ (2026-11-23). No card has been unbanned. Entries are card names as in data/cards.json ('Name, Subtitle' or name) or card ids; validateDeck matches either. Korea / Traditional Chinese regions use an older list (not modelled).",
+  "effective": "2026-11-23",
+  "standard": [
+    "Called Shot", "Draven, Vanquisher", "Fight or Flight", "Scrapheap",
+    "Stealthy Pursuer",
+    "Ekko, Recurrent", "Stacked Deck",
+    "Riven, Broken Blade", "Zhonya's Hourglass", "Stellacorn Herder", "Nocturne, Horrifying",
+    "Rhasa the Sunderer", "Brynhir Thundersong", "Dazzling Aurora", "Baited Hook",
+    "The Dreaming Tree", "Obelisk of Power", "Reaver's Row",
+    "The Arena's Greatest", "Aspirant's Climb",
+    "Emperor's Dais", "Star Spring"
+  ],
+  "constructed2v2": [
+    "ogs-019-024",
+    "Called Shot", "Draven, Vanquisher", "Scrapheap",
+    "Stealthy Pursuer",
+    "Ekko, Recurrent", "Stacked Deck",
+    "Riven, Broken Blade", "Zhonya's Hourglass", "Stellacorn Herder", "Nocturne, Horrifying",
+    "Rhasa the Sunderer", "Brynhir Thundersong", "Dazzling Aurora", "Baited Hook",
+    "The Dreaming Tree", "Obelisk of Power", "Reaver's Row",
+    "The Arena's Greatest", "Aspirant's Climb",
+    "Emperor's Dais", "Star Spring"
+  ],
+  "notes": {
+    "ogs-019-024": "Master Yi, Wuju Bladesman (Legend; stored as name 'Wuju Bladesman'), banned in 2v2 Constructed only since 2026-07-24.",
+    "Fight or Flight": "Banned in Standard; the Rules Hub 2v2 table (2026-11-23) does not list it.",
+    "history": {
+      "2026-03-31": ["Called Shot", "Draven, Vanquisher", "Fight or Flight", "Scrapheap", "The Dreaming Tree", "Obelisk of Power", "Reaver's Row"],
+      "2026-07-24": ["Stealthy Pursuer", "The Arena's Greatest", "Aspirant's Climb", "2v2 only: Master Yi, Wuju Bladesman"],
+      "2026-09-18": ["Ekko, Recurrent", "Stacked Deck"],
+      "2026-11-23": ["Riven, Broken Blade", "Zhonya's Hourglass", "Stellacorn Herder", "Nocturne, Horrifying", "Rhasa the Sunderer", "Brynhir Thundersong", "Dazzling Aurora", "Baited Hook", "Emperor's Dais", "Star Spring"]
+    }
+  }
+}

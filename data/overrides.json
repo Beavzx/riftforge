@@ -1,0 +1,864 @@
+{
+ "ogn-029-298": {
+  "reminderText": "Deal 3 to a unit.\nDeal 3 to a unit.",
+  "source": "Spiritforged errata (2026-01-14) https://playriftbound.com/en-us/news/rules-and-releases/riftbound-spiritforged-errata: Falling Star new text is \"Deal 3 to a unit.\" printed twice (scrape collapsed the duplicate line)"
+ },
+ "ogn-248-298": {
+  "reminderText": "Deal 2 to a unit.\nDeal 2 to a unit.\nDeal 2 to a unit.\nDeal 2 to a unit.\nDeal 2 to a unit.\nDeal 2 to a unit.",
+  "source": "Spiritforged errata (2026-01-14) https://playriftbound.com/en-us/news/rules-and-releases/riftbound-spiritforged-errata: Icathian Rain new text is \"Deal 2 to a unit.\" six times (scrape collapsed duplicates)"
+ },
+ "unl-199-219": {
+  "reminderText": "When you conquer or hold, you may discard 1 and exhaust me to play a ready Reflection unit token there. Then do this: It becomes a copy of another unit there. Give it [Temporary].",
+  "hasErrata": true,
+  "source": "Unleashed errata (2026-04-03) https://playriftbound.com/en-us/news/rules-and-releases/unleashed-errata-updates/: LeBlanc, Deceiver gains \"Then do this:\" (missing from scrape)"
+ },
+ "ogn-005-298": {
+  "reminderText": "[Action] (Play on your turn or in showdowns.)\nDeal 3 to a unit at a battlefield. If this kills it, do this: draw 1.",
+  "source": "Origins errata https://playriftbound.com/en-us/news/rules-and-releases/riftbound-origins-card-errata/ prints the keyword without brackets (article typo); printed card official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ogn-005-298 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/a27374ac3a81f3dfefb43c3c3237c23b4883cb5a-744x1039.png) has the [Action] keyword"
+ },
+ "rad-127-167": {
+  "reminderText": "[Show Off] a card with Energy cost [7] or more. (As you play this, you may reveal such a card from hand or pick a friendly one.)\nPlay two 1 [S] Recruit unit tokens to your base. If you showed off, play four to your base instead.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-127-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/18aa7cab082fd0e293260bcf480a1a76d12b64d9-744x1039.png): stray \"disa\" after the final sentence is not on the card"
+ },
+ "ven-109-166": {
+  "reminderText": "When you play me or when I score, play a 1 [S] Tentacle unit token from Bilgewater.\nI have +1 [S] for each token unit you control.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-109-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/86fccf469e67fb89312e0c860842e2801a8b12e7-744x1039.png): token is \"a 1 [S] Tentacle unit token\" (Might 1), not \"[1] [S]\""
+ },
+ "ven-163-166": {
+  "keywords": [],
+  "keywordCosts": {},
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-163-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/47402ed9d5eebb9e38176315bdaf1a556845eef7-1039x744.png): \"[Empower] costs\" uses Empower as a noun (reduces Empower costs of your units here); the battlefield has no Empower keyword"
+ },
+ "sfd-096-221": {
+  "reminderText": "[Ganking] (I can move from battlefield to battlefield.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-096-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/d9dac8bbc898bfead8338ef387f2d144302e278f-744x1039.png): keyword printed as a keyword box; restore brackets"
+ },
+ "sfd-138-221": {
+  "reminderText": "[Hidden] (Hide now for [A] to react with later for [0].)\nWhen you play me, you may return another unit at a battlefield with 3 [S] or less to its owner's hand.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-138-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e47c9a3956f8fbb77daa5fdb2ee433dd1772f247-744x1039.png): keyword printed as a keyword box; restore brackets"
+ },
+ "ven-073-166": {
+  "reminderText": "[Equip] [C] ([C]: Attach this to a unit you control.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-073-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/22aae23e1ac1797beb50f3f735becfe65b51ee02-744x1039.png): keyword printed as a keyword box; restore brackets | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-073-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/22aae23e1ac1797beb50f3f735becfe65b51ee02-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape",
+  "attachedReminderText": "I can't be moved by enemy spells and abilities."
+ },
+ "rad-071-167": {
+  "reminderText": "[Equip] [1] ([1]: Attach this to a unit you control.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-071-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9d518a6db3ae174096b09cf80cece2997f685ede-744x1039.png): keyword printed as a keyword box; restore brackets | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-071-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9d518a6db3ae174096b09cf80cece2997f685ede-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-071-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9d518a6db3ae174096b09cf80cece2997f685ede-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape",
+  "attachedReminderText": "[Shield 2] (+2 [S] while I'm a defender.)",
+  "domains": [
+   "Body"
+  ],
+  "tags": [
+   "Equipment"
+  ]
+ },
+ "ogn-164-298": {
+  "reminderText": "When you play me or when I conquer, buff me. (If I don't have a buff, I get a +1 [S] buff.)\nSpend my buff: Give me +4 [S] this turn.",
+  "source": "newest printing ven-sp4-006 official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-sp4-006 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/075f83adf06b41c42c78addd11cfc73fbdb8aabb-744x1039.png) uses the updated wording \"When you play me or when I conquer\""
+ },
+ "ogs-014-024": {
+  "reminderText": "[T]: [Reaction] — [Add] [2]. Spend this Energy only to play spells. (Abilities that add resources can't be reacted to.)",
+  "source": "newest printing ven-sp6-006 official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-sp6-006 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b9778ec229e052268ea66213ca2dbf60612b2862-744x1039.png) uses the updated wording \"Spend this Energy only to play spells.\""
+ },
+ "ogn-117-298": {
+  "reminderText": "When you play a card on an opponent's turn, play a 1 [S] Recruit unit token to your base.",
+  "source": "newest printing ven-176-166 official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-176-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0416b4a447494acac41413a4511bb59ce983b4ec-744x1039.png) says \"to your base\" (was \"in your base\")"
+ },
+ "ven-058-166": {
+  "additionalTypes": [
+   "Gear"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-058-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/7667d7e0c902782c38221e9326d1bb98181ec17f-744x1039.png) type line \"UNIT GEAR\"; Radiance overview https://playriftbound.com/en-us/news/announcements/the-radiance-overview/ (\"Gear Units ... Patched Porobot, the card that introduced them\")"
+ },
+ "rad-123-167": {
+  "attachedReminderText": "[Tank] (I must be assigned combat damage first.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-123-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/97618bc30e9b65a2e5223e6f94db58d7098d30a6-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-123-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/97618bc30e9b65a2e5223e6f94db58d7098d30a6-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape",
+  "domains": [
+   "Order"
+  ],
+  "tags": [
+   "Equipment"
+  ]
+ },
+ "rad-150-167": {
+  "attachedReminderText": "[Ganking] (I can move from battlefield to battlefield.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-150-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/04aaded01b23641e496e39f51882ccfe89715492-744x1040.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-009-221": {
+  "attachedReminderText": "[Assault 2] (+2 [S] while I'm an attacker.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-009-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9498c8146745124fc45a7b55184854a9c9da21f5-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-016-221": {
+  "attachedReminderText": "When I attack or defend, deal 2 to an enemy unit here.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-016-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/763604237b4b59df5df98f61528be2233b850dd5-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-030-221": {
+  "attachedReminderText": "My hold effects are also conquer effects, and vice versa.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-030-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/bea8390beb651502413cf644319c8ca6a8db1102-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-033-221": {
+  "attachedReminderText": "[Tank] (I must be assigned combat damage first.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-033-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/49a24d4c6d770ed233c4a69bf8d87385bfc997d8-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-042-221": {
+  "attachedReminderText": "If this was attached to me this turn, I have an additional +2 [S].",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-042-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/3a0de7eec3de501f79f33c09b43c7fe42721d10d-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-051-221": {
+  "attachedReminderText": "If I would die, kill Guardian Angel instead. Heal me, exhaust me, and recall me.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-051-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/d09a797345659a1853d6d12910cf3c634990ea0c-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-064-221": {
+  "attachedReminderText": "[Shield 2] (+2 [S] while I'm a defender.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-064-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/fe02bf01609ff2e6cc6fa8fbd578fd596ab5cb84-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-073-221": {
+  "attachedReminderText": "I am a Mech.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-073-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/940a5e9796d4ac10a238d9b2612545c04bd9a570-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-086-221": {
+  "attachedReminderText": "When I hold, play two Gold gear tokens exhausted.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-086-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/7b8d96e128c19c5ff368119a60759cffa644e942-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-090-221": {
+  "attachedReminderText": "[Deathknell][>] Banish me. (When I die, get the effect.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-090-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/cc80cbfa1a64ad22dc5f7df870e9206f6938f7f5-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-102-221": {
+  "attachedReminderText": "[Deflect] (Opponents must pay [A] to choose me with a spell or ability.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-102-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e7fdd555cbf9ef8c4ff8bd3ba38d187842de563d-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-108-221": {
+  "attachedReminderText": "When I conquer, buff me. (If I don't have a buff, I get a +1 [S] buff.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-108-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0d680867670dd75a66a632cd6f044a7f7e39b42b-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-115-221": {
+  "attachedReminderText": "When I hold, score 1 point.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-115-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e8b64985389e5792afc2a2fe0dc23ae7590d7709-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-118-221": {
+  "attachedReminderText": "When I conquer, channel 1 rune exhausted.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-118-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/c3e4d8c3f3975a7429428ac90e5ebcffa1f8e5a9-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-124-221": {
+  "attachedReminderText": "When I conquer, discard 1, then draw 1.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-124-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/054df5a11967b768430a2f763e1b5d4dbbac3b50-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-133-221": {
+  "attachedReminderText": "[Ganking] (I can move from battlefield to battlefield.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-133-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/a8a8e977f7427227adac69b5d2db07f643d0df09-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-134-221": {
+  "attachedReminderText": "When I conquer, play a Gold gear token exhausted.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-134-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/885ee56a4153b4f9fd064e9d24c9d55400e1291f-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-150-221": {
+  "attachedReminderText": "When I conquer or hold, you may play a unit from your trash. (You still pay its costs.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-150-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/6cfab85030bff454262794e4fa12f11b5dc45a74-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-153-221": {
+  "attachedReminderText": "When I move, play a 1 [S] Recruit unit token here.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-153-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/fc3e26e0e4ff94de360f1163c41641daf81c1900-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-172-221": {
+  "attachedReminderText": "[Deathknell][>] Draw 1. (When I die, get the effect.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-172-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/af1069aef68d413127dfa84e4e96b8d66a8720ca-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "sfd-190-221": {
+  "attachedReminderText": "When I attack or defend, deal 2 to all enemy units here.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-190-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9bc49433a6ec5a8f4f1b44351094523d51b6bc11-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-190-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9bc49433a6ec5a8f4f1b44351094523d51b6bc11-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]",
+  "reminderText": "[Unique] (Your deck can have only 1 card with this name.)\n[Equip] [A] ([A]: Attach this to a unit you control.)"
+ },
+ "sfd-191-221": {
+  "attachedReminderText": "Your spells and abilities deal 3 Bonus Damage (while this is attached).",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-191-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e93d11bdae446762b1932f0327d2ffe489fa4481-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-191-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e93d11bdae446762b1932f0327d2ffe489fa4481-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]",
+  "reminderText": "[Unique] (Your deck can have only 1 card with this name.)\n[Equip] [A] ([A]: Attach this to a unit you control.)"
+ },
+ "sfd-192-221": {
+  "attachedReminderText": "Your units here have [Ganking]. (We can move from battlefield to battlefield.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-192-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/6f2f7175e61486859d7f5da804e41733d66b2254-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape | official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-192-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/6f2f7175e61486859d7f5da804e41733d66b2254-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]",
+  "reminderText": "[Unique] (Your deck can have only 1 card with this name.)\n[Equip] [A] ([A]: Attach this to a unit you control.)\nWhen you play this, ready your units."
+ },
+ "unl-019-219": {
+  "attachedReminderText": "At the end of your turn, if I didn't conquer this turn, unattach this and deal 4 to me.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--unl-019-219 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/a6425462180dc6bc3396397cd491c0abae58f616-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "unl-039-219": {
+  "attachedReminderText": "[Level 3][>] I have an additional +1 [S]. (While you have 3+ XP, get the effect.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--unl-039-219 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/519361230cb8554cdf0f5dd795e115ffbb5bb932-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "unl-096-219": {
+  "attachedReminderText": "[Hunt] (When I conquer or hold, gain 1 XP.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--unl-096-219 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/374fd9220c204810c2b1abd48217b4d233362753-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "unl-188-219": {
+  "attachedReminderText": "When I conquer, if you assigned 3 or more excess damage, draw 1.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--unl-188-219 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/22755fc744a79fbdcce0ceadfe20d6d0a2b8624a-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "ven-011-166": {
+  "attachedReminderText": "When I move to a battlefield, give me +2 [S] this turn.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-011-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/857a5cee28f403454b1825dd112c07e9ac06b8a4-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "ven-027-166": {
+  "attachedReminderText": "I have +2 [S] while I'm at a battlefield with exactly one other unit you control.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-027-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/524fedb9116db0eb62380c03e0853c342c53daeb-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "ven-137-166": {
+  "attachedReminderText": "(I am a copy of the chosen unit.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ven-137-166 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e49461109a4116c22af9206719f53fb73aee36d0-744x1039.png): Equipment bottom band (ability the equipped unit has while this is attached; \"I/me\" = that unit) is missing from the scrape"
+ },
+ "ogn-247-298": {
+  "reminderText": "[T]: [Reaction] — [Add] [A]. Use only to play spells. (Abilities that add resources can't be reacted to.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ogn-247-298 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/3ea826277086945a2cdfda4e41b771075aa8b15b-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "ogn-263-298": {
+  "reminderText": "You may pay [1] to hide a card with [Hidden] instead of [A].\n[1], [T]: Put a Teemo unit you own into your hand from your Champion Zone or the board.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ogn-263-298 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9723181e3392bb61c2aabc804a44f7b0558cedf1-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "ogn-268-298": {
+  "reminderText": "[Action] (Play on your turn or in showdowns.)\nPay any amount of [A] to deal that much damage to all enemy units at a battlefield.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ogn-268-298 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/96ed7f6b121a7f46003534393350838efe2776f0-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "ogn-269-298": {
+  "reminderText": "If a buffed unit you control would die, you may pay [A], exhaust me, and spend its buff to heal it, exhaust it, and recall it instead. (Send it to base. This isn't a move.)\nWhen you conquer, ready me.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--ogn-269-298 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b132becb843b2cf418cb110ead64758f49f51554-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "sfd-182-221": {
+  "reminderText": "[Reaction] (Play any time, even before spells and abilities resolve.)\n[Repeat] [1][A] (You may pay the additional cost to repeat this spell's effect.)\nGive your Mechs +1 [S] this turn.",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-182-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/c4652150ba885dd346b8f3622fd0e4ada7cf767f-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "sfd-186-221": {
+  "reminderText": "[Quick-Draw] (This has [Reaction]. When you play it, attach it to a unit you control.)\n[Equip] [A] ([A]: Attach this to a unit you control.)\n[Temporary] (If this is unattached, kill it at the start of its controller's Beginning Phase, before scoring.)",
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--sfd-186-221 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e4e0328034e605d000e23ac5e820d233f0e3b520-744x1039.png): on this multi-domain card the printed power icon is the rainbow \"any power\" symbol ([A]); the scrape wrote [C]"
+ },
+ "rad-001-167": {
+  "domains": [
+   "Fury"
+  ],
+  "tags": [
+   "Bandle City",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-001-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/3dca5e04ff8dff983993f87d5a82a7fd56d7bc9c-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-002-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-002-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/1e2a4e0a8cf533c82e9c3f4d507dd7eb63ece943-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-003-167": {
+  "domains": [
+   "Fury"
+  ],
+  "tags": [
+   "Bilgewater"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-003-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b660759a6bcb9c7ca41ea969cf11463259e284c9-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-004-167": {
+  "domains": [
+   "Fury"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-004-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/38fd13c7522bb47dcc5ce1596aeb6a638087ee09-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-005-167": {
+  "tags": [
+   "Shadow Isles",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-005-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5453008d27b3bb4f00941cb5a0d9ca52e4eb0245-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-006-167": {
+  "domains": [
+   "Fury"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-006-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e646f9850571e20eca22e07af5d4dd68813fdd19-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-008-167": {
+  "tags": [
+   "Demacia",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-008-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/3adae96f4731752074cf2145507a175dee800411-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-009-167": {
+  "domains": [
+   "Fury"
+  ],
+  "tags": [
+   "Bandle City",
+   "Yordle",
+   "Mech"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-009-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5be775464c8b897501317c6d32fd60c8b962b5c2-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-011-167": {
+  "tags": [
+   "Piltover",
+   "Mech"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-011-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e95470d5c2fbc9f7f8ab0b1c19f32fd704918c83-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-012-167": {
+  "domains": [
+   "Fury"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-012-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/11e2ddea70ec4dd8e562681a1ab1dfbc2b2dca0f-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-014-167": {
+  "tags": [
+   "Bilgewater"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-014-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/02ef2a5c93cf60048bb932a709d3a5b17b93bb1d-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-016-167": {
+  "domains": [
+   "Fury"
+  ],
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-016-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/59e551045ca75d932ff76c4820d873d4a2cde9e8-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-017-167": {
+  "domains": [
+   "Fury"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-017-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0cd07e77e69a53b78486b07dd7610183c953d581-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-018-167": {
+  "tags": [
+   "Noxus"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-018-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9ddc2759cf8b039bc1ee77e32326c5475cc001e8-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-019-167": {
+  "tags": [
+   "Freljord"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-019-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/922ef5a266378fa8ebd7e75bf83435bacd1a75d8-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-020-167": {
+  "tags": [
+   "Mordekaiser",
+   "Noxus",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-020-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/66db9510de566ac43157ecdcc96f33b5f553a38d-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-022-167": {
+  "domains": [
+   "Fury"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-022-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/a05ff95e5bb933664e09656973c72f4d39d8e701-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-023-167": {
+  "tags": [
+   "Ziggs",
+   "Zaun",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-023-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9df0d347bcfc0593cb724258ee07a1208c620848-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-024-167": {
+  "domains": [
+   "Calm"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-024-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5b819cc232389f3ef1438350d68c7801e181961c-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-026-167": {
+  "domains": [
+   "Calm"
+  ],
+  "tags": [
+   "Freljord"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-026-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/8d8688f43e219f7f4b5f5fd17cff204dcebc3bdc-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-027-167": {
+  "tags": [
+   "Ixtal",
+   "Bird"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-027-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/73fde9189b222313dcf8c2abe79b38082c76961e-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-030-167": {
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-030-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/776973101613a15a7d0a2fc90587d19098ecc894-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-031-167": {
+  "tags": [
+   "Bilgewater",
+   "Sentinel"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-031-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/8513fbe02a37f957b2a98bcee5badfdc56f41e82-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-036-167": {
+  "tags": [
+   "Freljord",
+   "Bird"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-036-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/fc59661dfc70a1fdb393d795c90779a2b5661609-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-037-167": {
+  "tags": [
+   "Piltover"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-037-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5081f81341bb02dfd26c970c09651fcf64a18a04-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-040-167": {
+  "tags": [
+   "Shadow Isles",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-040-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0a5f9ab3216462356f6ddf8f172284dca6be21e9-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-041-167": {
+  "domains": [
+   "Calm"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-041-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b9c1b9441e42639805b715466938ccd26b89892d-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-043-167": {
+  "tags": [
+   "Riven",
+   "Noxus"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-043-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0c9ac0da1c144f46a1e0c5423f51f9b8f6ba295b-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-044-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-044-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0a625c22d828c83302132b0465dceb3ab11a08bc-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-047-167": {
+  "domains": [
+   "Mind"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-047-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/75a3d8fbfd8caeabfd5be38513a6624c61f5230f-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-049-167": {
+  "domains": [
+   "Mind"
+  ],
+  "tags": [
+   "Zaun"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-049-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/c8f6b4191874f23b522566f8ebeeb6e5ee18eb7f-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-050-167": {
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-050-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/72828b0fe019b2e03069510f781dfa8f5759ac12-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-052-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-052-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/d5cc2f85febe2260e51b88bddfeab6ce700c85dd-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-053-167": {
+  "tags": [
+   "Freljord",
+   "Bird"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-053-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5973b5036060f29e24f8778949bf6f01f360c0a4-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-054-167": {
+  "tags": [
+   "Bandle City",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-054-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/78106b7cea441b13d108e532adc5ce063f448165-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-055-167": {
+  "tags": [
+   "Piltover",
+   "Mech"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-055-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/5d4c22ef863e041887a00d34b2dae1f3ce658326-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-057-167": {
+  "tags": [
+   "Piltover",
+   "Mech"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-057-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/9558ced7593f5a26911eb6e1393aae3289842e20-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-058-167": {
+  "tags": [
+   "Bilgewater"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-058-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/4e3c24c1c315656772d0bfd8d100bc7893e94994-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-059-167": {
+  "domains": [
+   "Mind"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-059-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/bea8e402f99b0afb5af1b19c0ee8ea34052e736f-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-060-167": {
+  "tags": [
+   "Ionia",
+   "Dragon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-060-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b7cd2e475834863bf4e66994118a835ba4377d16-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-062-167": {
+  "domains": [
+   "Mind"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-062-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/51f589e5ed0f7316b6cb64ebc93c4ef3e75b7f46-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-066-167": {
+  "tags": [
+   "Freljord",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-066-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/7a1f527e5910fbc18f7cb3cddf2aa59b483393f4-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-067-167": {
+  "domains": [
+   "Mind"
+  ],
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-067-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b846d604eee450a4ab8f457f2738b0596e7b361e-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-072-167": {
+  "tags": [
+   "Bandle City",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-072-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/6db2839d8702b15ab62413028c0321c75e87801c-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-073-167": {
+  "domains": [
+   "Body"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-073-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/374248eb65ca1e90a434652073dbbd3a12a11eda-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-074-167": {
+  "tags": [
+   "Freljord"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-074-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/778e70b353d7f28eae9b54b1a37af3853238ba04-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-075-167": {
+  "tags": [
+   "Demacia",
+   "Elite",
+   "Bird"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-075-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/694a362579d3f2e9805cac0da4814ea911423033-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-076-167": {
+  "tags": [
+   "Mount Targon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-076-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/c04963c90ab2b338883c980ac947b8c9d80a7427-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-077-167": {
+  "tags": [
+   "Freljord",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-077-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/531b923f3437f497b858bf186b46b4ac88460da6-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-078-167": {
+  "tags": [
+   "Noxus"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-078-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/c479f2fda00506e71a57ac4e8cc297f7f3110a54-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-080-167": {
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-080-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/775ccea752fb404be2433c4b870c7877e2445a8c-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-081-167": {
+  "domains": [
+   "Body"
+  ],
+  "tags": [
+   "Freljord"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-081-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/1799cd4c46fcf0243b4022de2d427b15e67a15ad-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-083-167": {
+  "tags": [
+   "Mount Targon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-083-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/bff85727b58017cbd3921fd73e9b363f5a0205e4-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-087-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-087-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/dba5c879aae5c614198eb8408e0104a1b0618102-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-088-167": {
+  "tags": [
+   "Freljord"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-088-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/91c4670531d7773cae9e7b4bfd5ac4e259602162-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-089-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-089-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/7d027f4e30df4f7141799709f9fb785835adefed-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-090-167": {
+  "tags": [
+   "Evelynn",
+   "Demon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-090-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/26b83de26622fb5163d2fe321ff29e2bf16ac027-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-092-167": {
+  "tags": [
+   "Mount Targon",
+   "Dragon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-092-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/ad1793554440d8d5017eadc565ca6c787a969de1-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-093-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "tags": [
+   "Bandle City",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-093-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/79ec89753be773e7ea93b2116ea29d21c81fcef9-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-094-167": {
+  "tags": [
+   "Zaun"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-094-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/f2590617229f3efc078aa2429f65b85101303200-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-095-167": {
+  "tags": [
+   "Shadow Isles",
+   "Demon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-095-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/aea67209470e47ec876a11ae9b3eacda00df7be1-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-097-167": {
+  "tags": [
+   "Bilgewater"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-097-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e666029dcebc507cc80435eee17db435305d1361-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-099-167": {
+  "tags": [
+   "Bilgewater",
+   "Demon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-099-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/20e2752ddf0af274d26a3c25c737ccea2c353e39-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-102-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-102-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e9dd313886624aafc7e0c7f9e1689225c042b484-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-103-167": {
+  "tags": [
+   "Zaun"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-103-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/756827744317003e4992163ff9bf1dc991682de8-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-104-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "tags": [
+   "Shadow Isles",
+   "Cat"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-104-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/fc61b244fb3ed01d61617c3c2633a71424604130-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-105-167": {
+  "tags": [
+   "Piltover"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-105-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/b7ff5684309bcd346e6b3534e0d1f38ec1a38726-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-106-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-106-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e7dcc9ad059b471373f0093453a0ca7537d6aa0f-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-107-167": {
+  "tags": [
+   "Shadow Isles",
+   "Demon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-107-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/d112a706fe957e5cea58ea1e4366ac02e3ba292b-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-108-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-108-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/120762e23a599ee14d3f88856fcf707154338fb0-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-109-167": {
+  "tags": [
+   "Evelynn",
+   "Demon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-109-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/8c17158e6153eddb4b56abd8a09cbbd20600b049-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-111-167": {
+  "domains": [
+   "Chaos"
+  ],
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-111-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/cb2a419b61b6f1e6d138c3c3b07b393a4037237b-744x1039.png): printed domain colour / type line (domains, tags) differ from the scrape"
+ },
+ "rad-112-167": {
+  "tags": [
+   "Ziggs",
+   "Zaun",
+   "Yordle"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-112-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/f0c1f1f3b69b31a69f9637ece841b5ee1029cdd3-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-113-167": {
+  "tags": [
+   "Bilgewater",
+   "Dragon"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-113-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/e805eba9add03fd3e1b1601b15c12a46fd403282-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-114-167": {
+  "tags": [
+   "Riven",
+   "Noxus"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-114-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/59c080321a697164c9eeb6f0ad297ff0d0b85808-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-115-167": {
+  "tags": [
+   "Bilgewater"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-115-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/60cf9dbb9345d44f0a9a78b60d5fb71411b50d69-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-116-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-116-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0e80322dac6065e3ee726f5f9a2650a88195a44c-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-118-167": {
+  "tags": [
+   "Shurima"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-118-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/a168856002994f7ac67150d991e65152e6434ab6-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-119-167": {
+  "tags": [
+   "Demacia",
+   "Dog"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-119-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/cefd575150527670879748a7212f80a1f4c1c4fc-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-120-167": {
+  "tags": [
+   "Piltover"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-120-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/ee50fbf5e902e7109a3d54b417edc440b5a37198-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-121-167": {
+  "domains": [
+   "Order"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-121-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/1f246286c658d44dc4e7d51c158b2f822da39825-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-122-167": {
+  "tags": [
+   "Zaun"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-122-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/3413fc46086d559c2a60657e4729f22475bbdec0-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-124-167": {
+  "domains": [
+   "Order"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-124-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/751629a34ee6ba6476ce2f0a821b9f84b5562acd-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-125-167": {
+  "tags": [
+   "The Void"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-125-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/4f49bf38f0d3abb71e148783ebec97f446db8166-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-126-167": {
+  "tags": [
+   "Shadow Isles",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-126-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/6d8500ac7efc5382985f566212d88ac8f41c135d-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-128-167": {
+  "tags": [
+   "Demacia"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-128-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/efa8d58e65b1b1f804d37bb51bb67ea52e0b3205-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-129-167": {
+  "tags": [
+   "Noxus",
+   "Trifarian"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-129-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/914ced10400826a878ed5cf7294207a4e7b542b1-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-130-167": {
+  "tags": [
+   "Demacia"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-130-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/eb04c39763de8fb8e56153d1f0e4f799e15dced9-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-131-167": {
+  "tags": [
+   "Demacia"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-131-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/127c2700ee4e2557dfd463ed84c45f4600ad9723-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-134-167": {
+  "domains": [
+   "Order"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-134-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/0c307d5f4785efc4f0a4c8e486b53735f8cf04aa-744x1039.png): printed domain colour / type line (domains) differ from the scrape"
+ },
+ "rad-136-167": {
+  "tags": [],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-136-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/4f477ccc474cb16e4e9d681b388f0673f77fae5b-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-137-167": {
+  "tags": [
+   "Mordekaiser",
+   "Noxus",
+   "Spirit"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-137-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/43068166258356908b364566abcfc57123e96caa-744x1039.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-146-167": {
+  "tags": [
+   "Orianna"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-146-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/4b11f36bd5ce2b08677959664cda3906a04d234c-744x1040.png): printed domain colour / type line (tags) differ from the scrape"
+ },
+ "rad-156-167": {
+  "tags": [
+   "Jarvan IV"
+  ],
+  "source": "official card gallery https://playriftbound.com/en-us/card-gallery/#card-gallery--rad-156-167 (printed card image https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_live/315b0f7901a83df38b9765f12b1edfdc7de566a3-744x1040.png): printed domain colour / type line (tags) differ from the scrape"
+ }
+}

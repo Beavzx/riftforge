@@ -25,7 +25,7 @@ test('a full mock self-play game (factored env) completes and records valid posi
   const env = new FactoredEnv(); const rng = makeRng(4);
   const agent = new SearchAgent('nn', env, new UniformEvaluator(), fast, DEFAULT_CAPS, { record: true, noise: true, rng });
   const r = await playGame({ env, agents: [agent, agent], decks, seed: 77, firstPlayer: 0, caps: DEFAULT_CAPS });
-  assert.notEqual(r.status, 'error', r.error);
+  assert.notEqual(r.status, 'error', r.error ?? '');
   assert.ok(r.decisions > 10);
   const pos = assignOutcome(agent.positions, r, 0, 0.2);
   assert.ok(pos.length > 0);
@@ -60,7 +60,7 @@ test('engine bots play through the factored env (eval path)', async () => {
   const nn = new SearchAgent('nn', env, new UniformEvaluator(), fast, DEFAULT_CAPS, { record: false, noise: false, rng });
   const bot = new EngineBotAgent('bot', (g, p) => chooseAction(g, p));
   const r = await playGame({ env, agents: [nn, bot], decks, seed: 12, firstPlayer: 1, caps: { ...DEFAULT_CAPS, maxTurns: 25 } });
-  assert.notEqual(r.status, 'error', r.error);
+  assert.notEqual(r.status, 'error', r.error ?? '');
 });
 
 test('game loop masks a rolled-back option and drops its recorded position', async () => {
@@ -77,7 +77,7 @@ test('game loop masks a rolled-back option and drops its recorded position', asy
   let recorded = 0, dropped = 0;
   const first = { name: 'last', choose: async (_e: unknown, _s: unknown, _a: unknown, ch: Choices) => { recorded++; return ch.n - 1; }, rolledBack: () => { dropped++; recorded--; } };
   const r = await playGame({ env: new Env(), agents: [first, first], decks, seed: 5, firstPlayer: 0, caps: { ...DEFAULT_CAPS, maxTurns: 10 } });
-  assert.notEqual(r.status, 'error', r.error);
+  assert.notEqual(r.status, 'error', r.error ?? '');
   assert.ok((r.rollbacks ?? 0) > 0, 'some picks rolled back');
   assert.equal(dropped, r.rollbacks, 'every rolled-back pick was reported to the agent');
   assert.equal(recorded, r.decisions - (r.rollbacks ?? 0));

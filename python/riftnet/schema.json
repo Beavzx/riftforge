@@ -1,6 +1,6 @@
 {
  "version": 1,
- "schemaHash": 1713244677,
+ "schemaHash": 2349895024,
  "maxEntities": 192,
  "maxBattlefields": 4,
  "maxPtrs": 12,
@@ -291,7 +291,7 @@
   ]
  },
  "action": {
-  "dim": 138,
+  "dim": 152,
   "names": [
    "type:choose",
    "type:playCard",
@@ -375,7 +375,21 @@
    "choose:done",
    "choose:hasObj",
    "choose:all",
-   "sub:partial",
+   "sub:engine",
+   "sub:pickCards",
+   "sub:moveUnits",
+   "sub:assignDamage",
+   "sub:payment",
+   "sub:step",
+   "sub:picked",
+   "sub:min",
+   "sub:max",
+   "sub:total",
+   "sub:assigned",
+   "sub:remaining",
+   "sub:valueBase",
+   "sub:valueStr",
+   "sub:passThrough",
    "dmg:total",
    "dmg:targets",
    "dmg:lethalHits",
@@ -455,6 +469,13 @@
    "runeExhaust",
    "runeRecycle",
    "abOther"
+  ],
+  "subKinds": [
+   "engine",
+   "pickCards",
+   "moveUnits",
+   "assignDamage",
+   "payment"
   ]
  },
  "ptrRoles": [
@@ -466,7 +487,10 @@
   "payExhaust",
   "payRecycle",
   "damage",
-  "pendingSource"
+  "pendingSource",
+  "picked",
+  "assigned",
+  "current"
  ],
  "cards": {
   "padIdx": 0,

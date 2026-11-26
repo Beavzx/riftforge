@@ -14,8 +14,16 @@ encodeObservation(state: GameState, player: PlayerId, opts?: { costs?: boolean }
 encodeActions(state, player, legal: Action[], obs): EncodedActions
   // EncodedActions = { n, feats: Float32Array(n*ACTION.dim), ptrIdx: Int32Array(n*MAX_PTRS) (-1 = no row),
   //                    ptrRole: Int32Array(n*MAX_PTRS) (PTR_ROLES index, 0 = unused), ptrVal: Float32Array(n*MAX_PTRS) }
-encodeSubChoices(state, player, sub: { kind: string; prompt?; partial?; options: { label; objIds?; value?; isDone? }[] }, obs): EncodedActions
-  // same layout, type "subChoice" — for the factored sub-choice layer in src/ai/env/
+encodeSubChoices(state, player, sub: SubChoice, obs): EncodedActions
+  // sub = node.choice of src/ai/env/factored.ts as-is: { kind: 'engine'|'pickCards'|'moveUnits'|'assignDamage'|'payment',
+  //   decision, player, prompt, step, partial: { picked?, destination?, assignment?, current?, total?, min?, max? },
+  //   options: [{ id, label, objIds?, value?: number|string, isDone?, action? }] }
+  // - options with `action` (pass-through) get the full engine-action row (same as encodeActions) + sub:passThrough
+  // - other options: type "subChoice", objIds -> pointers (role option), value / isDone / label
+  // - every row: sub-choice kind one-hot, step, and the decision so far: pointers to cards already picked / moved
+  //   (role picked), damage assigned so far (role assigned, ptrVal = amount/10), the recipient being decided (role current),
+  //   the move destination (dest one-hot + battlefield pointer), sub:total / sub:assigned / sub:remaining, sub:min / sub:max
+  //   (the option's own pointers come first, so the partial-state pointers never push them out)
 packObs(obs, acts, tag = 0, out?, offset?): Uint8Array      unpackObs(buf)
 packResult(tag, value, logits, extra = []): Uint8Array      unpackResult(buf)
 withLength(frame): Uint8Array   // u32 length prefix for streams
@@ -27,14 +35,14 @@ cardIndex(), cardIdxOf(cardId), staticTable()   // PAD_IDX 0, UNKNOWN_IDX 1, car
 Use `observedState(state, player)` if you need the exact board the player observes (UI-CANCEL pre-play board).
 Only 1v1 is encoded properly ("opp" = the other player); FFA/2v2 would need per-opponent slots.
 
-## Dims (schema hash 1713244677)
+## Dims (schema hash 2349895024)
 
 | part | dim |
 |---|---|
 | global | 167 |
 | entity (dynamic) | 108 |
-| action row | 138 |
-| pointers per action | 12 (roles: none, source, option, moved, destination, payExhaust, payRecycle, damage, pendingSource) |
+| action row | 152 |
+| pointers per action | 12 (roles: none, source, option, moved, destination, payExhaust, payRecycle, damage, pendingSource, picked, assigned, current) |
 | static card table | 1105 rows (pad, unknown, 1103 cards) x 154 |
 | max entities | 192 (seen max 73 in random games, mean ~57) |
 
@@ -95,9 +103,23 @@ actions.test.ts fails if schema.json is stale.
 
 ## Tests
 
-- `tsx --test tests/ai/encode/leak.test.ts tests/ai/encode/actions.test.ts`
+- `tsx --test tests/ai/encode/leak.test.ts tests/ai/encode/actions.test.ts tests/ai/encode/subchoice.test.ts`
+  (subchoice: 12 random games driven only through factor()/pick() — maxFlat 1 on every 3rd seed, manual payment on even
+  seeds — 2,800 sub-choices / 11,600 options of all five kinds encoded with valid pointers; plus a stepwise
+  damage-assignment check of the assigned / current / remaining encoding)
 - `python3 -m unittest discover -s python/tests` (decodes TS-written frames byte-exactly, collation, result frames)
 
 ## API changes
 
-None since the WIP commit 529970a (names and frame layouts unchanged; only internals and new files).
+Since the WIP commit 529970a (all backward compatible; frame layouts unchanged):
+- `encodeSubChoices` now takes the factored layer's `SubChoice` exactly (src/ai/env/factored.ts node.choice: kind, decision,
+  step, partial object, options with id / value number|string / action). The old `{ kind, partial: [], options }` form is
+  still accepted (an array partial = picked ids).
+- New exports: `SUB_KINDS`, type `SubChoicePartial`; `schema().action.subKinds`.
+- `PTR_ROLES` gained `picked`, `assigned`, `current` (appended: existing role ids unchanged).
+- Action features: `sub:partial` replaced by `sub:<kind>` x5, `sub:step`, `sub:picked`, `sub:min`, `sub:max`, `sub:total`,
+  `sub:assigned`, `sub:remaining`, `sub:valueBase`, `sub:valueStr`, `sub:passThrough` (ACTION.dim 138 -> 152). Manual payment
+  answers (`choose` with a plan in `data`) now also get payExhaust / payRecycle pointers.
+- Schema hash 1713244677 -> 2349895024 (schema.json, card table and the Python fixture regenerated). Re-run
+  `tsx tools/encode-schema.ts` after merging and before training.
+- This branch merges agent/enum (d46bb97, new files only) for the sub-choice test.

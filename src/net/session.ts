@@ -2,6 +2,7 @@
 import type { Action, GameEvent, GameSetup, GameState, PlayerId, PlayerView } from '../engine/types';
 import * as Eng from '../ui/engine';
 import { type MatchState, recordGame } from './match';
+import { newRecord, finishRecord, type GameRecord } from './record';
 import type { PrintMap } from '../ui/art';
 
 export interface SessionStatus {
@@ -27,6 +28,8 @@ export interface GameSession {
   switchSeat?(p: PlayerId): void;
   /** Validate a non-enumerated action without applying it (only possible with full state). */
   check?(action: Action): string | null;
+  /** COACH: the replayable record of this game (setup + every action), when this side has the full state. */
+  gameRecord?(): GameRecord | null;
   close(): void;
   names(): string[];
   /** Per seat: the printed code (alt art) each player imported for a card id, used to pick card images. */
@@ -50,9 +53,11 @@ export class LocalSession implements GameSession {
   errors: string[] = [];
 
   private recorded = false;
+  private record: GameRecord;
   private prints: (PrintMap | undefined)[];
   constructor(setup: GameSetup, public mode: 'hotseat' | 'bot' | 'botvbot', opts: { botDelay?: number; human?: PlayerId; match?: MatchState; printings?: (PrintMap | undefined)[] } = {}) {
     this.state = Eng.createGame(setup);
+    this.record = newRecord(setup, 'local', mode === 'bot' ? (opts.human ?? 0) : undefined);
     this.prints = opts.printings ?? [];
     this.status = { mode, online: false, opponentConnected: true, match: opts.match };
     this.canSwitchSeat = mode === 'hotseat';
@@ -72,6 +77,7 @@ export class LocalSession implements GameSession {
     if (pend && this.mode === 'hotseat') this.shown = pend.player;
   }
   check(action: Action) { return Eng.validateAction(this.state, action); }
+  gameRecord(): GameRecord { return finishRecord(this.record, this.state); }
   /** Test/teaching hook: what the bot would do for the seat that must decide now. */
   suggest(): Action | null { const p = Eng.getPending(this.state); return p ? Eng.botAction(this.state, p.player) : null; }
   async act(action: Action): Promise<string | null> {
@@ -84,6 +90,7 @@ export class LocalSession implements GameSession {
     try {
       const r = Eng.applyAction(this.state, action);
       this.state = r.state; this.actionsApplied++;
+      this.record.actions.push(action);
       this.followPending();
       this.tick(r.events);
       return null;

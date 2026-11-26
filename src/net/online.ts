@@ -5,6 +5,7 @@ import * as Eng from '../ui/engine';
 import { type Channel, openChannel } from './room';
 import { type Msg, type SeatInfo, PROTO, isDeck, packView, parseMsg, unpackView } from './protocol';
 import type { GameSession, SessionStatus } from './session';
+import { newRecord, finishRecord, type GameRecord } from './record';
 import { type PrintMap, cleanPrintMap } from '../ui/art';
 import { type MatchOptions, type MatchState, DEFAULT_OPTIONS, newMatch, nextGame, recordGame, matchOver, sanitizeOptions, withOptions } from './match';
 
@@ -18,7 +19,7 @@ function viewSecret(): string {
 
 export const HB_MS = 2000;
 export const HOST_SAVE_KEY = 'riftforge.hostGame';
-export interface HostSave { code: string; gid: string; seats: [string, string]; names: [string, string]; state: GameState; at: number; match?: MatchState | null; printings?: (PrintMap | null)[] }
+export interface HostSave { code: string; gid: string; seats: [string, string]; names: [string, string]; state: GameState; at: number; match?: MatchState | null; printings?: (PrintMap | null)[]; record?: GameRecord | null }
 export function loadHostSave(): HostSave | null { try { const v = sessionStorage.getItem(HOST_SAVE_KEY); return v ? JSON.parse(v) as HostSave : null; } catch { return null; } }
 export function clearHostSave() { try { sessionStorage.removeItem(HOST_SAVE_KEY); } catch { /* ignore */ } }
 export const PEER_TIMEOUT_MS = 7000;
@@ -259,7 +260,7 @@ export class Lobby {
     if (this.state.role !== 'host' || save.code !== this.state.code || save.state.winner !== null) return null;
     this.state.seats = [{ cid: this.me.cid, name: save.names[0], ready: true, deckOk: true, connected: true }, { cid: save.seats[1], name: save.names[1], ready: true, deckOk: true, connected: false }];
     this.state.match = save.match ?? null;
-    const sess = new HostSession(this, save.gid, null, [this.me.cid, save.seats[1]], save.names, save.state, save.match ?? undefined, (save.printings ?? []).map(p => cleanPrintMap(p) ?? null));
+    const sess = new HostSession(this, save.gid, null, [this.me.cid, save.seats[1]], save.names, save.state, save.match ?? undefined, (save.printings ?? []).map(p => cleanPrintMap(p) ?? null), save.record ?? null);
     this.session = sess; this.state.started = true; this.state.gid = save.gid;
     this.broadcastLobby(); this.emit(); sess.sendStart();
     for (const f of this.startSubs) f(sess);
@@ -309,8 +310,11 @@ export class HostSession extends BaseOnline implements GameSession {
   private guestSid = '';
   private disconnectedSince = 0;
   private recorded = false;
-  constructor(lobby: Lobby, gid: string, setup: Parameters<typeof Eng.createGame>[0] | null, public seats: [string, string], private nameList: [string, string], restored?: GameState, match?: MatchState, private prints: (PrintMap | null)[] = []) {
+  /** COACH: replayable record (null for a game restored from a save made before records existed) */
+  private record: GameRecord | null;
+  constructor(lobby: Lobby, gid: string, setup: Parameters<typeof Eng.createGame>[0] | null, public seats: [string, string], private nameList: [string, string], restored?: GameState, match?: MatchState, private prints: (PrintMap | null)[] = [], restoredRecord?: GameRecord | null) {
     super(lobby, gid, 'host');
+    this.record = setup ? newRecord(setup, 'host', 0) : (restoredRecord ?? null);
     this.status.match = match;
     this.state = restored ?? Eng.createGame(setup!);
     this.recorded = this.state.winner !== null;
@@ -334,13 +338,14 @@ export class HostSession extends BaseOnline implements GameSession {
   // (no save on close: leaving clears the host save first, and a late save would resurrect it)
   close() { super.close(); for (const t of this.repeatTimers) clearTimeout(t); if (this.saveTimer) { clearTimeout(this.saveTimer); this.saveTimer = null; } try { removeEventListener('pagehide', this.flushSave); } catch { /* not a browser */ } }
   private save() {
-    try { sessionStorage.setItem(HOST_SAVE_KEY, JSON.stringify({ code: this.lobby.state.code, gid: this.gid, seats: this.seats, names: this.nameList, state: this.state, at: Date.now(), match: this.lobby.state.match })); } catch { /* storage full or blocked */ }
+    try { sessionStorage.setItem(HOST_SAVE_KEY, JSON.stringify({ code: this.lobby.state.code, gid: this.gid, seats: this.seats, names: this.nameList, state: this.state, at: Date.now(), match: this.lobby.state.match, record: this.record })); } catch { /* storage full or blocked */ }
   }
   names() { return [...this.nameList]; }
   printings() { return this.prints.map(p => p ?? undefined); }
   seat(): PlayerId { return 0; }
   view() { return Eng.getView(this.state, 0); }
   check(a: Action) { return Eng.validateAction(this.state, a); }
+  gameRecord(): GameRecord | null { return this.record ? finishRecord(this.record, this.state) : null; }
   suggest(): Action | null { const p = Eng.getPending(this.state); return p && p.player === 0 ? Eng.botAction(this.state, 0) : null; }
   sendStart(to?: string) {
     this.lobby.ch.send({ t: 'start', cid: this.lobby.me.cid, gid: this.gid, seats: this.seats, names: this.nameList, to, match: this.lobby.state.match ?? undefined, printings: this.prints.some(Boolean) ? this.prints : undefined });
@@ -361,6 +366,7 @@ export class HostSession extends BaseOnline implements GameSession {
     try {
       const r = Eng.applyAction(this.state, action);
       this.state = r.state; this.ver++;
+      this.record?.actions.push(action);
       if (this.state.winner !== null && !this.recorded) { this.recorded = true; this.lobby.recordResult(this.state.winner); this.setStatus({ match: this.lobby.state.match ?? undefined }); }
       this.sendView(); this.repeatView(); this.emitLocal(r.events); this.saveSoon();
       return null;

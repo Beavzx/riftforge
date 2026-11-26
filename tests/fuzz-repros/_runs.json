@@ -2343,5 +2343,40 @@
     ]
    }
   ]
+ },
+ {
+  "date": "2026-11-26T21:20:44.084Z",
+  "seed": 900001,
+  "games": 150,
+  "workers": 1,
+  "seconds": 249,
+  "steps": 19846,
+  "turns": 2752,
+  "ended": 146,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 68299,
+   "probesLegal": 2858,
+   "enumChecks": 1421,
+   "jsonChecks": 1154,
+   "viewChecks": 3121,
+   "rollbacks": 19
+  },
+  "signatures": [
+   {
+    "hash": "79376ab89a",
+    "sig": "long-game|game exceeded N turns|",
+    "kind": "long-game",
+    "soft": true,
+    "games": 4,
+    "cards": [],
+    "seeds": [
+     900022,
+     900044,
+     900105,
+     900122
+    ]
+   }
+  ]
  }
 ]

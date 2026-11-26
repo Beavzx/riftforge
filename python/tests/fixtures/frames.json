@@ -1,0 +1,82 @@
+[
+ {
+  "tag": 0,
+  "nE": 51,
+  "nA": 1,
+  "global0": 1,
+  "cardIdx0": 473,
+  "ptr0": -1,
+  "globalSum": 19.75000014528632,
+  "entitySum": 224.59062545048073
+ },
+ {
+  "tag": 1,
+  "nE": 57,
+  "nA": 6,
+  "global0": 1,
+  "cardIdx0": 473,
+  "ptr0": 1,
+  "globalSum": 27.916666701436043,
+  "entitySum": 277.52916713105515
+ },
+ {
+  "tag": 2,
+  "nE": 58,
+  "nA": 1,
+  "global0": 1,
+  "cardIdx0": 473,
+  "ptr0": -1,
+  "globalSum": 26.34166675247252,
+  "entitySum": 273.6760421250947
+ },
+ {
+  "tag": 3,
+  "nE": 63,
+  "nA": 1,
+  "global0": 0,
+  "cardIdx0": 473,
+  "ptr0": -1,
+  "globalSum": 24.47500011511147,
+  "entitySum": 321.0218754862435
+ },
+ {
+  "tag": 4,
+  "nE": 48,
+  "nA": 1,
+  "global0": 1,
+  "cardIdx0": 282,
+  "ptr0": -1,
+  "globalSum": 22.841666746884584,
+  "entitySum": 221.47500039683655
+ },
+ {
+  "tag": 5,
+  "nE": 52,
+  "nA": 1,
+  "global0": 1,
+  "cardIdx0": 282,
+  "ptr0": -1,
+  "globalSum": 24.608333334326744,
+  "entitySum": 249.75625050114468
+ },
+ {
+  "tag": 6,
+  "nE": 56,
+  "nA": 9,
+  "global0": 1,
+  "cardIdx0": 282,
+  "ptr0": -1,
+  "globalSum": 23.70833334699273,
+  "entitySum": 273.7708338801749
+ },
+ {
+  "tag": 7,
+  "nE": 57,
+  "nA": 3,
+  "global0": 1,
+  "cardIdx0": 282,
+  "ptr0": -1,
+  "globalSum": 22.58333333209157,
+  "entitySum": 260.26250048028305
+ }
+]

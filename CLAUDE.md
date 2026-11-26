@@ -12,7 +12,7 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
 | Area | Status | Code | Notes |
 |---|---|---|---|
 | Rules engine | Done before this session; ~9,300 tests | `src/engine`, `src/cards` | `ARCHITECTURE.md`, `AI-STARTER.md` |
-| Fuzz + bug fixes | 200-game fuzz clean; RJ#13328 Dancing Grenade fixed | `tools/fuzz.ts` | `docs/agents/fuzz.md` |
+| Fuzz + bug fixes | 200-game fuzz clean; 150-game re-fuzz after all merges clean | `tools/fuzz.ts` | `docs/agents/fuzz.md` |
 | Factored action layer | Every decision gets a complete, finite list of choices | `src/ai/env/factored.ts` | `docs/agents/enum.md` |
 | NN encoders + wire format | Done, leak-tested, 0.4 ms per observation | `src/ai/encode`, `python/riftnet` | `docs/agents/encoder.md` |
 | Coach / review | Done; uses the hand-tuned eval for now | `src/ai/coach`, `tools/review.ts` | `docs/agents/coach.md` |
@@ -71,7 +71,10 @@ Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, exp
 - **Hand reads** are decklist priors only; there's no inference from how the opponent played yet.
 - **The factored layer** knowingly skips outcome-irrelevant variants: overkill splits, which ready rune gives
   energy, and payments that overpay.
-- **Engine todos:** 2v2 invite timing (RJ#906), Hunters' Circle token discount (RJ#13152), Neeko legend replay (RJ#13165).
+- **Engine todos:** 2v2 invite timing (RJ#906); ven-163's Empower-scope "[1] or [A] less" still takes the [1]
+  (rules-decisions #79). Jonathon's ENGINE-10 update (merged from the second zip) fixed RJ#13152, RJ#13165 and RJ#13329,
+  and its RJ#13328 fix replaced the fuzz agent's version. Jonathon keeps working on the engine himself, so merge his
+  zips as a commit on a branch from the last upstream commit, then merge into master.
 - **Self-play throughput:** measured on the mock backend at about 13 ms per search simulation, 87% of it in the rules
   engine (`getLegalActions` + `applyAction`). `TRAINING.md` estimates about 800–1,000 games/hour on the home PC and
   4,000–5,000 on the EPYC.

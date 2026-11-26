@@ -46,7 +46,10 @@ function playAndRecord(seed: number, gameIdx: number, dA: number, dB: number): R
 
 // ---------------------------------------------------------------- logistic regression (Newton / IRLS, 1 feature)
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
-const clipEval = (e: number) => Math.max(-200, Math.min(200, e));   // wins/losses (±1e5) only appear at the very end
+// feature: log-compressed evaluation (src/ai/coach/winprob.ts feature()); wins/losses (±1e5) only appear at the very end
+export const SCALE = 20;
+let LINEAR = false;
+const clipEval = (e: number) => LINEAR ? Math.max(-200, Math.min(200, e)) : Math.sign(e) * Math.log1p(Math.abs(Math.max(-500, Math.min(500, e))) / SCALE);
 
 export function fitLogistic(rows: Row[], l2 = 1e-3): { a: number; b: number } {
   let a = 0, b = 0.05;
@@ -116,16 +119,21 @@ function main() {
   const gameIds = [...new Set(rows.map(r => r.game))].sort((x, y) => x - y);
   const testSet = new Set(gameIds.filter((_, i) => i % 10 >= 7));   // 30% of games held out
   const train = rows.filter(r => !testSet.has(r.game)), test = rows.filter(r => testSet.has(r.game));
+  // reference: a plain linear logistic on the clipped evaluation
+  LINEAR = true;
+  const linHeld = metrics(test, fitLogistic(train));
+  LINEAR = false;
   const cTrain = fitLogistic(train);
   const held = metrics(test, cTrain);
   const cAll = fitLogistic(rows);
   const out = {
-    a: cAll.a, b: cAll.b,
+    a: cAll.a, b: cAll.b, transform: 'log1p', scale: SCALE,
+    linearReference: { heldOutLogLoss: linHeld.logLoss, heldOutBrier: linHeld.brier },
     games: gameIds.length, rows: rows.length,
     heldOut: { games: testSet.size, fitOnTrain: cTrain, ...held },
     policy: 'SearchAI (default options) vs SearchAI, meta decks, seats alternated; one row per (turn, player, decision kind)',
     date: new Date().toISOString().slice(0, 10),
-    note: 'p(win) = 1/(1+exp(-(a + b*eval))), eval = src/ai/eval.ts evaluate() from the deciding player, clipped to ±200. A coarse calibration of a heuristic.',
+    note: 'p(win) = 1/(1+exp(-(a + b*f(eval)))), f(x) = sign(x)*ln(1+|x|/scale), eval = src/ai/eval.ts evaluate() from the deciding player. A coarse calibration of a heuristic, not a learned value.',
   };
   const outPath = arg('out', join(ROOT, 'data/coach-calibration.json'))!;
   writeFileSync(outPath, JSON.stringify(out, null, 1) + '\n');

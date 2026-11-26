@@ -112,7 +112,8 @@ export function labelAction(g: GameState, a: Action, d: Decision | null = g.pend
         if (g.objects[id]) return cardNameOf(g, id);
         return id;
       });
-      const what = d ? decisionWord(d) : 'Choose';
+      let what = d ? decisionWord(d) : 'Choose';
+      if (d && (d.kind === 'optional' || d.kind === 'chooseMode') && d.prompt) what = `${what} (${d.prompt.length > 70 ? d.prompt.slice(0, 67) + '...' : d.prompt})`;
       if (!names.length) return `${what}: none`;
       return `${what}: ${list(names)}`;
     }

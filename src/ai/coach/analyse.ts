@@ -163,7 +163,7 @@ function scoreInWorld(det: GameState, a: Action, p: PlayerId, plan: DeckPlan | n
 }
 
 /** Replay a candidate's planned steps in one world and continue into the opponent's next turn with the bot. */
-function expectedLine(det: GameState, p: PlayerId, steps: Step[], oppSteps: number): LineStep[] {
+function expectedLine(det: GameState, p: PlayerId, steps: Step[], oppSteps: number, unseen: Set<string>): LineStep[] {
   const out: LineStep[] = [];
   let g = det;
   const queue = steps.slice();
@@ -173,8 +173,8 @@ function expectedLine(det: GameState, p: PlayerId, steps: Step[], oppSteps: numb
     const d = g.pending;
     if (!d) break;
     if (g.activePlayer !== p) seenOppTurn = true;
-    // stop at our next quiet main phase after the opponent's turn
-    if (i > 0 && seenOppTurn && g.activePlayer === p && !d.inStep && d.kind === 'mainAction' && d.player === p) break;
+    // stop when our next turn begins (after the opponent's turn)
+    if (i > 0 && seenOppTurn && g.activePlayer === p) break;
     let a: Action | null = null;
     if (d.player === p) {
       // follow the planned line while the world matches it (state signature), else the quick bot
@@ -190,7 +190,11 @@ function expectedLine(det: GameState, p: PlayerId, steps: Step[], oppSteps: numb
     const label = labelAction(g, a, d), turn = g.turn;
     try { const r = applyAction(g, a); if (r.events.some(e => e.type === 'rollback')) break; g = r.state; } catch { break; }
     if (a.type === 'pass' || isMana(a)) continue;
-    if (d.player === p) out.push({ by: 'you', label, turn });
+    if (d.player === p) {
+      // a card we only have in this sampled world (drawn from our reshuffled deck) is a guess too
+      const obj = a.type === 'playCard' || a.type === 'hide' || a.type === 'activate' ? a.obj : null;
+      out.push({ by: 'you', label: obj && unseen.has(obj) ? `${label} (card drawn in this sample)` : label, turn });
+    }
     else { out.push({ by: 'opponent', label: label + ' (sampled)', turn }); if (++oppShown >= oppSteps) break; }
   }
   return out;
@@ -248,7 +252,8 @@ export function analyse(state: GameState, p: PlayerId, opts: AnalyseOptions = {}
   });
   results.sort((x, y) => (x.invalid ? 1 : 0) - (y.invalid ? 1 : 0) || y.score - x.score);
   const best = results.find(r => !r.invalid) ?? null;
-  const line = best ? expectedLine(worlds[0], p, firstSteps.get(keyOf(best.action)) ?? [{ a: best.action }], o.pvOpponentSteps) : [];
+  const unseen = new Set(state.players[p].mainDeck);
+  const line = best ? expectedLine(worlds[0], p, firstSteps.get(keyOf(best.action)) ?? [{ a: best.action }], o.pvOpponentSteps, unseen) : [];
   const reads = o.handSamples > 0 ? handReads(state, p, o.handSamples, o.seed + 17) : null;
   return { ...base, candidates: results, best, expectedLine: line, handReads: reads, trivial: false, nodes, ms: performance.now() - t0 };
 }

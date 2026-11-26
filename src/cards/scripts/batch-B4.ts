@@ -699,9 +699,14 @@ card('unl-076-219', 'I have +1 [S] for each of your units with [Temporary] at my
 // Call to Battle
 card('unl-101-219', 'Move a unit you control to a battlefield you control. Then, choose an opponent. They move a unit they control to the same battlefield.', [
   spell(ctx => {
-    const t = ctx.target(0), d = ctx.destination(1);
-    if (!t || typeof d !== 'number') return;
-    if (ctx.canMoveTo(t, d)) ctx.move(t, d);
+    const t = ctx.target(0);
+    // DECISIONS #13331: "the same battlefield" is the destination chosen when played (CR 355.4), not information from the unit —
+    // if my unit is an illegal target (Gusted), only my move is skipped; the opponent still moves one there (CR 359.3.e.14). The
+    // destination group's filter needs the unit, so without it the chosen battlefield is read raw (still one I control).
+    const raw = ctx.item?.targets[1]?.[0];
+    const d = t ? ctx.destination(1) : raw === undefined ? null : ctx.destOf(raw);
+    if (typeof d !== 'number' || !ctx.controls(d)) return;
+    if (t && ctx.canMoveTo(t, d)) ctx.move(t, d);
     const opp = ctx.chooseOpponent();
     const them = ctx.as(opp);
     const u = them.chooseCards(them.units(x => them.ctrl(x) === opp && canMoveTo(them, x, d)), 1, 1, `Call to Battle: move a unit you control to ${ctx.name(ctx.bfCard(d))}`)[0];

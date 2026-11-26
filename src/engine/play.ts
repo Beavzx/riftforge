@@ -306,10 +306,39 @@ export function purposeOf(g: GameState, id: ObjId): Purpose {
   return t === 'Spell' ? 'spell' : t === 'Unit' ? 'unit' : t === 'Gear' ? 'gear' : 'other';
 }
 
-function accelerateCost(g: GameState, p: PlayerId, id: ObjId): ResolvedCost {
+function accelerateCosts(g: GameState, p: PlayerId, id: ObjId): ResolvedCost[] {
   const s = getScript(g.objects[id].cardId);
   const base = s?.costs?.Accelerate ? resolveCost(s.costs.Accelerate, chars(g, id).domains) : resolveCost({ energy: 1, power: ['C'] }, chars(g, id).domains);
-  return applyMods(base, costMods(g, p, id, 'additional'));
+  return modVariants(base, costMods(g, p, id, 'additional'));
+}
+
+/**
+ * DECISIONS #13375 (RJ#13375/#13317): every distinct cost a modification list can give — "[1] or [A] less" (`either`) discounts
+ * let the payer choose which component is reduced. The first is the default (choice 0 everywhere). At most 3 either-hits.
+ */
+export function modVariants(base: ResolvedCost, hits: ModHit[]): ResolvedCost[] {
+  const eithers = hits.map((h, i) => (h.either && h.either.length > 1 && !h.declined ? i : -1)).filter(i => i >= 0).slice(0, 3);
+  if (!eithers.length) return [applyMods(base, hits)];
+  const out: ResolvedCost[] = []; const seen = new Set<string>();
+  const rec = (k: number, acc: number[]) => {
+    if (k === eithers.length) {
+      const r = applyMods(base, hits.map((h, i) => (eithers.includes(i) ? { ...h, choice: acc[eithers.indexOf(i)] } : h)));
+      const key = `${r.energy}|${[...r.power].sort().join(',')}`;
+      if (!seen.has(key)) { seen.add(key); out.push(r); }
+      return;
+    }
+    for (let c = 0; c < hits[eithers[k]].either!.length; c++) rec(k + 1, [...acc, c]);
+  };
+  rec(0, []);
+  // a variant whose "[A] less" had nothing to reduce is dominated by one that reduced something: drop it
+  const least = Math.min(...out.map(r => r.energy + r.power.length));
+  return out.filter(r => r.energy + r.power.length === least);
+}
+/** Of the affordable variants, the one the payer picks (asked only when two or more are affordable). */
+function pickVariant(g: GameState, p: PlayerId, id: ObjId, vs: ResolvedCost[]): ResolvedCost {
+  if (vs.length < 2) return vs[0];
+  const k = Number(chooseOne(g, p, 'chooseMode', 'Which cost reduction?', vs.map((v, i) => ({ id: String(i), label: `Pay ${costLabel(v)}` })), { source: id }));
+  return vs[k] ?? vs[0];
 }
 
 // ---------------- legality (enumeration helpers) ----------------
@@ -623,7 +652,8 @@ function playProcess(g: GameState, p: PlayerId, opt: PlayOption, po: PlayProcOpt
   }
 
   // 1. move to the chain as a pending item (CR 354)
-  moveToZone(g, id, 'chain', { controller: p });
+  // #13328: a spell played again from the chain (Dancing Grenade) stays the same object
+  moveToZone(g, id, 'chain', { controller: p, keepState: fromZone === 'chain' });
   g.objects[id].controller = p;
   const item: ChainItem = { id: newItemId(g), kind: 'spell', source: id, controller: p, targets: [], choices: { dest, from: fromZone }, pending: true, label: c.name, fromHidden, viaFlow: opt.via === 'flow', from: fromZone, leaveTo: po.leaveTo };
   g.chain.push(item);
@@ -660,13 +690,15 @@ function playProcess(g: GameState, p: PlayerId, opt: PlayOption, po: PlayProcOpt
     }
     let rc = resolveCost(ac.cost, c.domains);
     if (ac.optional) {
-      rc = applyMods(rc, costMods(g, p, id, 'additional'));
       const disc = ac.discount ? [{ e: ac.discount.energy ?? 0, pw: ac.discount.power ?? 0 }] : [];
-      const nonRes = rc.extra?.length ? canPayNonResource(g, p, id, rc) : true;
-      if (!nonRes || !canAfford(g, p, applyMods(addCosts(addCosts(costNow(), extraCost), rc), disc), purpose)) return;
+      // #13375: "[1] or [A] less" (Ezreal, Prodigy) — the payer chooses among the affordable variants
+      const vs = modVariants(rc, costMods(g, p, id, 'additional')).filter(v =>
+        (v.extra?.length ? canPayNonResource(g, p, id, v) : true) && canAfford(g, p, applyMods(addCosts(addCosts(costNow(), extraCost), v), disc), purpose));
+      if (!vs.length) return;
       // F-3c / CR 355.16: don't offer "no" when declining makes the play unpayable (the discount is then required)
       const withoutOk = costMode === 'free' || canAfford(g, p, applyMods(addCosts(costNow(), extraCost), extraDiscounts), purpose);
-      if (withoutOk && !askYesNo(g, p, `${ac.label ?? `Pay ${costLabel(rc)} as an additional cost`}?`, id)) return;
+      if (withoutOk && !askYesNo(g, p, `${ac.label ?? `Pay ${vs.map(costLabel).join(' or ')} as an additional cost`}?`, id)) return;
+      rc = pickVariant(g, p, id, vs);
     }
     extraCost = addCosts(extraCost, rc);
     if (ac.discount) extraDiscounts.push({ e: ac.discount.energy ?? 0, pw: ac.discount.power ?? 0 });
@@ -756,9 +788,9 @@ function playProcess(g: GameState, p: PlayerId, opt: PlayOption, po: PlayProcOpt
   if (allFree && c.type === 'Unit' && kws.has('Accelerate')) {
     if (askYesNo(g, p, 'Accelerate (enter ready)? (all costs are ignored: free)', id)) item.choices.accelerate = true;
   } else if (c.type === 'Unit' && kws.has('Accelerate')) {
-    const acc = accelerateCost(g, p, id);
-    if (canAfford(g, p, total(acc), purpose) && askYesNo(g, p, `Pay ${costLabel(acc)} for Accelerate (enter ready)?`, id)) {
-      add = addCosts(add, acc); item.choices.accelerate = true;
+    const accs = accelerateCosts(g, p, id).filter(a => canAfford(g, p, total(a), purpose));
+    if (accs.length && askYesNo(g, p, `Pay ${accs.map(costLabel).join(' or ')} for Accelerate (enter ready)?`, id)) {
+      add = addCosts(add, pickVariant(g, p, id, accs)); item.choices.accelerate = true;
     }
   }
   if (kws.has('Repeat')) {
@@ -766,10 +798,12 @@ function playProcess(g: GameState, p: PlayerId, opt: PlayOption, po: PlayProcOpt
     const list = keywordCosts(g, id, 'Repeat');
     for (const rc0 of list) {
       // all costs ignored (allFree): the Repeat may still be chosen, at 0 (CR 356 step 5)
-      const rr: ResolvedCost = allFree ? { energy: 0, power: [] } : applyMods(resolveCost(rc0, c.domains), costMods(g, p, id, 'repeat'));
-      const nonRes = rr.extra?.length ? canPayNonResource(g, p, id, rr) : true;
-      if (!nonRes || !canAfford(g, p, total(rr), purpose)) break;
-      if (!askYesNo(g, p, allFree ? `Repeat${list.length > 1 ? ` (${(item.repeat ?? 0) + 1} of ${list.length})` : ''}? (all costs are ignored: free)` : `Pay ${costLabel(rr)} to Repeat${list.length > 1 ? ` (${(item.repeat ?? 0) + 1} of ${list.length})` : ''}?`, id)) break;
+      // #13375: "[1] or [A] less" Repeat discounts (Ezreal, Prodigy) — the payer chooses among the affordable variants
+      const rvs: ResolvedCost[] = (allFree ? [{ energy: 0, power: [] }] : modVariants(resolveCost(rc0, c.domains), costMods(g, p, id, 'repeat')))
+        .filter(v => (v.extra?.length ? canPayNonResource(g, p, id, v) : true) && canAfford(g, p, total(v), purpose));
+      if (!rvs.length) break;
+      if (!askYesNo(g, p, allFree ? `Repeat${list.length > 1 ? ` (${(item.repeat ?? 0) + 1} of ${list.length})` : ''}? (all costs are ignored: free)` : `Pay ${rvs.map(costLabel).join(' or ')} to Repeat${list.length > 1 ? ` (${(item.repeat ?? 0) + 1} of ${list.length})` : ''}?`, id)) break;
+      const rr = pickVariant(g, p, id, rvs);
       add = addCosts(add, rr); item.repeat = (item.repeat ?? 0) + 1;
       // CR 820.2 / 820.2.a (RJ#92a, #193): the repeated execution's choices are made now, in Make Choices; Deflect is paid for
       // each of them (SFD-FAQ "Falling Star, Icathian Rain, and Deflect")

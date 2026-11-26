@@ -10,7 +10,7 @@ import type { GameEvent, ObjId, PlayerId } from '../../engine/types.ts';
 import { abilityByIndex, keywordCost } from '../../engine/chars.ts';
 import { getScript } from '../registry.ts';
 import { evPlayer, bfCtl, turnNumberOf, victory, conquerHere, holdHere, defendHere, scoreHere, usedThisTurn,
-  markThisTurn, firstThisTurn, fact, setFact, listen, discountMin1, oneOrA, itemTargets, payer, putInTrash,
+  markThisTurn, firstThisTurn, fact, setFact, listen, discountMin1, oneOrA, costModOneOrA, itemTargets, payer, putInTrash,
   putInChampionZone, putInLegendZone, setAside, chosenChampion, chosenChampionsInTrash, activateConquerEffects, isDeathknell, type QueuedTrigger,
 } from '../helpers/B8.ts';
 
@@ -535,7 +535,10 @@ card('sfd-202-221', "[Hidden]\nTake control of an enemy unit at a battlefield. R
 ]);
 
 // Neeko, Blending In — the extra legends come from DeckList.extraLegends (deck validation of them: B8-14).
-const neekoLeave = delayedAbility('B8:neeko:leave', when('leaveBoard', (ev, ctx) => ev.obj === ctx.data.neeko, ctx => {
+// RJ#13165: "while I'm on the board" is a duration, not a trigger — the legend leaves the Legend Zone the moment Neeko leaves the
+// board (CR 174.2.b), with no chain item (bookkeeping listener: runs as the leaveBoard event is emitted).
+const neekoLeave = delayedAbility('B8:neeko:leave', listen('leaveBoard', (ev, ctx) => {
+  if (ev.obj !== ctx.data.neeko) return;
   const l = ctx.data.legend as ObjId;
   if (ctx.exists(l) && ctx.obj(l).zone === 'legendZone') setAside(ctx, l);
   ctx.g.ex.delayed = ctx.g.ex.delayed.filter(d => !(d.key === neekoLeave && d.data.neeko === ctx.data.neeko && d.data.legend === l));
@@ -568,7 +571,7 @@ card('sfd-105-221', "I can't be chosen by enemy spells and abilities.", [
 
 // Irelia, Graceful
 card('sfd-141-221', "Your spells that choose me cost [1] or [A] less.", [
-  costModDyn((ctx, id) => (payer(ctx) === ctx.controller && ctx.isSpell(id) && itemTargets(ctx).includes(ctx.self) ? oneOrA(ctx.energyCost(id)) : null), { text: 'Your spells that choose me cost [1] or [A] less' }),
+  costModOneOrA((ctx, id) => (payer(ctx) === ctx.controller && ctx.isSpell(id) && itemTargets(ctx).includes(ctx.self) ? ctx.energyCost(id) : null), { text: 'Your spells that choose me cost [1] or [A] less' }),
 ]);
 
 // Vex, Cheerless
@@ -589,8 +592,9 @@ function optionalCostEnergy(ctx: Ctx, id: ObjId): number {
 }
 card('sfd-149-221', "When you play me, discard 1, then draw 2.\nOptional additional costs you pay cost [1] or [A] less.", [
   onPlay(ctx => { ctx.discard(1); ctx.draw(2); }, { text: 'Discard 1, then draw 2' }),
-  costModDyn((ctx, id) => (payer(ctx) === ctx.controller ? oneOrA(optionalCostEnergy(ctx, id)) : null), { scope: 'additional', text: 'Optional additional costs cost [1] or [A] less' }),
-  costModDyn((ctx, id) => (payer(ctx) === ctx.controller ? oneOrA(((ctx.item?.choices.grantedRepeat as { energy?: number } | undefined) ?? keywordCost(ctx.g, id, 'Repeat'))?.energy ?? 0) : null), { scope: 'repeat', text: 'Repeat costs cost [1] or [A] less' }),
+  // DECISIONS #13375: the payer chooses whether the [1] or the [A] is taken off (RJ#13375/#13317)
+  costModOneOrA((ctx, id) => (payer(ctx) === ctx.controller ? optionalCostEnergy(ctx, id) : null), { scope: 'additional', text: 'Optional additional costs cost [1] or [A] less' }),
+  costModOneOrA((ctx, id) => (payer(ctx) === ctx.controller ? ((ctx.item?.choices.grantedRepeat as { energy?: number } | undefined) ?? keywordCost(ctx.g, id, 'Repeat'))?.energy ?? 0 : null), { scope: 'repeat', text: 'Repeat costs cost [1] or [A] less' }),
 ]);
 
 // Alpha Wildclaw
@@ -889,7 +893,8 @@ card('rad-163-167', "For each player, the first unit or gear they play here on t
     if (usedThisTurn(ctx, `p${p}`)) return null;
     return { energy: -1 };
   }, { text: 'The first unit or gear each player plays here on their turn costs [1] less' }),
-  listen('play', (ev, ctx) => { if (ev.loc === ctx.bfIndex() && !ev.token && ctx.g.activePlayer === ev.player) markThisTurn(ctx, `p${ev.player}`); }),
+  // RJ#13152: a played token unit/gear (Bomb) is a unit or gear played here and uses up the discount ("create" emits no play event)
+  listen('play', (ev, ctx) => { if (ev.loc === ctx.bfIndex() && ctx.g.activePlayer === ev.player) markThisTurn(ctx, `p${ev.player}`); }),
 ]);
 
 card('rad-164-167', "Champion units here have +1 [S].", [

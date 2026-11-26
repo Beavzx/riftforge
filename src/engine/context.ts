@@ -344,6 +344,7 @@ export class Ctx {
   /** Put a card into one of its owner's zones (not a game action like kill/discard/burn: no events except leaveBoard). */
   toZone(id: ObjId, zone: 'trash' | 'hand' | 'banishment' | 'championZone' | 'legendZone' | 'setAside' | 'mainDeckTop' | 'mainDeckBottom'): boolean {
     if (!this.g.objects[id]) return false;
+    this.detachLeaving(id);
     if (zone === 'trash') return A.toTrash(this.g, id);
     if (zone === 'mainDeckTop' || zone === 'mainDeckBottom') return import_moveToZone(this.g, id, 'mainDeck', { position: zone === 'mainDeckTop' ? 'top' : 'bottom' });
     return import_moveToZone(this.g, id, zone);
@@ -399,10 +400,17 @@ export class Ctx {
   reveal(ids: ObjId[]) { A.reveal(this.g, ids); }
   toHand(id: ObjId) {
     const o = this.g.objects[id]; if (!o) return;
+    this.detachLeaving(id);
     import_moveToZone(this.g, id, 'hand');
   }
+  /** A permanent leaving the board by a raw zone move: its attachments end (CR 434.4 / 435.4.b; rules-decisions #23). Fuzz d09ae46bc6
+   *  recurrence (ENGINE-10): Keeper's Verdict put an equipped unit into the deck and the gear stayed attached. */
+  private detachLeaving(id: ObjId) {
+    const o = this.g.objects[id];
+    if (o && (o.zone === 'base' || o.zone === 'battlefield')) A.detachAll(this.g, id);
+  }
   /** put a card on the top/bottom of its owner's deck */
-  toDeck(id: ObjId, position: 'top' | 'bottom' = 'top') { import_moveToZone(this.g, id, 'mainDeck', { position }); }
+  toDeck(id: ObjId, position: 'top' | 'bottom' = 'top') { if (!this.g.objects[id]) return; this.detachLeaving(id); import_moveToZone(this.g, id, 'mainDeck', { position }); }
   counter(itemId: string): boolean { return counterItem(this.g, itemId, this.controller); }
   attach(gear: ObjId, unit: ObjId): boolean { return A.attach(this.g, gear, unit); }
   detach(gear: ObjId) { A.detach(this.g, gear); }

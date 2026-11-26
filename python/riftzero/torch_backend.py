@@ -1,4 +1,5 @@
-"""Torch inference backend for infer_server.py: serves slot 0 = latest.pt, slot 1 = best.pt, reloading newer files."""
+"""Torch inference backend for infer_server.py: slot 0 = latest.pt, slot 1 = best.pt, slot 2 = eval.pt (the pinned
+checkpoint an evaluation plays), each reloaded when its file changes. Refuses to run on CPU unless inference.allowCpu."""
 from __future__ import annotations
 
 import os
@@ -17,7 +18,8 @@ DTYPES = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": None}
 
 class TorchBackend:
     name = "torch"
-    n_slots = 2
+    n_slots = 3
+    SLOT_FILES = ((0, "latest.pt"), (1, "best.pt"), (2, "eval.pt"))
 
     def __init__(self, run_dir: Path, schema, cfg: dict, gpu: int | None):
         inf = cfg["inference"]
@@ -30,11 +32,15 @@ class TorchBackend:
                 torch.cuda.set_per_process_memory_fraction(frac, self.device)
             torch.backends.cuda.matmul.allow_tf32 = True
         else:
+            if not inf.get("allowCpu", False):
+                raise RuntimeError("CUDA is not available to PyTorch (check nvidia-smi and that torch is a CUDA 12.8+ build; "
+                                   "re-run scripts/setup.sh). Set inference.allowCpu: true to serve on CPU deliberately.")
             self.device = torch.device("cpu")
-            print("[infer] WARNING: CUDA not available, serving on CPU (slow)", flush=True)
+            print("[infer] WARNING: serving on CPU (inference.allowCpu is set)", flush=True)
         self.amp = DTYPES.get(inf.get("dtype", "bf16")) if self.device.type == "cuda" else None
         self.models: dict[int, torch.nn.Module] = {}
         self.mtimes: dict[str, float] = {}
+        self.slot_steps: dict[int, int] = {}
         self.step = 0
         t0 = time.time()
         while not (self.dir / "latest.pt").exists():
@@ -51,7 +57,7 @@ class TorchBackend:
         return m, int(ck.get("step", 0))
 
     def maybe_reload(self) -> None:
-        for slot, fname in ((0, "latest.pt"), (1, "best.pt")):
+        for slot, fname in self.SLOT_FILES:
             p = self.dir / fname
             if not p.exists():
                 continue
@@ -61,9 +67,14 @@ class TorchBackend:
             m, step = self._load(p)
             self.models[slot] = m          # atomic reference swap; in-flight batches finish on the old model
             self.mtimes[fname] = mt
+            self.slot_steps[slot] = step
             if slot == 0:
                 self.step = step
             print(f"[infer] slot {slot} <- {fname} (step {step})", flush=True)
+
+    def on_oom(self) -> None:
+        if self.device.type == "cuda":
+            torch.cuda.empty_cache()
 
     @torch.inference_mode()
     def infer(self, batch):

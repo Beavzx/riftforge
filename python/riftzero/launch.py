@@ -26,9 +26,21 @@ from pathlib import Path
 
 import yaml
 
-from .checkpoints import list_steps
+from .checkpoints import list_steps, pin_eval
 from .config import REPO_ROOT, load_config, write_resolved
 from .elo import record_eval
+
+
+def _scalar(v: str):
+    """--set values: YAML parsing, plus numbers YAML 1.1 leaves as strings (1e-4, 2e3, .5e1)."""
+    x = yaml.safe_load(v)
+    if isinstance(x, str):
+        for conv in (int, float):
+            try:
+                return conv(x)
+            except ValueError:
+                pass
+    return x
 
 
 def parse_set(items: list[str]) -> dict:
@@ -39,7 +51,7 @@ def parse_set(items: list[str]) -> dict:
         parts = k.split(".")
         for p in parts[:-1]:
             cur = cur.setdefault(p, {})
-        cur[parts[-1]] = yaml.safe_load(v)
+        cur[parts[-1]] = _scalar(v)
     return out
 
 
@@ -104,6 +116,18 @@ def port_open(host: str, port: int) -> bool:
         return s.connect_ex((host, port)) == 0
 
 
+def servers_serving(run_dir: Path, ports: list[int], slot: int, step: int) -> bool:
+    """Every inference server's stats file reports `slot` loaded with the weights of `step`."""
+    for port in ports:
+        try:
+            st = json.loads((Path(run_dir) / "servers" / f"s{port}.json").read_text())
+        except (OSError, ValueError):
+            return False
+        if int(st.get("slotSteps", {}).get(str(slot), -1)) != step:
+            return False
+    return True
+
+
 def find_node() -> str:
     node = shutil.which("node") or shutil.which("node.exe")
     if not node:
@@ -130,6 +154,8 @@ class Launcher:
         self.eval: Child | None = None
         self.eval_step = None
         self.last_eval_step = -1
+        self.eval_pending: dict | None = None   # {"step", "since"}: eval.pt pinned, waiting for the servers to load it
+        self.server_restarts: list[float] = []
         self.stopping = False
         self.reason = ""
         self.t0 = time.time()
@@ -224,8 +250,16 @@ class Launcher:
                     self.reason = "trainer finished"; break
                 self.abort(f"trainer exited with code {self.trainer.code()}", self.trainer); break
             for s in self.servers:
-                if not s.alive():
-                    self.abort(f"{s.name} exited with code {s.code()}", s); break
+                if s.alive():
+                    continue
+                now = time.time()
+                self.server_restarts = [t for t in self.server_restarts if now - t < 600] + [now]
+                limit = int(self.cfg["inference"].get("maxServerRestarts", 5))
+                if len(self.server_restarts) > limit:
+                    self.abort(f"{s.name} exited with code {s.code()} ({limit}+ server restarts in 10 minutes)", s); break
+                self.say(f"{s.name} exited with code {s.code()}; restarting it (workers reconnect on their own). Last log lines:\n{s.tail(8)}")
+                time.sleep(1)
+                s.start()
             if self.stopping:
                 break
             for w in self.workers:
@@ -261,6 +295,16 @@ class Launcher:
             self.last_eval_step = self.eval_step
             self.eval = None
             return
+        if self.eval_pending is not None:
+            p = self.eval_pending
+            if self.servers_serving_eval(p["step"]):
+                self.start_eval(p["step"])
+                self.eval_pending = None
+            elif time.time() - p["since"] > 3 * float(self.cfg["inference"]["reloadEverySec"]) + 30:
+                self.say(f"inference servers did not load eval.pt (step {p['step']}) in time; skipping this eval")
+                self.last_eval_step = p["step"]
+                self.eval_pending = None
+            return
         if self.backend == "mock":  # no trainer: evaluate the (uniform) network once, as a plumbing check
             step = 0 if self.last_eval_step < 0 and time.time() - self.t0 > 60 else None
         else:
@@ -270,6 +314,23 @@ class Launcher:
             step = newest if newest > 0 and newest >= max(0, self.last_eval_step) + every * k else None
         if step is None or step == self.last_eval_step:
             return
+        if self.backend == "mock":
+            self.start_eval(step)
+            return
+        # pin exactly these weights (slot 2) so the whole eval plays step N even while latest.pt moves on
+        try:
+            pin_eval(self.rd, step)
+        except OSError as e:
+            self.say(f"could not pin step {step} for eval ({e}); skipping")
+            self.last_eval_step = step
+            return
+        self.eval_pending = {"step": step, "since": time.time()}
+
+    def servers_serving_eval(self, step: int) -> bool:
+        return servers_serving(self.rd, self.r["servers"]["ports"], 2, step)
+
+    def start_eval(self, step: int):
+        ev = self.cfg["eval"]
         self.eval_step = step
         self.eval = Child("eval", self.node_cmd("tools/train-eval.ts", "--run", self.rd, "--step", step, "--port", self.r["servers"]["ports"][0]),
                           self.logs / "eval.log", self.env)

@@ -51,20 +51,27 @@ scripts exist, but WSL2 is what is tested).
 ```bash
 scripts/setup.sh
 ```
-It checks Node ≥ 22, runs `npm install`, creates `.venv`, and installs PyTorch built for CUDA 12.8. RTX 50-series
-(Blackwell, `sm_120`) needs CUDA 12.8+ builds. It also installs numpy, pyyaml, tensorboard and onnx, runs a bf16
-matmul on each GPU, and on WSL checks the points above. Re-running it is safe.
+It checks Node ≥ 22 and runs `npm install`. It creates `.venv`, or recreates it if it's broken (for example created
+before `python3-venv` was installed). It installs PyTorch from the CUDA 12.8 index, in the range pinned in
+`python/requirements.txt` (`torch>=2.7.1,<2.11`). RTX 50-series (Blackwell, `sm_120`) needs CUDA 12.8+ builds, so a CPU or
+older-CUDA torch already in the venv is replaced. It also installs numpy, pyyaml, tensorboard and onnx. Then it
+checks that each GPU's architecture is supported by the installed build *before* running a bf16 matmul on it, and on
+WSL it checks the points above. **If CUDA is not usable, setup fails** with a fix hint. Re-running it is safe.
 
 ## 2. Smoke test (2–3 minutes)
 
 ```bash
 scripts/smoke.sh
 ```
-It runs `config/smoke.yaml`: a tiny model, 2 workers and 8 simulations per move, for about 150 seconds. Then it
-checks that games finished, shards were written and read back, the trainer took steps and published checkpoints,
-the inference server hot-reloaded a trained checkpoint, and an eval match ran. Every line should say `PASS`. If
-not, read `runs/smoke/logs/*.log`.
-(`scripts/smoke.sh --backend mock` tests the plumbing without the GPU.)
+It runs `config/smoke.yaml` on a free port: a tiny model, 2 workers and 8 simulations per move, for about 150 seconds.
+Then it checks that games finished and shards were written and read back. It also checks that the trainer took
+steps **on CUDA** and published checkpoints, that the inference servers run **on CUDA** and hot-reloaded a trained
+checkpoint, and that an eval match ran. Every line should say `PASS`. If not, read `runs/smoke/logs/*.log`.
+(`scripts/smoke.sh --backend mock` tests the plumbing without the GPU. `--runs-dir /tmp/x` puts the throwaway run
+elsewhere.)
+
+The trainer and the inference server **refuse to run on the CPU** (instead of quietly crawling along) unless you set
+`train.allowCpu: true` / `inference.allowCpu: true`.
 
 ## 3. Start the real run
 
@@ -79,7 +86,7 @@ inference server, workers. Everything for a run lives in `runs/<name>/`:
 | path | what |
 |---|---|
 | `logs/` | launch, trainer, server, eval and per-worker logs |
-| `ckpt/` | `step_N.pt`, `latest.pt` (what self-play uses), `best.pt` |
+| `ckpt/` | `step_N.pt`, `latest.pt` (what self-play uses), `best.pt`, `eval.pt` (the checkpoint being evaluated) |
 | `shards/` | self-play training data (`.rfs`); old files are deleted past `train.keepShardFiles` |
 | `metrics.jsonl`, `tb/` | trainer metrics (TensorBoard: `.venv/bin/tensorboard --logdir runs`) |
 | `elo.csv`, `eval/` | evaluation matches |
@@ -102,6 +109,17 @@ Elo-vs-SearchAI history. What to look at:
 - **reuse** sits near `train.maxSampleReuse` (4) when the trainer is waiting for self-play, which is normal.
 - **timeouts** are a high share of games early (the caps are 60 turns, annealing to 40) and should fall as play
   becomes purposeful.
+- **skipped_steps** (in metrics.jsonl) counts training steps skipped for a non-finite loss or gradient. A few are
+  harmless. 10 in a row stop the trainer **without** publishing those weights (the last good `latest.pt` stays).
+
+Each eval plays one fixed checkpoint: the launcher copies `step_N.pt` to `ckpt/eval.pt`, waits until the inference
+servers have loaded it (slot 2), and only then starts the matches. The `elo.csv` row for step N is therefore exactly
+step N's weights, even though the trainer keeps publishing newer checkpoints meanwhile. Gating promotes that same
+file.
+
+If an inference server crashes (e.g. a CUDA out-of-memory error it couldn't recover from by splitting the batch),
+the launcher restarts it and the workers reconnect on their own. Only more than `inference.maxServerRestarts` (5)
+crashes in 10 minutes stop the run.
 
 ## 5. Stop / resume
 
@@ -154,7 +172,10 @@ policy). It talks to an inference server, so run one for the checkpoint you want
 ```bash
 PYTHONPATH=python .venv/bin/python -m riftzero.infer_server --run runs/home-1 --port 47000
 ```
-(slot 1 = `best.pt`). The ONNX file is for running the net without Python later (e.g. in the browser game).
+(slot 1 = `best.pt`). The ONNX file is for running the net without Python later (e.g. in the browser game). Export uses the newer
+`torch.export`-based exporter (`dynamo=True`) and falls back to the older TorchScript one. If `onnxruntime` is
+installed (`.venv/bin/pip install onnxruntime`), the exported file's outputs are compared with PyTorch's. *Not yet
+run on a real checkpoint: try it once after the first run, and report any error.*
 
 ## 9. Throughput and resources (estimates)
 
@@ -183,9 +204,10 @@ cheaper state clones).
 
 | symptom | fix |
 |---|---|
+| smoke/trainer/server: `CUDA is not available to PyTorch` | `nvidia-smi` inside WSL; after a Windows driver update run `wsl --shutdown`; then `scripts/setup.sh` (it replaces a CPU torch) |
+| `inference server error: ...` in errors/ | that request's batch failed (logged in `logs/server-*.log`); the game is dropped and the run continues |
 | `SCHEMA MISMATCH` in a worker log | workers and model use different encoder versions. Use a new run name, or don't mix code versions |
 | `port 47000 is in use` | another run is still active (`scripts/status.sh`), or set `inference.basePort` |
-| trainer: `CUDA not available` | `nvidia-smi` in WSL; reinstall torch with the cu128 index (`scripts/setup.sh` after `rm -rf .venv`) |
 | `no kernel image is available` / sm_120 warning | your torch build predates Blackwell: reinstall from the cu128 index |
 | out of GPU memory | lower `inference.memoryFraction` / `inference.maxBatch` / `train.batchSize`, or a smaller `model.size` |
 | WSL killed / out of RAM | raise `memory=` in `.wslconfig`; lower `train.replayPositions` or `selfplay.workers` |

@@ -51,7 +51,7 @@ async function main() {
   const stopPoll = setInterval(() => { if (existsSync(join(runDir, 'STOP'))) stop(); }, 1000);
 
   const st = { id, pid: process.pid, started: Date.now(), games: 0, ok: 0, timeouts: 0, errors: 0, positions: 0, decisions: 0,
-    sims: 0, evals: 0, turns: 0, rollbacks: 0, maxTurns: 0, seat0Wins: 0, seat1Wins: 0, draws: 0, lastGameMs: 0, updated: 0 };
+    sims: 0, evals: 0, turns: 0, rollbacks: 0, maxTurns: 0, inferenceErrors: 0, seat0Wins: 0, seat1Wins: 0, draws: 0, lastGameMs: 0, updated: 0 };
   const writeStats = () => {
     st.updated = Date.now(); st.evals = ev.count; st.positions = shards.positions;
     const p = join(statsDir, `w${String(id).padStart(3, '0')}.json`);
@@ -73,7 +73,11 @@ async function main() {
         st.games++; st.decisions += r.decisions; st.sims += agent.sims; st.turns += r.turns; st.lastGameMs = r.ms;
         if (r.status === 'error') {
           st.errors++;
+          if (r.error?.includes('inference server error')) st.inferenceErrors++;
           appendFileSync(join(errDir, `w${id}.jsonl`), JSON.stringify({ t: Date.now(), lane, ...r }) + '\n');
+          // lost the server (it exited / is being restarted): exit 3 so the launcher restarts this worker, which
+          // reconnects once the server is back — don't spin through instantly failing games
+          if (ev instanceof InferenceClient && ev.isClosed) { stopping = true; process.exitCode = 3; return; }
           continue;   // positions from a broken game are not trusted
         }
         if (r.status === 'timeout') st.timeouts++; else st.ok++;

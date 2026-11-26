@@ -3,6 +3,8 @@
   step_<N>.pt   full checkpoint (model + optimizer + scheduler + counters), kept for the last train.keepCheckpoints
   latest.pt     copy of the newest step_<N>.pt (what inference slot 0 serves)
   best.pt       the best model so far (eval gating; equals the first checkpoint until gating promotes another)
+  eval.pt       the checkpoint being evaluated, pinned (inference slot 2) so an eval plays one fixed set of weights
+                while the trainer keeps publishing latest.pt; eval_step.txt holds its step
   step.txt      newest step number (workers read it for cap annealing)
 All writes go to a temporary name first and are renamed into place, so readers never see half a file.
 """
@@ -35,10 +37,38 @@ def atomic_copy(src: Path, dst: Path) -> None:
     os.replace(tmp, dst)
 
 
-def promote_best(run_dir: str | Path, step: int) -> None:
+def pin_eval(run_dir: str | Path, step: int) -> None:
+    """Copy step_<step>.pt to eval.pt (served as slot 2) for an evaluation of exactly that checkpoint."""
     d = ckpt_dir(run_dir)
-    atomic_copy(d / f"step_{step}.pt", d / "best.pt")
+    atomic_copy(d / f"step_{step}.pt", d / "eval.pt")
+    (d / "eval_step.txt").write_text(str(step))
+
+
+def eval_step(run_dir: str | Path) -> int | None:
+    p = ckpt_dir(run_dir) / "eval_step.txt"
+    return int(p.read_text().strip()) if p.exists() else None
+
+
+def has_weights(run_dir: str | Path, step: int) -> bool:
+    d = ckpt_dir(run_dir)
+    return (eval_step(run_dir) == step and (d / "eval.pt").exists()) or (d / f"step_{step}.pt").exists()
+
+
+def promote_best(run_dir: str | Path, step: int) -> bool:
+    """Make the weights of `step` the best model. Prefers the pinned eval.pt when it holds that step (those are the
+    weights that were evaluated), else step_<step>.pt. Returns False (and changes nothing) if neither exists any more."""
+    d = ckpt_dir(run_dir)
+    src = None
+    if eval_step(run_dir) == step and (d / "eval.pt").exists():
+        src = d / "eval.pt"
+    elif (d / f"step_{step}.pt").exists():
+        src = d / f"step_{step}.pt"
+    if src is None:
+        print(f"[ckpt] weights of step {step} are gone (pruned); best.pt not changed", flush=True)
+        return False
+    atomic_copy(src, d / "best.pt")
     (d / "best_step.txt").write_text(str(step))
+    return True
 
 
 def best_step(run_dir: str | Path) -> int | None:

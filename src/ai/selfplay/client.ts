@@ -4,14 +4,25 @@
 // Connection handshake (this file + infer_server.py are the only two implementations):
 //   client → HELLO  u32[4]: 0x31484652 "RFH1" | PROTO_VERSION | schemaHash | clientId
 //   server → ACK    u32[4]: 0x31414652 "RFA1" | status (0 ok, 1 schema mismatch, 2 protocol mismatch) | serverSchemaHash | nSlots
-// Then the client pipelines RFO1 observation frames; the server answers each with an RFR1 result frame (any order).
-// The RFO1 `tag` word carries the request: bits 0-23 = request id, bits 24-31 = model slot (0 = latest, 1 = best).
+// Then the client pipelines RFO1 observation frames; the server answers each with an RFR1 result frame (any order), or
+// an RFE1 error frame (u32[4] 0x31454652 | tag | msgBytes | 0, then the utf-8 message) when that request's batch failed:
+// only that request is rejected (InferenceError), the connection stays up.
+// The RFO1 `tag` word carries the request: bits 0-23 = request id, bits 24-31 = model slot (0 = latest, 1 = best,
+// 2 = the pinned checkpoint under evaluation).
 import net from 'node:net';
 import { packObs, schemaHash, unpackResult, withLength } from '../encode/index.ts';
 import type { EvalRequest, EvalResult, Evaluator } from './evaluator.ts';
 
-export const HELLO_MAGIC = 0x31484652, ACK_MAGIC = 0x31414652, PROTO_VERSION = 1;
-export const SLOT_LATEST = 0, SLOT_BEST = 1;
+/** The slot an evaluated network plays from: the pinned eval checkpoint (slot 2) when the server offers it. */
+export function evalSlot(ev: Evaluator): number {
+  return ev instanceof InferenceClient && ev.nSlots >= 3 ? SLOT_EVAL : SLOT_LATEST;
+}
+
+export const HELLO_MAGIC = 0x31484652, ACK_MAGIC = 0x31414652, ERR_MAGIC = 0x31454652, PROTO_VERSION = 1;
+export const SLOT_LATEST = 0, SLOT_BEST = 1, SLOT_EVAL = 2;
+
+/** The server could not evaluate this request (its batch failed). The connection is still usable. */
+export class InferenceError extends Error { constructor(msg: string) { super(`inference server error: ${msg}`); this.name = 'InferenceError'; } }
 
 export interface ClientOptions { host?: string; port?: number; path?: string; clientId?: number; connectTimeoutMs?: number; retries?: number }
 
@@ -82,6 +93,12 @@ export class InferenceClient implements Evaluator {
         this.ackResolve?.(); this.ackResolve = this.ackReject = null;
         continue;
       }
+      if (magic === ERR_MAGIC) {
+        const id = frame.readUInt32LE(4) & 0xffffff, n = frame.readUInt32LE(8);
+        const w = this.waiting.get(id);
+        if (w) { this.waiting.delete(id); w.reject(new InferenceError(frame.subarray(16, 16 + n).toString('utf8'))); }
+        continue;
+      }
       const r = unpackResult(new Uint8Array(frame.buffer, frame.byteOffset, frame.byteLength));
       const id = r.tag & 0xffffff;
       const w = this.waiting.get(id);
@@ -110,6 +127,8 @@ export class InferenceClient implements Evaluator {
   }
 
   get inFlight() { return this.waiting.size; }
+  /** the connection is gone (server exited / restarted): every further evaluate() rejects at once */
+  get isClosed() { return this.closed; }
 
   async close() { this.closed = true; this.sock?.end(); }
 }

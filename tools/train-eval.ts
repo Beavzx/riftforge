@@ -1,6 +1,8 @@
 // TRAIN: evaluation matches for a run. Started by the launcher every eval.everyCheckpoints checkpoints:
 //   node --import tsx tools/train-eval.ts --run runs/<name> --step 12000 [--port 47000] [--games 20] [--opponents best,searchai,bot]
-// The network side always plays with the latest weights (server slot 0) and the eval search (no noise).
+// The network side plays the checkpoint the launcher pinned for this eval (server slot 2 = ckpt/eval.pt, so the trainer
+// publishing newer latest.pt files during the eval changes nothing) with the eval search (no noise). A server without
+// slot 2 (older protocol) falls back to slot 0.
 // Opponents: best = the same search with the best checkpoint (slot 1); searchai = the hand-built SearchAI (src/ai);
 // bot = the engine's rules bot. Seats and first player alternate. Writes runs/<name>/eval/step-<step>.json.
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -11,7 +13,7 @@ import { SearchAI, type SearchOptions } from '../src/ai/index.ts';
 import { makeRng } from '../src/engine/rng.ts';
 import { loadResolved, maxTurnsAt } from '../src/ai/selfplay/config.ts';
 import { makeEnv, type SearchEnv } from '../src/ai/selfplay/env.ts';
-import { InferenceClient, SLOT_BEST, SLOT_LATEST } from '../src/ai/selfplay/client.ts';
+import { evalSlot, InferenceClient, SLOT_BEST } from '../src/ai/selfplay/client.ts';
 import { UniformEvaluator, type Evaluator } from '../src/ai/selfplay/evaluator.ts';
 import { DeckPicker } from '../src/ai/selfplay/decks.ts';
 import { EngineBotAgent, playGame, SearchAgent, type Agent } from '../src/ai/selfplay/game.ts';
@@ -31,6 +33,7 @@ async function main() {
   const picker = new DeckPicker(cfg.decks);
   const rng = makeRng(cfg.seed * 31 + step);
   const results: MatchResult[] = [];
+  const mineSlot = evalSlot(ev);
   const caps = { ...cfg.caps, maxTurns: maxTurnsAt(cfg.caps, step) };
 
   for (const opp of opponents) {
@@ -43,7 +46,7 @@ async function main() {
         const nnSeat = (k % 2) as 0 | 1;
         // engine bots answer with whole engine actions, which every env accepts, so all matches use the training env
         const env: SearchEnv<any> = await makeEnv(cfg.env.kind);
-        const mine = new SearchAgent('latest', env, ev, cfg.evalSearch, caps, { record: false, noise: false, slot: SLOT_LATEST, rng });
+        const mine = new SearchAgent('latest', env, ev, cfg.evalSearch, caps, { record: false, noise: false, slot: mineSlot, rng });
         let theirs: Agent<any>;
         if (opp === 'best') theirs = new SearchAgent('best', env, ev, cfg.evalSearch, caps, { record: false, noise: false, slot: SLOT_BEST, rng });
         else if (opp === 'searchai') {

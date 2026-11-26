@@ -20,6 +20,7 @@ import type { GameState, PlayerId } from '../../engine/types.ts';
 import { encodeObservation, type EncodedActions, type Observation } from '../encode/index.ts';
 import { RollbackError, type Choices, type SearchEnv } from './env.ts';
 import type { Evaluator } from './evaluator.ts';
+import { InferenceError } from './client.ts';
 import { timeoutValues, type CapsConfig, type SearchConfig } from './config.ts';
 
 export interface SearchOpts {
@@ -174,7 +175,8 @@ export class Mcts<S> {
         path.push({ node, edge, actor });
         node = edgeRef.child ??= new Node();
       }
-    } catch {
+    } catch (e) {
+      if (e instanceof InferenceError) throw e;   // the network failed: not a property of this determinisation
       return false;   // an engine error inside a determinisation: drop this simulation
     }
     for (const { node: n, edge, actor } of path) { edge.N++; edge.W += values![actor]; n.N++; }

@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EngineEnv, RollbackError, type Choices, type SearchEnv } from '../../../src/ai/selfplay/env.ts';
 import { FactoredEnv } from '../../../src/ai/selfplay/factored-env.ts';
-import { UniformEvaluator } from '../../../src/ai/selfplay/evaluator.ts';
+import { UniformEvaluator, type EvalRequest } from '../../../src/ai/selfplay/evaluator.ts';
+import { InferenceError } from '../../../src/ai/selfplay/client.ts';
 import { Mcts } from '../../../src/ai/selfplay/mcts.ts';
 import { DEFAULT_CAPS, DEFAULT_SEARCH, maxTurnsAt, timeoutValues } from '../../../src/ai/selfplay/config.ts';
 import { makeRng } from '../../../src/engine/rng.ts';
@@ -80,4 +81,14 @@ test('caps: maxTurns annealing and timeout values', () => {
   const v = timeoutValues([6, 2], 8, 0.2);
   assert.ok(Math.abs(v[0] - 0.1) < 1e-9 && Math.abs(v[1] + 0.1) < 1e-9);
   assert.deepEqual(timeoutValues([3, 3], 8, 0.2).slice(0, 2), [0, 0]);
+});
+
+test('an inference error inside a simulation propagates (not swallowed as a dropped simulation)', async () => {
+  class Failing extends UniformEvaluator {
+    async evaluate(req: EvalRequest) { if (this.count >= 3) throw new InferenceError('boom'); return super.evaluate(req); }
+  }
+  const env = new EngineEnv();
+  const g = positions[1]; const s = env.root(g); const actor = env.actor(s)!;
+  const mcts = new Mcts(env, new Failing(), DEFAULT_SEARCH, DEFAULT_CAPS);
+  await assert.rejects(mcts.search(s, actor, env.choices(s, actor), { sims: 32, noise: false, rng: makeRng(1) }), InferenceError);
 });

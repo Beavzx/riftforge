@@ -90,6 +90,8 @@ inference:
   dtype: bf16           # bf16 | fp16 | fp32
   reloadEverySec: 20    # pick up new checkpoints this often
   memoryFraction: 0.30  # VRAM cap for the inference process (the trainer shares the same 16 GB card)
+  allowCpu: false       # without a working CUDA GPU the server refuses to start (instead of silently using the CPU)
+  maxServerRestarts: 5  # a crashed inference server is restarted; more than this in 10 minutes stops the run
 
 model:
   size: small           # tiny | small | medium | large (python/riftzero/model.py). small ≈ 1M params.
@@ -112,7 +114,9 @@ train:
   keepCheckpoints: 30
   keepShardFiles: 3000  # older shard files are deleted (their data is already in memory or too old)
   logEverySteps: 50
-  ampDtype: bf16
+  ampDtype: bf16        # bf16 (recommended on RTX 50) | fp16 (uses a GradScaler) | fp32
+  allowCpu: false       # refuse to train on CPU unless set
+  maxBadSteps: 10       # non-finite loss/gradient steps are skipped; this many IN A ROW stops the trainer (no publish)
   compile: false        # torch.compile: faster steps, slower start; try it once things work
   initFrom: null        # path to a checkpoint to start from (fine-tuning), e.g. runs/home-1/ckpt/best.pt
 

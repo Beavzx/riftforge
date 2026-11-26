@@ -1,5 +1,9 @@
-# Installed by scripts/setup.sh into .venv. torch itself is installed first from the CUDA 12.8 wheel index
-# (RTX 50-series / Blackwell sm_120 needs CUDA 12.8+ builds): pip install torch --index-url https://download.pytorch.org/whl/cu128
+# Installed by scripts/setup.sh into .venv.
+# torch: installed by setup.sh from the CUDA 12.8 wheel index (RTX 50-series / Blackwell sm_120 needs CUDA 12.8+
+# builds, first in torch 2.7). setup.sh installs this range and re-checks it (python/riftzero/torch_check.py); widen
+# the upper bound only after `scripts/smoke.sh` passes on the new version. Don't `pip install -r` this file straight
+# from PyPI on Windows: that gives a CPU-only torch.
+torch>=2.7.1,<2.11
 numpy>=1.26
 pyyaml>=6.0
 tensorboard>=2.16

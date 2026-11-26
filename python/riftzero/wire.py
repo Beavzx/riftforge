@@ -8,7 +8,9 @@ Frames (all little-endian, 4-byte aligned):
                   f32 global[G] | f32 entities[nE*F] | i32 cardIdx[nE] | f32 actions[nA*A] | i32 ptrIdx[nA*P]
                   | i32 ptrRole[nA*P] | f32 ptrVal[nA*P]
   RESULT (server) "RFR1": header u32[4] = magic | tag | nA | nExtra ; f32 value | f32 logits[nA] | f32 extra[nExtra]
-tag bits 0-23 = request id, bits 24-31 = model slot (0 = latest, 1 = best).
+  ERROR  (server) "RFE1": header u32[4] = magic | tag | msgBytes | 0 ; utf-8 message (the request failed; the
+                  connection stays usable — the client rejects that one request)
+tag bits 0-23 = request id, bits 24-31 = model slot (0 = latest, 1 = best, 2 = pinned eval checkpoint).
 """
 from __future__ import annotations
 
@@ -21,6 +23,7 @@ HELLO_MAGIC = 0x31484652
 ACK_MAGIC = 0x31414652
 OBS_MAGIC = 0x314F4652
 RES_MAGIC = 0x31524652
+ERR_MAGIC = 0x31454652
 PROTO_VERSION = 1
 OBS_HEADER_WORDS = 11
 RES_HEADER_WORDS = 4
@@ -85,7 +88,7 @@ def obs_frame_bytes(buf: bytes | memoryview) -> int:
 
 def pack_obs(o: Obs, shash: int, version: int = 1) -> bytes:
     """Python-side writer (tests / tools). Mirrors packObs in wire.ts."""
-    G, F, A, P = o.global_.shape[0], o.entities.shape[1] if o.n_e else 0, o.actions.shape[1] if o.n_a else 0, o.ptr_idx.shape[1] if o.n_a else 0
+    G, F, A, P = o.global_.shape[0], o.entities.shape[1], o.actions.shape[1], o.ptr_idx.shape[1]
     hdr = np.array([OBS_MAGIC, version, shash, o.tag, o.player, o.n_e, o.n_a, G, F, A, P], dtype="<u4")
     parts = [hdr.tobytes(), o.global_.astype("<f4").tobytes(), o.entities.astype("<f4").tobytes(), o.card_idx.astype("<i4").tobytes(),
              o.actions.astype("<f4").tobytes(), o.ptr_idx.astype("<i4").tobytes(), o.ptr_role.astype("<i4").tobytes(), o.ptr_val.astype("<f4").tobytes()]
@@ -104,6 +107,18 @@ def parse_result(buf: bytes) -> tuple[int, float, np.ndarray, np.ndarray]:
         raise ValueError("bad result magic")
     f = np.frombuffer(buf, dtype="<f4", offset=16, count=1 + n_a + n_x)
     return tag, float(f[0]), f[1:1 + n_a].copy(), f[1 + n_a:].copy()
+
+
+def pack_error(tag: int, message: str) -> bytes:
+    msg = message.encode("utf-8", "replace")[:2000]
+    return struct.pack("<4I", ERR_MAGIC, tag & 0xFFFFFFFF, len(msg), 0) + msg
+
+
+def parse_error(buf: bytes) -> tuple[int, str]:
+    magic, tag, n, _ = struct.unpack_from("<4I", buf, 0)
+    if magic != ERR_MAGIC:
+        raise ValueError("bad error magic")
+    return tag, bytes(buf[16:16 + n]).decode("utf-8", "replace")
 
 
 def pack_hello(shash: int, client_id: int = 0) -> bytes:

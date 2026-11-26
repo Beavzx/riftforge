@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 
-from .checkpoints import best_step, promote_best
+from .checkpoints import best_step, has_weights, promote_best
 
 FIELDS = ["time", "step", "opponent", "games", "wins", "losses", "draws", "errors", "score", "elo_diff", "elo_lo", "elo_hi", "best_step", "promoted"]
 
@@ -37,14 +37,13 @@ def record_eval(run_dir: str | Path, result_file: str | Path, gating: dict) -> l
         n = r["wins"] + r["losses"] + r["draws"]
         lo, hi = elo_interval(r["score"], n)
         if r["opponent"] == "best" and gating.get("enabled") and n > 0 and r["score"] >= float(gating.get("threshold", 0.55)):
-            promote_best(run_dir, step)
-            promoted = True
+            promoted = promote_best(run_dir, step)
         rows.append({"time": res["time"], "step": step, "opponent": r["opponent"], "games": r["games"], "wins": r["wins"],
                      "losses": r["losses"], "draws": r["draws"], "errors": r["errors"], "score": round(r["score"], 4),
                      "elo_diff": round(elo_from_score(r["score"], n), 1), "elo_lo": round(lo, 1), "elo_hi": round(hi, 1),
                      "best_step": bstep, "promoted": promoted and r["opponent"] == "best"})
     # without gating, "best" simply follows the latest evaluated checkpoint
-    if not gating.get("enabled") and (run_dir / "ckpt" / f"step_{step}.pt").exists():
+    if not gating.get("enabled") and has_weights(run_dir, step):
         promote_best(run_dir, step)
     path = run_dir / "elo.csv"
     new = not path.exists()

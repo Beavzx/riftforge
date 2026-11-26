@@ -6,7 +6,9 @@ Loop: refresh the replay window from runs/<name>/shards → sample a minibatch �
 the search policy + valueWeight × MSE(value, z) → AdamW step. A step is only taken while the number of samples trained
 stays below train.maxSampleReuse × positions generated (so the trainer can't overfit a small buffer while self-play
 catches up). Checkpoints every train.ckptEverySteps; resumes from ckpt/latest.pt; stops cleanly (final checkpoint) on
-SIGINT/SIGTERM or when runs/<name>/STOP appears.
+SIGINT/SIGTERM or when runs/<name>/STOP appears, and on errors (try/finally).
+Safety: refuses to run without CUDA unless train.allowCpu; a non-finite loss or gradient skips the step, and
+train.maxBadSteps (10) in a row stop the trainer without publishing a checkpoint; fp16 uses a GradScaler.
 """
 from __future__ import annotations
 
@@ -14,9 +16,7 @@ import argparse
 import json
 import math
 import os
-import queue
 import signal
-import threading
 import time
 from pathlib import Path
 
@@ -25,7 +25,7 @@ import torch
 import torch.nn.functional as Fn
 
 from .checkpoints import ckpt_dir, list_steps, promote_best
-from .dataset import ReplayWindow, make_batch
+from .dataset import BadStepGuard, Prefetcher, ReplayWindow
 from .model import RiftNet, batch_to_torch, count_params, forward_batch, model_config
 from .schema import load_schema
 
@@ -43,30 +43,6 @@ def lr_lambda(tc: dict):
         t = min(1.0, (step - warm) / max(1, total - warm))
         return floor + (1 - floor) * 0.5 * (1 + math.cos(math.pi * t))
     return f
-
-
-class Prefetcher:
-    """Builds minibatches on a background thread (numpy collation overlaps the GPU step)."""
-
-    def __init__(self, window: ReplayWindow, batch_size: int, max_entities: int, depth: int = 4):
-        self.window, self.bs, self.me = window, batch_size, max_entities
-        self.q: queue.Queue = queue.Queue(maxsize=depth)
-        self.lock = threading.Lock()
-        self.stop = False
-        self.t = threading.Thread(target=self.run, daemon=True)
-        self.t.start()
-
-    def run(self):
-        while not self.stop:
-            with self.lock:
-                recs = self.window.sample(self.bs) if len(self.window) else None
-            if recs is None:
-                time.sleep(0.5)
-                continue
-            self.q.put(make_batch(recs, self.me))
-
-    def get(self):
-        return self.q.get()
 
 
 def save_checkpoint(run_dir: Path, model, opt, sched, state: dict, keep: int) -> None:
@@ -100,11 +76,17 @@ def main(argv=None):
     schema = load_schema(run_dir)
     dev = torch.device(f"cuda:{tc['gpu']}" if torch.cuda.is_available() else "cpu")
     if dev.type == "cpu":
-        print("[train] WARNING: CUDA not available, training on CPU (only useful for smoke tests)", flush=True)
+        if not tc.get("allowCpu", False):
+            raise SystemExit("[train] CUDA is not available to PyTorch. Check `nvidia-smi` (inside WSL) and that torch is a CUDA 12.8+ "
+                             "build: .venv/bin/python -c 'import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'. "
+                             "Re-run scripts/setup.sh to repair it. To deliberately train on CPU set train.allowCpu: true.")
+        print("[train] WARNING: training on CPU (train.allowCpu is set)", flush=True)
     else:
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
     amp = AMP.get(tc.get("ampDtype", "bf16")) if dev.type == "cuda" else None
+    # fp16 autocast needs loss scaling (small gradients underflow otherwise); bf16/fp32 don't
+    scaler = torch.amp.GradScaler("cuda", enabled=(amp is torch.float16))
     torch.manual_seed(int(cfg["run"]["seed"]))
 
     d = ckpt_dir(run_dir)
@@ -148,7 +130,8 @@ def main(argv=None):
     window = ReplayWindow(run_dir / "shards", int(tc["replayPositions"]), schema.schema_hash, seed=int(cfg["run"]["seed"]),
                           preseen=set(state.get("seen_shards", [])))
     window.total_positions = int(state.get("positions_seen", 0))
-    pre = Prefetcher(window, int(tc["batchSize"]), schema.max_entities)
+    pre = Prefetcher(window, int(tc["batchSize"]), schema.max_entities, min_len=int(tc["minPositions"]))
+    guard = BadStepGuard(int(tc.get("maxBadSteps", 10)))
 
     tb = None
     try:
@@ -175,65 +158,91 @@ def main(argv=None):
     max_steps = args.max_steps
     steps_this_run = 0
     print(f"[train] waiting for {tc['minPositions']} positions before training", flush=True)
-    while not stop["flag"] and not (run_dir / "STOP").exists():
-        now = time.time()
-        if now - last_refresh > 10:
-            with pre.lock:
-                window.refresh()
-            state["positions_seen"] = window.total_positions
-            state["seen_shards"] = sorted(window.seen)
-            last_refresh = now
-        if len(window) < int(tc["minPositions"]) or state["samples"] + bs > reuse * max(1, window.total_positions):
-            time.sleep(1.0)
-            continue
-        b = batch_to_torch(pre.get(), dev)
-        model.train()
-        with torch.autocast(dev.type, dtype=amp, enabled=amp is not None):
-            value, logits = forward_batch(fwd_model, b)
-        logp = Fn.log_softmax(logits.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
-        loss_pi = -(b["pi"] * logp).sum(-1).mean()
-        loss_v = Fn.mse_loss(value.float(), b["z"])
-        loss = loss_pi + vw * loss_v
-        opt.zero_grad(set_to_none=True)
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
-        opt.step()
-        sched.step()
-        state["step"] += 1
-        state["samples"] += bs
-        steps_this_run += 1
-        with torch.no_grad():
-            p = logp.exp()
-            ent = -(p * logp).sum(-1).mean()
-        acc["loss"] += loss.item(); acc["pi"] += loss_pi.item(); acc["v"] += loss_v.item(); acc["ent"] += ent.item(); acc["n"] += 1
-        step = state["step"]
-        if step % int(tc["logEverySteps"]) == 0:
-            dt = time.time() - last_log_t
-            row = {"t": time.time(), "step": step, "loss": acc["loss"] / acc["n"], "loss_policy": acc["pi"] / acc["n"],
-                   "loss_value": acc["v"] / acc["n"], "policy_entropy": acc["ent"] / acc["n"], "lr": sched.get_last_lr()[0],
-                   "buffer": len(window), "positions_seen": window.total_positions, "samples": state["samples"],
-                   "samples_per_s": (state["samples"] - last_log_samples) / max(1e-6, dt),
-                   "reuse": state["samples"] / max(1, window.total_positions)}
-            metrics.write(json.dumps(row) + "\n"); metrics.flush()
-            if tb:
-                for k, v in row.items():
-                    if k not in ("t", "step"):
-                        tb.add_scalar(f"train/{k}", v, step)
-            print(f"[train] step {step} loss {row['loss']:.4f} (pi {row['loss_policy']:.4f} v {row['loss_value']:.4f}) "
-                  f"buffer {len(window)} reuse {row['reuse']:.2f}", flush=True)
-            acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
-            last_log_t, last_log_samples = time.time(), state["samples"]
-        if step % int(tc["ckptEverySteps"]) == 0:
+    publish = True   # final checkpoint on exit (not after a non-finite abort: those weights must not reach self-play)
+    try:
+        while not stop["flag"] and not (run_dir / "STOP").exists():
+            now = time.time()
+            if now - last_refresh > 10:
+                with pre.lock:
+                    window.refresh()
+                state["positions_seen"] = window.total_positions
+                state["seen_shards"] = sorted(window.seen)
+                last_refresh = now
+            if len(window) < int(tc["minPositions"]) or state["samples"] + bs > reuse * max(1, window.total_positions):
+                time.sleep(1.0)
+                continue
+            nb = pre.get()          # raises if the prefetch thread died; None = not ready yet (re-check STOP)
+            if nb is None:
+                continue
+            b = batch_to_torch(nb, dev)
+            model.train()
+            with torch.autocast(dev.type, dtype=amp, enabled=amp is not None):
+                value, logits = forward_batch(fwd_model, b)
+            logp = Fn.log_softmax(logits.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
+            loss_pi = -(b["pi"] * logp).sum(-1).mean()
+            loss_v = Fn.mse_loss(value.float(), b["z"])
+            loss = loss_pi + vw * loss_v
+            opt.zero_grad(set_to_none=True)
+            if not torch.isfinite(loss):
+                print(f"[train] non-finite loss (policy {loss_pi.item()}, value {loss_v.item()}); batch skipped "
+                      f"({guard.in_row + 1} in a row)", flush=True)
+                if guard.bad():
+                    publish = False
+                    raise SystemExit(f"[train] {guard.in_row} non-finite steps in a row: stopping WITHOUT publishing a checkpoint. "
+                                     "Last good weights: ckpt/latest.pt. Check metrics.jsonl / recent shards.")
+                continue
+            scaler.scale(loss).backward()
+            scaler.unscale_(opt)
+            gn = torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
+            if not torch.isfinite(gn) and not scaler.is_enabled():
+                opt.zero_grad(set_to_none=True)
+                print(f"[train] non-finite gradient norm; step skipped ({guard.in_row + 1} in a row)", flush=True)
+                if guard.bad():
+                    publish = False
+                    raise SystemExit("[train] repeated non-finite gradients: stopping WITHOUT publishing a checkpoint.")
+                continue
+            scaler.step(opt)        # with fp16 the scaler itself skips steps with inf/nan gradients
+            scaler.update()
+            sched.step()
+            guard.good()
+            state["step"] += 1
+            state["samples"] += bs
+            steps_this_run += 1
+            with torch.no_grad():
+                p = logp.exp()
+                ent = -(p * logp).sum(-1).mean()
+            acc["loss"] += loss.item(); acc["pi"] += loss_pi.item(); acc["v"] += loss_v.item(); acc["ent"] += ent.item(); acc["n"] += 1
+            step = state["step"]
+            if step % int(tc["logEverySteps"]) == 0:
+                dt = time.time() - last_log_t
+                row = {"t": time.time(), "step": step, "loss": acc["loss"] / acc["n"], "loss_policy": acc["pi"] / acc["n"],
+                       "loss_value": acc["v"] / acc["n"], "policy_entropy": acc["ent"] / acc["n"], "lr": sched.get_last_lr()[0],
+                       "buffer": len(window), "positions_seen": window.total_positions, "samples": state["samples"],
+                       "samples_per_s": (state["samples"] - last_log_samples) / max(1e-6, dt),
+                       "reuse": state["samples"] / max(1, window.total_positions), "skipped_steps": guard.total,
+                       "grad_norm": float(gn), "device": str(dev)}
+                metrics.write(json.dumps(row) + "\n"); metrics.flush()
+                if tb:
+                    for k, v in row.items():
+                        if k not in ("t", "step", "device"):
+                            tb.add_scalar(f"train/{k}", v, step)
+                print(f"[train] step {step} loss {row['loss']:.4f} (pi {row['loss_policy']:.4f} v {row['loss_value']:.4f}) "
+                      f"buffer {len(window)} reuse {row['reuse']:.2f}", flush=True)
+                acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
+                last_log_t, last_log_samples = time.time(), state["samples"]
+            if step % int(tc["ckptEverySteps"]) == 0:
+                save_checkpoint(run_dir, model, opt, sched, state, int(tc["keepCheckpoints"]))
+                window.prune_files(int(tc.get("keepShardFiles", 0)))
+            if max_steps and steps_this_run >= max_steps:
+                break
+    finally:
+        pre.close()
+        if publish:
             save_checkpoint(run_dir, model, opt, sched, state, int(tc["keepCheckpoints"]))
-            window.prune_files(int(tc.get("keepShardFiles", 0)))
-        if max_steps and steps_this_run >= max_steps:
-            break
-    pre.stop = True
-    save_checkpoint(run_dir, model, opt, sched, state, int(tc["keepCheckpoints"]))
-    print(f"[train] stopped at step {state['step']} (checkpoint saved)", flush=True)
-    metrics.close()
-    if tb:
-        tb.close()
+            print(f"[train] stopped at step {state['step']} (checkpoint saved)", flush=True)
+        metrics.close()
+        if tb:
+            tb.close()
 
 
 if __name__ == "__main__":

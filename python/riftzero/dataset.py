@@ -7,8 +7,10 @@ Record:      u32 recBytes | u32 obsBytes | RFO1 frame | f32 z | f32 q | u32 nA |
 from __future__ import annotations
 
 import os
+import queue
 import struct
-from collections import deque
+import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -54,7 +56,11 @@ def read_shard(path: str | Path, expect_hash: int | None = None) -> list[Record]
 
 
 class ReplayWindow:
-    """The newest `capacity` positions from runs/<name>/shards/*.rfs (FIFO)."""
+    """The newest `capacity` positions from runs/<name>/shards/*.rfs (FIFO).
+
+    Stored in a list used as a ring buffer: O(1) random access for sampling (a deque is O(n) per index, ~64 ms per
+    1024-sample batch at the EPYC profile's 2M positions).
+    """
 
     def __init__(self, shard_dir: str | Path, capacity: int, schema_hash: int | None = None, seed: int = 0,
                  preseen: set[str] | None = None):
@@ -63,7 +69,8 @@ class ReplayWindow:
         self.dir = Path(shard_dir)
         self.capacity = capacity
         self.schema_hash = schema_hash
-        self.buf: deque[Record] = deque(maxlen=capacity)
+        self.buf: list[Record] = []
+        self._head = 0  # next slot to overwrite once full (= the oldest record)
         self.seen: set[str] = set()
         self.total_positions = 0
         self.rng = np.random.default_rng(seed)
@@ -86,11 +93,20 @@ class ReplayWindow:
             except ValueError as e:
                 print(f"[dataset] skipping {p.name}: {e}", flush=True)
                 continue
-            self.buf.extend(recs)
+            self._push(recs)
             if p.name not in self.preseen:
                 n += len(recs)
         self.total_positions += n
         return n
+
+    def _push(self, recs: list[Record]) -> None:
+        cap = self.capacity
+        for r in recs:
+            if len(self.buf) < cap:
+                self.buf.append(r)
+            else:
+                self.buf[self._head] = r
+                self._head = (self._head + 1) % cap
 
     def __len__(self) -> int:
         return len(self.buf)
@@ -109,6 +125,69 @@ class ReplayWindow:
                 pass
 
 
+class Prefetcher:
+    """Builds training minibatches on a background thread (numpy collation overlaps the GPU step).
+
+    Sampling starts only once the window holds `min_len` positions (so the first batches aren't duplicates of the
+    first shard). If the thread dies, get() raises instead of blocking forever.
+    """
+
+    def __init__(self, window: ReplayWindow, batch_size: int, max_entities: int | None, min_len: int = 1, depth: int = 4):
+        self.window, self.bs, self.me, self.min_len = window, batch_size, max_entities, max(1, min_len)
+        self.q: queue.Queue = queue.Queue(maxsize=depth)
+        self.lock = threading.Lock()
+        self.stop = False
+        self.error: BaseException | None = None
+        self.t = threading.Thread(target=self.run, daemon=True)
+        self.t.start()
+
+    def run(self):
+        try:
+            while not self.stop:
+                with self.lock:
+                    recs = self.window.sample(self.bs) if len(self.window) >= self.min_len else None
+                if recs is None:
+                    time.sleep(0.2)
+                    continue
+                b = make_batch(recs, self.me)
+                while not self.stop:
+                    try:
+                        self.q.put(b, timeout=0.5)
+                        break
+                    except queue.Full:
+                        pass
+        except BaseException as e:  # noqa: BLE001 — reported to the consumer by get()
+            self.error = e
+
+    def get(self, timeout: float = 1.0):
+        """A batch, or None if none was ready within `timeout`. Raises if the prefetch thread died."""
+        try:
+            return self.q.get(timeout=timeout)
+        except queue.Empty:
+            if self.error is not None or not self.t.is_alive():
+                raise RuntimeError(f"prefetch thread died: {self.error!r}") from self.error
+            return None
+
+    def close(self):
+        self.stop = True
+
+
+class BadStepGuard:
+    """Counts consecutive non-finite training steps; tells the trainer to abort after `limit` in a row."""
+
+    def __init__(self, limit: int = 10):
+        self.limit, self.in_row, self.total = limit, 0, 0
+
+    def bad(self) -> bool:
+        """Record a skipped step. Returns True when the run must stop."""
+        self.in_row += 1
+        self.total += 1
+        return self.in_row >= self.limit
+
+    def good(self) -> None:
+        self.in_row = 0
+
+
 def collate(frames: list[bytes], max_entities: int | None = None) -> dict[str, np.ndarray]:
     """Pad a list of RFO1 frames into a batch (numpy). Same layout the model and the inference server use."""
     return collate_obs([parse_obs(f) for f in frames], max_entities)
@@ -117,10 +196,11 @@ def collate(frames: list[bytes], max_entities: int | None = None) -> dict[str, n
 def collate_obs(obs: list, max_entities: int | None = None) -> dict[str, np.ndarray]:
     """Pad parsed observations (wire.Obs) into a batch."""
     B = len(obs)
+    # parse_obs shapes every array from the frame header (G, F, A, P), so shape[1] is right even for 0 rows
     G = obs[0].global_.shape[0]
-    F = obs[0].entities.shape[1] if obs[0].n_e else 0
-    A = obs[0].actions.shape[1] if obs[0].n_a else 0
-    P = obs[0].ptr_idx.shape[1] if obs[0].n_a else 0
+    F = obs[0].entities.shape[1]
+    A = obs[0].actions.shape[1]
+    P = obs[0].ptr_idx.shape[1]
     nE = max(1, max(o.n_e for o in obs))
     if max_entities:
         nE = min(nE, max_entities)

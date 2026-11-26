@@ -47,8 +47,14 @@ tests/ai/selfplay/*.test.ts, python/tests/test_riftzero.py
   option ids, so `determinize()` replays the same partial decision on the resampled state (it fails, dropping the
   simulation, if an id vanished). Engine bots (eval) answer with whole engine actions (`env.applyAction`), so every
   eval match uses the training env.
-- **Hot reload**: the inference server watches `ckpt/latest.pt` and `ckpt/best.pt` (slot 0 / slot 1); workers never
-  restart for new weights.
+- **Hot reload**: the inference server watches `ckpt/latest.pt`, `ckpt/best.pt` and `ckpt/eval.pt` (slots 0 / 1 / 2);
+  workers never restart for new weights. Evals play slot 2, a pinned copy of the evaluated step (the launcher waits
+  until every server reports it loaded via `slotSteps` in its stats file).
+- **Failure handling** (review fixes, docs/agents/review-torch.md): CUDA OOM → split-and-retry. Other batch failures →
+  RFE1 error frames (only those requests fail, as `InferenceError`). 50 failed batches in a row → server exits →
+  the launcher restarts it (`inference.maxServerRestarts`). Workers whose connection closed exit 3 and are restarted.
+  No CPU fallback unless `allowCpu`. Non-finite steps are skipped; 10 in a row stop the trainer without publishing.
+  If the prefetch thread dies, the trainer raises (no hang).
 - **Graceful stop** works on every OS: `runs/<name>/STOP` is polled by the workers (1 s), the trainer and the
   launcher. Children run in their own process group (new session / CREATE_NEW_PROCESS_GROUP), so Ctrl-C reaches
   only the launcher, which stops them in order: workers, eval, trainer (final checkpoint), servers.
@@ -74,7 +80,9 @@ tests/ai/selfplay/*.test.ts, python/tests/test_riftzero.py
 - Measurements: about 13 ms engine time per simulation (bundled; 87% is getLegalActions + applyAction), about 160
   decisions per game, 30.3 KB per recorded position. Python mock server: about 8.6 k evals/s from one client.
 
-**Not testable here (no torch)**: `model.py`, `train.py`, `torch_backend.py`, `export.py`. They were reviewed by hand.
+**Not testable here (no torch)**: `model.py`, `train.py`, `torch_backend.py`, `export.py`. They were reviewed by hand and by
+an independent reviewer (docs/agents/review-torch.md: 12 findings, all fixed on agent/fix). The numpy-side parts of those
+fixes are tested in `python/tests/test_review_fixes.py`.
 `scripts/smoke.sh` (torch backend) is the first thing to run on the GPU machine: it exercises every one of them
 (trainer steps, checkpoints, hot reload, eval).
 

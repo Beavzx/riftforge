@@ -15,16 +15,27 @@ if (-not (Test-Path "node_modules\tsx")) { throw "npm install did not install ts
 Write-Host "  OK   npm dependencies"
 
 $py = if (Get-Command py -ErrorAction SilentlyContinue) { "py" } else { "python" }
-if (-not (Test-Path ".venv\Scripts\python.exe")) { & $py -m venv .venv }
 $vpy = Join-Path $root ".venv\Scripts\python.exe"
-& $vpy -m pip install --upgrade pip | Out-Null
-& $vpy -c "import torch" 2>$null
-if ($LASTEXITCODE -ne 0) {
-  Write-Host "== installing PyTorch from $torchIndex (large download)"
-  & $vpy -m pip install torch --index-url $torchIndex
+$venvOk = $false
+if (Test-Path $vpy) { & $vpy -m pip --version *> $null; $venvOk = ($LASTEXITCODE -eq 0) }
+if (-not $venvOk) {
+  if (Test-Path ".venv") { Write-Host "  WARN existing .venv is broken; recreating it"; Remove-Item -Recurse -Force ".venv" }
+  & $py -m venv .venv
 }
-& $vpy -m pip install -r python\requirements.txt | Out-Null
-& $vpy -c "import torch; print('  OK   torch', torch.__version__, '| CUDA', torch.cuda.is_available(), '|', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no GPU')"
+& $vpy -m pip install --upgrade pip | Out-Null
+$torchSpec = (Select-String -Path "python\requirements.txt" -Pattern '^torch[<>=!~ ]' | Select-Object -First 1).Line -replace '\s*#.*', ''
+if (-not $torchSpec) { $torchSpec = "torch>=2.7.1" }
+& $vpy python\riftzero\torch_check.py $torchSpec *> $null
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "== installing '$torchSpec' (CUDA 12.8+) from $torchIndex (large download)"
+  & $vpy -m pip install --upgrade --force-reinstall $torchSpec --index-url $torchIndex
+  & $vpy python\riftzero\torch_check.py $torchSpec
+  if ($LASTEXITCODE -ne 0) { throw "torch is still not a CUDA 12.8+ build in '$torchSpec'" }
+}
+Get-Content python\requirements.txt | Where-Object { $_ -notmatch '^torch[<>=!~ ]' } | Set-Content .venv\requirements-rest.txt
+& $vpy -m pip install -r .venv\requirements-rest.txt | Out-Null
+& $vpy python\riftzero\torch_check.py --gpu
+if ($LASTEXITCODE -ne 0) { throw "GPU check failed (see above)" }
 $env:PYTHONPATH = Join-Path $root "python"
 & $vpy -c "import riftzero.launch"
 Write-Host "  OK   riftzero package imports"

@@ -39,38 +39,36 @@ npm install --no-audit --no-fund >/dev/null
 [ -d node_modules/tsx ] || fail "npm install did not install tsx"
 ok "npm dependencies"
 
-# ---- Python venv
+# ---- Python venv (recreated if broken, e.g. created before python3-venv was installed: no pip inside)
 PY=${PYTHON:-python3}
 command -v "$PY" >/dev/null 2>&1 || fail "python3 not found (sudo apt-get install -y python3 python3-venv)"
 "$PY" -c 'import sys; assert sys.version_info >= (3, 10), sys.version' || fail "Python 3.10+ required"
-if [ ! -x .venv/bin/python ]; then
-  "$PY" -m venv .venv || fail "could not create .venv (sudo apt-get install -y python3-venv)"
+if [ ! -x .venv/bin/python ] || ! .venv/bin/python -m pip --version >/dev/null 2>&1; then
+  [ -e .venv ] && warn "existing .venv is broken (no working pip); recreating it"
+  rm -rf .venv
+  "$PY" -m venv .venv || { rm -rf .venv; fail "could not create .venv (sudo apt-get install -y python3-venv)"; }
 fi
 VPY="$ROOT/.venv/bin/python"
-"$VPY" -m pip install --upgrade pip >/dev/null
-if ! "$VPY" -c 'import torch' >/dev/null 2>&1; then
-  echo "== installing PyTorch from $TORCH_INDEX (large download)"
-  "$VPY" -m pip install torch --index-url "$TORCH_INDEX"
-fi
-"$VPY" -m pip install -r python/requirements.txt >/dev/null
-ok "python venv (.venv) with $("$VPY" -c 'import torch; print("torch", torch.__version__)')"
+"$VPY" -m pip install --upgrade pip >/dev/null || fail "pip upgrade failed inside .venv"
 
-# ---- GPU check
-"$VPY" - <<'EOF'
-import torch, sys
-if not torch.cuda.is_available():
-    print("  \033[33mWARN\033[0m CUDA not available to PyTorch: training would run on CPU. Check nvidia-smi and the torch CUDA build.")
-    sys.exit(0)
-arch = torch.cuda.get_arch_list()
-for i in range(torch.cuda.device_count()):
-    p = torch.cuda.get_device_properties(i)
-    cap = f"sm_{p.major}{p.minor}"
-    x = torch.randn(512, 512, device=f"cuda:{i}", dtype=torch.bfloat16)
-    y = (x @ x).float().sum().item()
-    print(f"  \033[32mOK\033[0m   GPU {i}: {p.name}, {p.total_memory/2**30:.1f} GB, {cap} (bf16 matmul ok)")
-    if cap not in arch and not any(a.startswith("compute_") for a in arch):
-        print(f"  \033[33mWARN\033[0m this torch build lacks {cap} kernels ({arch}); reinstall with the cu128 index")
-EOF
+# ---- PyTorch: a CUDA 12.8+ build in the pinned range (python/requirements.txt); a CPU or older CUDA build is replaced
+TORCH_SPEC=$(grep -E '^torch[<>=!~ ]' python/requirements.txt | head -1 | sed 's/[[:space:]]*#.*//')
+TORCH_SPEC=${TORCH_SPEC:-torch>=2.7.1}
+torch_ok() { "$VPY" python/riftzero/torch_check.py "$TORCH_SPEC" >/dev/null 2>&1; }
+if ! torch_ok; then
+  if "$VPY" -c 'import torch' >/dev/null 2>&1; then
+    warn "installed torch ($("$VPY" python/riftzero/torch_check.py "$TORCH_SPEC" 2>&1 | tail -1)) is not a CUDA 12.8+ build in '$TORCH_SPEC'; replacing it"
+  fi
+  echo "== installing '$TORCH_SPEC' from $TORCH_INDEX (large download)"
+  "$VPY" -m pip install --upgrade --force-reinstall "$TORCH_SPEC" --index-url "$TORCH_INDEX" || fail "torch install failed"
+  torch_ok || fail "torch from $TORCH_INDEX is still not a CUDA 12.8+ build in '$TORCH_SPEC': $("$VPY" python/riftzero/torch_check.py "$TORCH_SPEC" 2>&1 | tail -1)"
+fi
+grep -vE '^torch[<>=!~ ]' python/requirements.txt > .venv/requirements-rest.txt
+"$VPY" -m pip install -r .venv/requirements-rest.txt >/dev/null || fail "pip install -r python/requirements.txt failed"
+ok "python venv (.venv) with $("$VPY" -c 'import torch; print("torch", torch.__version__, "cuda", torch.version.cuda)')"
+
+# ---- GPU check: CUDA visible, kernels for this GPU's architecture present (checked BEFORE running anything), bf16 matmul
+"$VPY" python/riftzero/torch_check.py --gpu || fail "GPU check failed (see above). Training refuses to run on CPU unless train.allowCpu / inference.allowCpu are set."
 
 PYTHONPATH="$ROOT/python" "$VPY" -c 'import riftzero.launch' && ok "riftzero package imports"
 echo "== setup done. Next: scripts/smoke.sh   (2-minute end-to-end check), then scripts/start.sh"

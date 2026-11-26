@@ -6,7 +6,8 @@ import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { InferenceClient } from '../../../src/ai/selfplay/client.ts';
+import { evalSlot, InferenceClient, InferenceError, SLOT_EVAL } from '../../../src/ai/selfplay/client.ts';
+import net from 'node:net';
 import { encodeActions, encodeObservation } from '../../../src/ai/encode/index.ts';
 import { getLegalActions } from '../../../src/engine/index.ts';
 import { samplePositions } from './_util.ts';
@@ -28,8 +29,16 @@ function makeRun(mutateHash = false): string {
   return dir;
 }
 
-async function startServer(dir: string, port: number): Promise<ChildProcess> {
-  const p = spawn(PY, ['-m', 'riftzero.infer_server', '--run', dir, '--port', String(port), '--backend', 'mock'],
+/** A free TCP port (tests never use fixed ports: a run may be active on the machine). */
+function freePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const s = net.createServer(); s.unref(); s.on('error', reject);
+    s.listen(0, '127.0.0.1', () => { const p = (s.address() as net.AddressInfo).port; s.close(() => resolve(p)); });
+  });
+}
+
+async function startServer(dir: string, port: number, extra: string[] = []): Promise<ChildProcess> {
+  const p = spawn(PY, ['-m', 'riftzero.infer_server', '--run', dir, '--port', String(port), '--backend', 'mock', ...extra],
     { cwd: ROOT, env: { ...process.env, PYTHONPATH: join(ROOT, 'python') }, stdio: ['ignore', 'pipe', 'pipe'] });
   await new Promise<void>((resolve, reject) => {
     const t = setTimeout(() => reject(new Error('server did not start')), 20000);
@@ -40,7 +49,7 @@ async function startServer(dir: string, port: number): Promise<ChildProcess> {
 }
 
 test('client ↔ mock server: handshake and 500 pipelined requests on two slots', { skip: !hasPy && 'python3 with numpy+pyyaml not available' }, async () => {
-  const dir = makeRun(); const port = 47811;
+  const dir = makeRun(); const port = await freePort();
   const srv = await startServer(dir, port);
   try {
     const c = await InferenceClient.connect({ port, retries: 5 });
@@ -53,9 +62,54 @@ test('client ↔ mock server: handshake and 500 pipelined requests on two slots'
 });
 
 test('server refuses a worker whose encoder schema differs (loud, fatal)', { skip: !hasPy && 'python3 with numpy+pyyaml not available' }, async () => {
-  const dir = makeRun(true); const port = 47812;
+  const dir = makeRun(true); const port = await freePort();
   const srv = await startServer(dir, port);
   try {
     await assert.rejects(InferenceClient.connect({ port, retries: 3 }), /SCHEMA MISMATCH/);
+  } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
+});
+
+function sampleReq() {
+  const g = samplePositions(4, 1)[0]; const p = g.pending!.player; const legal = getLegalActions(g, p);
+  const obs = encodeObservation(g, p); return { obs, acts: encodeActions(g, p, legal, obs), n: legal.length };
+}
+
+test('a failed batch rejects only its requests (InferenceError); the connection keeps working', { skip: !hasPy && 'python3 with numpy+pyyaml not available' }, async () => {
+  const dir = makeRun(); const port = await freePort();
+  const srv = await startServer(dir, port, ['--mock-fail-first', '1']);
+  try {
+    const c = await InferenceClient.connect({ port, retries: 5 });
+    const req = sampleReq();
+    await assert.rejects(c.evaluate(req), (e: unknown) => e instanceof InferenceError && /injected failure/.test((e as Error).message));
+    const ok = await c.evaluate(req);
+    assert.equal(ok.logits.length, req.n);
+    assert.equal(c.isClosed, false);
+    await c.close();
+  } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('eval plays the pinned slot 2; requests are routed by slot', { skip: !hasPy && 'python3 with numpy+pyyaml not available' }, async () => {
+  const dir = makeRun(); const port = await freePort();
+  const srv = await startServer(dir, port, ['--mock-slot-value']);
+  try {
+    const c = await InferenceClient.connect({ port, retries: 5 });
+    assert.equal(c.nSlots, 3);
+    assert.equal(evalSlot(c), SLOT_EVAL);
+    const req = sampleReq();
+    const vals = await Promise.all([0, 1, 2].map(slot => c.evaluate(req, slot)));
+    assert.deepEqual(vals.map(v => Math.round(v.value * 10)), [0, 1, 2]);
+    await c.close();
+  } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('client reports a lost server (isClosed) so a worker can exit and be restarted', { skip: !hasPy && 'python3 with numpy+pyyaml not available' }, async () => {
+  const dir = makeRun(); const port = await freePort();
+  const srv = await startServer(dir, port);
+  try {
+    const c = await InferenceClient.connect({ port, retries: 5 });
+    srv.kill();
+    await new Promise(r => setTimeout(r, 500));
+    assert.equal(c.isClosed, true);
+    await assert.rejects(c.evaluate(sampleReq()), /closed/);
   } finally { srv.kill(); rmSync(dir, { recursive: true, force: true }); }
 });

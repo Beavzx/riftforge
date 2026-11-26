@@ -1,7 +1,7 @@
 // SELFPLAY: deck loading and per-game deck/seat selection.
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
-import type { DeckList } from '../../engine/types.ts';
+import type { DeckList, PlayerId } from '../../engine/types.ts';
 import type { DeckConfig } from './config.ts';
 
 export interface NamedDeck { name: string; deck: DeckList }
@@ -35,4 +35,20 @@ export class DeckPicker {
     }
     return r() < 0.5 ? [a, b] : [b, a];
   }
+}
+
+/** One eval game's setup: seat decks, engine seed (shuffles, random battlefields) and first player. */
+export interface Deal { decks: [NamedDeck, NamedDeck]; seed: number; firstPlayer: PlayerId }
+
+/** Eval deals in pairs ("duplicate" format): games 2j and 2j+1 get the same decks, seed and first player, and the
+ *  caller swaps which agent sits in which seat. Each side then plays both halves of the same deal, so matchup and
+ *  draw luck cancel out within a pair instead of adding noise to the score. An odd count leaves the last one unpaired. */
+export function pairedDeals(picker: DeckPicker, rng: () => number, games: number, baseSeed: number): Deal[] {
+  const out: Deal[] = [];
+  for (let j = 0; out.length < games; j++) {
+    const d: Deal = { decks: picker.pick(rng), seed: baseSeed + j, firstPlayer: (j % 2) as PlayerId };
+    out.push(d);
+    if (out.length < games) out.push(d);
+  }
+  return out;
 }

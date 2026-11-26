@@ -51,11 +51,15 @@ async function main() {
   const stopPoll = setInterval(() => { if (existsSync(join(runDir, 'STOP'))) stop(); }, 1000);
 
   const st = { id, pid: process.pid, started: Date.now(), games: 0, ok: 0, timeouts: 0, errors: 0, positions: 0, decisions: 0,
-    sims: 0, evals: 0, turns: 0, rollbacks: 0, maxTurns: 0, inferenceErrors: 0, seat0Wins: 0, seat1Wins: 0, draws: 0, lastGameMs: 0, updated: 0 };
+    sims: 0, evals: 0, turns: 0, rollbacks: 0, maxTurns: 0, inferenceErrors: 0, seat0Wins: 0, seat1Wins: 0, draws: 0, lastGameMs: 0, updated: 0,
+    /** "<deck> vs <deck>" (names sorted) → [wins of the first, wins of the second, draws], finished games only. Unlike
+     *  the counters above it carries over from this worker id's previous stats file, so it covers the whole run. */
+    matchups: {} as Record<string, [number, number, number]> };
+  const statsPath = join(statsDir, `w${String(id).padStart(3, '0')}.json`);
+  try { st.matchups = JSON.parse(readFileSync(statsPath, 'utf8')).matchups ?? {}; } catch { /* first start */ }
   const writeStats = () => {
     st.updated = Date.now(); st.evals = ev.count; st.positions = shards.positions;
-    const p = join(statsDir, `w${String(id).padStart(3, '0')}.json`);
-    writeFileSync(p + '.tmp', JSON.stringify(st)); renameSync(p + '.tmp', p);
+    writeFileSync(statsPath + '.tmp', JSON.stringify(st)); renameSync(statsPath + '.tmp', statsPath);
   };
   const timer = setInterval(writeStats, cfg.workers.statsEverySec * 1000);
 
@@ -82,6 +86,9 @@ async function main() {
         }
         if (r.status === 'timeout') st.timeouts++; else st.ok++;
         if (r.winner === 0) st.seat0Wins++; else if (r.winner === 1) st.seat1Wins++; else st.draws++;
+        const flip = r.decks[0] > r.decks[1];
+        const m = (st.matchups[flip ? `${r.decks[1]} vs ${r.decks[0]}` : `${r.decks[0]} vs ${r.decks[1]}`] ??= [0, 0, 0]);
+        if (r.winner === null) m[2]++; else m[(r.winner === 0) !== flip ? 0 : 1]++;
         shards.addGame(assignOutcome(agent.positions, r, cfg.target.pointsShaping, caps.timeoutShaping));
       } catch (e) {
         if (e instanceof Aborted) return;

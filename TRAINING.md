@@ -112,6 +112,14 @@ Elo-vs-SearchAI history. What to look at:
 - **skipped_steps** (in metrics.jsonl) counts training steps skipped for a non-finite loss or gradient. A few are
   harmless. 10 in a row stop the trainer **without** publishing those weights (the last good `latest.pt` stays).
 
+- **Deck win %** (self-play, both sides the same net) shows which lists the AI rates. Early on it only says which deck
+  wins when both sides play badly. `scripts/status.sh --matchups` lists every pairing. Evals also break results down
+  by the net's deck.
+
+Evals are played in **pairs**: both games of a pair use the same decks, shuffle and first player, with the seats
+swapped, so the net plays each side of the same deal once. Luck of the matchup and the draw then cancels within a pair
+instead of swamping a 16-game result. Timeouts are counted separately in `elo.csv` (they still score as draws).
+
 Each eval plays one fixed checkpoint: the launcher copies `step_N.pt` to `ckpt/eval.pt`, waits until the inference
 servers have loaded it (slot 2), and only then starts the matches. The `elo.csv` row for step N is therefore exactly
 step N's weights, even though the trainer keeps publishing newer checkpoints meanwhile. Gating promotes that same
@@ -125,7 +133,12 @@ crashes in 10 minutes stop the run.
 
 Ctrl-C in the start terminal, or `scripts/stop.sh` from anywhere. Workers stop, the trainer saves a final checkpoint,
 and everything exits within about a minute. Run `scripts/start.sh` again with the same config/name to resume from
-`latest.pt` and the shards on disk. Use a new `run.name` for a fresh run. If the encoder schema changes
+`latest.pt` and the shards on disk. Use a new `run.name` for a fresh run.
+
+**Using the PC while training (pause / gaming mode):** `scripts/stop.sh` frees the CPU and GPU completely (about a
+minute's in-flight games are lost, nothing else). `scripts/start.sh` resumes. To keep training at a lower speed while
+you use the PC, resume with fewer workers: `scripts/start.sh --workers 8` (about half speed, half the CPU free), then
+stop and `scripts/start.sh` again for full speed. Tested: the trainer step and the deck statistics carry over. If the encoder schema changes
 (an engine/encoder update that changes features), the trainer refuses to resume and tells you to start a new run.
 
 ## 6. First run on the home PC: is scaling up worth it?

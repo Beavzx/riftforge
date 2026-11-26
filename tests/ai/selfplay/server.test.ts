@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { evalSlot, InferenceClient, InferenceError, SLOT_EVAL } from '../../../src/ai/selfplay/client.ts';
@@ -13,7 +13,9 @@ import { getLegalActions } from '../../../src/engine/index.ts';
 import { samplePositions } from './_util.ts';
 
 const ROOT = join(import.meta.dirname, '../../..');
-const PY = process.platform === 'win32' ? 'python' : 'python3';
+// the repo's venv (scripts/setup.sh) when present, like scripts/*.sh; else the system python
+const VENV_PY = join(ROOT, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+const PY = existsSync(VENV_PY) ? VENV_PY : process.platform === 'win32' ? 'python' : 'python3';
 const hasPy = spawnSync(PY, ['-c', 'import numpy, yaml'], { encoding: 'utf8' }).status === 0;
 
 function makeRun(mutateHash = false): string {

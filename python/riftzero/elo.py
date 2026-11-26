@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .checkpoints import best_step, has_weights, promote_best
 
-FIELDS = ["time", "step", "opponent", "games", "wins", "losses", "draws", "errors", "score", "elo_diff", "elo_lo", "elo_hi", "best_step", "promoted"]
+FIELDS = ["time", "step", "opponent", "games", "wins", "losses", "draws", "timeouts", "errors", "score", "elo_diff", "elo_lo", "elo_hi", "best_step", "promoted"]
 
 
 def _elo(p: float, n: int) -> float:
@@ -51,7 +51,7 @@ def record_eval(run_dir: str | Path, result_file: str | Path, gating: dict) -> l
         if r["opponent"] == "best" and gating.get("enabled") and n > 0 and r["score"] >= float(gating.get("threshold", 0.55)):
             promoted = promote_best(run_dir, step)
         rows.append({"time": res["time"], "step": step, "opponent": r["opponent"], "games": r["games"], "wins": r["wins"],
-                     "losses": r["losses"], "draws": r["draws"], "errors": r["errors"], "score": round(r["score"], 4),
+                     "losses": r["losses"], "draws": r["draws"], "timeouts": r.get("timeouts", ""), "errors": r["errors"], "score": round(r["score"], 4),
                      "elo_diff": round(elo_from_score(r["score"], n), 1), "elo_lo": round(lo, 1), "elo_hi": round(hi, 1),
                      "best_step": bstep, "promoted": promoted and r["opponent"] == "best"})
     # without gating, "best" simply follows the latest evaluated checkpoint

@@ -10,16 +10,11 @@ run:
 
 decks:
   mode: pool
-  pool:                 # with ~10x the games, a wider pool is affordable
-    - 01-azir.json
-    - 02-vex.json
-    - 03-evelynn.json
-    - 04-rek-sai.json
-    - 06-kai-sa.json
-    - 09-irelia.json
-    - 11-kennen.json
-    - 12-ezreal.json
-    - 13-sett.json
+  pool:                 # Jonathon's four lists (same as config/train.yaml). With ~8x the games a wider pool is
+    - decks/home-azir.json         # affordable later, e.g. add 03-evelynn.json, 09-irelia.json, 11-kennen.json,
+    - decks/home-vex.json          # 12-ezreal.json, 13-sett.json from data/meta-decks/
+    - decks/home-rek-sai.json
+    - decks/home-mordekaiser.json
   allowMirror: true
 
 caps:

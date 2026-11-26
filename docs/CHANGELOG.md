@@ -1040,3 +1040,16 @@
   home-mordekaiser; transcribed from screenshots, main + runes + battlefields, sideboards left empty because self-play
   doesn't use them) in place of 01-azir / 02-vex / 04-rek-sai / 06-kai-sa. All four pass `validateDeck`, every card
   with rules text is scripted or keyword-only, and 3 minutes of GPU self-play + evals with the pool had 0 errors.
+- Pre-run review (before home-1):
+  - Paired evals: `pairedDeals` (src/ai/selfplay/decks.ts) gives games 2j/2j+1 the same decks, seed and first
+    player with seats swapped; every opponent gets the same deals. Test: tests/ai/selfplay/decks.test.ts.
+  - Evals count timeouts (`timeouts` column in elo.csv) and break results down by matchup (`byMatchup` in
+    eval/step-N.json). Self-play workers keep per-pairing win counts that survive restarts; `status.sh` prints deck
+    win % and `--matchups` lists every pairing.
+  - tests/ai/selfplay/server.test.ts uses `.venv/bin/python` when present (its 5 TS↔Python tests were always skipped
+    on a machine without system numpy).
+  - config/train-epyc.yaml uses the same four decks.
+  - Battlefields stay `random` (CR 485.3 duel) in self-play. KNOWN ISSUE before switching to `choose`: the first
+    player's private pick lives in `ex.unit.actions`, which `determinize()` copies, so the second player's search
+    would see it. Resample it in determinize (with a leak test) first.
+  - Stop/resume with a different worker count tested on the GPU (trainer step and deck stats carry over).

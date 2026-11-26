@@ -1,0 +1,100 @@
+{
+ "a": -0.13312215166095392,
+ "b": 1.2846929551601478,
+ "transform": "log1p",
+ "scale": 20,
+ "linearReference": {
+  "heldOutLogLoss": 0.5654284242716551,
+  "heldOutBrier": 0.18498746777598818
+ },
+ "games": 110,
+ "rows": 14293,
+ "heldOut": {
+  "games": 33,
+  "fitOnTrain": {
+   "a": -0.14843172694315399,
+   "b": 1.3293853336198211
+  },
+  "n": 4071,
+  "logLoss": 0.5504934488318212,
+  "baselineLogLoss": 0.6931384615553854,
+  "brier": 0.18405621400963385,
+  "accuracy": 0.7273397199705232,
+  "auc": 0.7977335327289035,
+  "bins": [
+   {
+    "lo": 0,
+    "hi": 0.1,
+    "n": 328,
+    "predicted": 0.06414537974230271,
+    "observed": 0.12804878048780488
+   },
+   {
+    "lo": 0.1,
+    "hi": 0.2,
+    "n": 518,
+    "predicted": 0.15314133196599744,
+    "observed": 0.1776061776061776
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.3,
+    "n": 452,
+    "predicted": 0.24501546215416056,
+    "observed": 0.23008849557522124
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.4,
+    "n": 410,
+    "predicted": 0.34964954755452066,
+    "observed": 0.424390243902439
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.5,
+    "n": 298,
+    "predicted": 0.4494839221390247,
+    "observed": 0.4161073825503356
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.6,
+    "n": 387,
+    "predicted": 0.5504723176470244,
+    "observed": 0.5529715762273901
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.7,
+    "n": 407,
+    "predicted": 0.6524968168969447,
+    "observed": 0.5675675675675675
+   },
+   {
+    "lo": 0.7,
+    "hi": 0.8,
+    "n": 558,
+    "predicted": 0.7474658310744767,
+    "observed": 0.7670250896057348
+   },
+   {
+    "lo": 0.8,
+    "hi": 0.9,
+    "n": 521,
+    "predicted": 0.8456432596558962,
+    "observed": 0.8502879078694817
+   },
+   {
+    "lo": 0.9,
+    "hi": 1,
+    "n": 192,
+    "predicted": 0.9203502833394066,
+    "observed": 0.9114583333333334
+   }
+  ]
+ },
+ "policy": "SearchAI (default options) vs SearchAI, meta decks, seats alternated; one row per (turn, player, decision kind)",
+ "date": "2026-11-26",
+ "note": "p(win) = 1/(1+exp(-(a + b*f(eval)))), f(x) = sign(x)*ln(1+|x|/scale), eval = src/ai/eval.ts evaluate() from the deciding player. A coarse calibration of a heuristic, not a learned value."
+}

@@ -317,9 +317,27 @@ export class Board {
     if (v && v.state.winner === null && this.status.mode !== 'botvbot') items.push({ label: 'Concede', onClick: async () => { if (await confirmDialog('Concede?', 'You will lose this game.', 'Concede')) this.act({ type: 'concede', player: this.me() }); } });
     const hs = this.session as GameSession & { claimWin?: () => string | null; disconnectedFor?: () => number };
     if (this.status.mode === 'host' && !this.status.opponentConnected && hs.claimWin) items.push({ label: 'Claim win (opponent gone)', onClick: () => { const e = hs.claimWin!(); if (e) toast(e, 'bad'); } });
+    const rec = this.session.gameRecord?.();
+    if (rec) items.push({ label: 'Export game record (for review)', onClick: () => this.exportRecord(rec) });
     items.push({ label: 'Rules text help', onClick: () => this.help() });
     items.push({ label: 'Leave game', onClick: async () => { if (!v || v.state.winner !== null || await confirmDialog('Leave the game?', this.status.online ? 'Your opponent will be told you left.' : 'This game will be lost.', 'Leave')) this.opts.onExit(); } });
     popover(this.root.querySelector('.hud .menu-btn')!, 'Menu', items);
+  }
+  /** COACH: hand the replayable game record to the player (download, plus copyable text where downloads are blocked). */
+  private exportRecord(rec: object) {
+    const json = JSON.stringify(rec);
+    const name = `riftforge-game-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.json`;
+    try {
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const a = h('a', { href: url, download: name }) as HTMLAnchorElement;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch { /* downloads blocked: the dialog below still has the text */ }
+    const ta = h('textarea', { readonly: true, rows: 8, style: { width: '100%', fontFamily: 'monospace', fontSize: '11px' } }) as HTMLTextAreaElement;
+    ta.value = json;
+    modal('Game record', h('div', { class: 'col' },
+      h('p', null, 'Replay it with tools/review.ts to get a move-by-move review. If no file was downloaded, copy the text below into a .json file.'), ta),
+      [{ label: 'Copy', primary: true, onClick: () => { navigator.clipboard?.writeText(json).then(() => toast('Copied'), () => { ta.select(); }); return false; } }, { label: 'Close' }]);
   }
   private help() {
     modal('How to play here', h('div', { class: 'col' },

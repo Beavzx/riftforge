@@ -1,3 +1,7 @@
 node_modules
 dist/
 *.cpuprofile
+runs/
+.venv/
+__pycache__/
+*.rfs.tmp

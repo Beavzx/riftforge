@@ -1,0 +1,13 @@
+# 2-minute end-to-end check (python -m riftzero.smoke / scripts/smoke.sh). Tiny everything; not for training.
+run: { name: smoke, seed: 7, runsDir: runs }
+decks: { mode: pool, pool: [01-azir.json, 02-vex.json], allowMirror: true }
+caps: { maxTurns: 30, maxTurnsAnneal: null, timeoutShaping: 0.2, maxActions: 800, maxMainPerTurn: 30 }
+selfplay: { workers: 2, concurrentGames: 2, gamesPerShard: 1, statsEverySec: 2 }
+env: { kind: factored }
+search: { algorithm: gumbel, fullSims: 8, fastSims: 4, fullProb: 0.5, maxConsidered: 4 }
+evalSearch: { fullSims: 4 }
+inference: { backend: torch, host: 127.0.0.1, basePort: 47900, gpus: [0], serversPerGpu: 1, maxBatch: 64, batchTimeoutMs: 2.0, reloadEverySec: 5, memoryFraction: 0.2 }
+model: { size: tiny }
+train: { gpu: 0, batchSize: 32, lr: 1.0e-3, warmupSteps: 5, minPositions: 64, replayPositions: 20000, maxSampleReuse: 50.0,
+         ckptEverySteps: 20, keepCheckpoints: 5, logEverySteps: 10, compile: false }
+eval: { everyCheckpoints: 1, gamesPerOpponent: 1, opponents: [bot], concurrentGames: 1 }

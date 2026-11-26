@@ -1021,3 +1021,22 @@
 - FINDINGS: RJ#13152, 13165, 13328, 13329, 13331, 13375 marked FIXED / DECIDED; r13301/r11701/r10401 rows marked.
 - WebFetches used: 8 (cardsrealm Dancing Grenade, UNL patch notes ×2, RJ#13328, OGN FAQ ×2, riftlens index + /rules/domain/) — no
   official text for #13328 or #13153; both decided as HOUSE.
+
+## 2026-11-26 — GPU-SETUP (first run of the PyTorch code on a real GPU: home PC, WSL2, RTX 5070 Ti)
+- `scripts/setup.sh` and `scripts/smoke.sh` pass first time (torch 2.10.0+cu128, sm_120, bf16). Model, trainer and
+  torch inference backend needed no changes. An 11-minute rehearsal of `config/train.yaml` (14 workers, small model)
+  ran with 0 errors / 0 restarts at 553 games/h, GPU mostly idle (numbers in TRAINING.md §9); an eval vs
+  searchai/best/bot ran on the GPU.
+- elo.py: `elo_from_score` clamped the score to [0.5/n, 1-0.5/n], so any 1-game result was exactly 0 Elo; it now uses a
+  half-game prior ((s*n + 0.5)/(n + 1)). `elo_interval` used the Wald interval, which has zero width at 0/n (a 0-16
+  eval vs SearchAI showed as -597 [-597, -597]); it's now a Wilson score interval. Test: `test_elo_extreme_scores`.
+- export.py: the dynamo exporter always failed (`onnxscript` missing), so every export silently used the deprecated
+  TorchScript one, whose file only works at the traced shape (Reshape in the attention layers). The onnxruntime check
+  only used the all-zero export dummy at that shape, so it passed. Now: `onnxscript` + `onnxruntime` are in
+  requirements.txt; the check also runs random inputs at another shape; the export goes to a temp file and replaces
+  the old one only once it verifies; the dynamo export is one self-contained file (`external_data=False`).
+- CLAUDE.md: the Python test command is pytest (`unittest discover` found 4 of the 23 tests).
+- Training deck pool: `config/train.yaml` now uses Jonathon's lists in `decks/` (home-azir, home-vex, home-rek-sai,
+  home-mordekaiser; transcribed from screenshots, main + runes + battlefields, sideboards left empty because self-play
+  doesn't use them) in place of 01-azir / 02-vex / 04-rek-sai / 06-kai-sa. All four pass `validateDeck`, every card
+  with rules text is scripted or keyword-only, and 3 minutes of GPU self-play + evals with the pool had 0 errors.

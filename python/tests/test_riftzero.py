@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "python"))
 from riftzero import wire  # noqa: E402
 from riftzero.config import DEFAULTS, load_config, resolve  # noqa: E402
 from riftzero.dataset import ReplayWindow, collate, make_batch, read_shard  # noqa: E402
-from riftzero.elo import elo_from_score, record_eval, read_elo  # noqa: E402
+from riftzero.elo import elo_from_score, elo_interval, record_eval, read_elo  # noqa: E402
 from riftzero.schema import load_schema  # noqa: E402
 
 NODE = shutil.which("node")
@@ -104,3 +104,15 @@ def test_elo_and_gating(tmp_path):
     rows = record_eval(tmp_path, res, {"enabled": True, "threshold": 0.55})
     assert rows[0]["promoted"] and (tmp_path / "ckpt" / "best.pt").exists()
     assert len(read_elo(tmp_path)) == 2
+
+
+def test_elo_extreme_scores():
+    # found in the first GPU smoke run: a 0-1 eval was recorded as +0.0 Elo with a [0, 0] interval
+    assert elo_from_score(0.0, 1) < -100 and elo_from_score(1.0, 1) > 100
+    assert elo_from_score(0.0, 16) < elo_from_score(1 / 16, 16) < elo_from_score(0.5, 16) == 0
+    lo, hi = elo_interval(0.0, 16)          # all losses: the interval must not collapse to a point
+    assert lo <= elo_from_score(0.0, 16) < hi and hi - lo > 200
+    lo, hi = elo_interval(1.0, 16)
+    assert lo < elo_from_score(1.0, 16) <= hi and hi - lo > 200
+    lo, hi = elo_interval(0.5, 16)
+    assert lo < 0 < hi and abs(lo + hi) < 1e-6

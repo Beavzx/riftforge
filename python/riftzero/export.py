@@ -8,9 +8,9 @@ Outputs: value (B,) in [-1,1] for the player to act, logits (B,nA). Also writes 
 
 Exporter: tries the new torch.export-based exporter first (torch.onnx.export(dynamo=True) with dynamic shapes; the
 TorchScript exporter is deprecated since torch 2.9), and falls back to the TorchScript exporter (dynamo=False) with
-the MHA fast path disabled. `--exporter dynamo|torchscript` forces one. If onnx / onnxruntime are installed, the
-file is checked and its outputs are compared with PyTorch's. NOTE: untested in the development sandbox (no torch
-there); run it once after the first real checkpoint.
+the MHA fast path disabled. `--exporter dynamo|torchscript` forces one (the dynamo exporter needs `onnxscript`). The
+file is checked with onnx, and onnxruntime compares its outputs with PyTorch's on the export dummy and on random
+inputs at another shape. First run on a real GPU box (torch 2.10, a smoke checkpoint): dynamo exporter, diffs ~1e-7.
 """
 from __future__ import annotations
 
@@ -28,7 +28,24 @@ from .schema import load_schema
 NAMES = ["global", "entities", "card_idx", "entity_mask", "actions", "action_mask", "ptr_idx", "ptr_role", "ptr_val"]
 
 
-def verify(path: Path, model, dummy) -> None:
+def random_inputs(model, schema, B: int, nE: int, nA: int, seed: int = 0) -> tuple:
+    """Random but valid inputs at a shape different from the export dummy, so the check exercises the dynamic axes and
+    gives the options different logits (the all-zero dummy gives every option the same one)."""
+    g = torch.Generator().manual_seed(seed)
+    rows, roles = model.card_emb.num_embeddings, model.role_emb.num_embeddings
+    G, F, A, P = schema.G, schema.F, schema.A, schema.P
+    emask = torch.rand(B, nE, generator=g) < 0.8
+    emask[:, 0] = True
+    amask = torch.rand(B, nA, generator=g) < 0.8
+    amask[:, 0] = True
+    return (torch.randn(B, G, generator=g), torch.randn(B, nE, F, generator=g),
+            torch.randint(0, rows, (B, nE), generator=g), emask,
+            torch.randn(B, nA, A, generator=g), amask,
+            torch.randint(-1, nE, (B, nA, P), generator=g), torch.randint(0, roles, (B, nA, P), generator=g),
+            torch.randn(B, nA, P, generator=g))
+
+
+def verify(path: Path, model, dummy, extra: tuple | None = None) -> None:
     """Structural check with onnx and a numeric comparison with onnxruntime, when those are installed."""
     try:
         import onnx
@@ -41,16 +58,27 @@ def verify(path: Path, model, dummy) -> None:
         print("[export] onnx structure OK (install onnxruntime to also compare outputs)")
         return
     sess = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
-    feeds = {n: t.numpy() for n, t in zip(NAMES, dummy) if n in {i.name for i in sess.get_inputs()}}
-    v, lg = sess.run(["value", "logits"], feeds)
-    with torch.no_grad():
-        tv, tl = model(*dummy)
-    dv = float(abs(v - tv.numpy()).max())
-    finite = torch.isfinite(tl)
-    dl = float(abs(lg[finite.numpy()] - tl[finite].numpy()).max()) if finite.any() else 0.0
-    print(f"[export] onnxruntime check: max |value diff| {dv:.2e}, max |logit diff| {dl:.2e}")
-    if dv > 1e-3 or dl > 1e-2:
-        raise SystemExit("[export] ONNX outputs differ from PyTorch — do not use this file")
+    names = {i.name for i in sess.get_inputs()}
+    for label, inp in (("export dummy", dummy), ("random inputs, other shape", extra)):
+        if inp is None:
+            continue
+        feeds = {n: t.numpy() for n, t in zip(NAMES, inp) if n in names}
+        try:
+            v, lg = sess.run(["value", "logits"], feeds)
+        except Exception as e:  # noqa: BLE001  (e.g. the TorchScript exporter baked a sequence length into a Reshape)
+            raise SystemExit(f"[export] the ONNX file fails on {label} {tuple(inp[4].shape[:2])}: "
+                             f"{type(e).__name__}: {str(e)[:300]}\n  (TorchScript exports only work at the traced shape; "
+                             "install onnxscript so the dynamo exporter is used)") from None
+        with torch.no_grad():
+            tv, tl = model(*inp)
+        dv = float(abs(v - tv.numpy()).max())
+        finite = torch.isfinite(tl)
+        same_mask = bool((torch.from_numpy(lg).isfinite() == finite).all())
+        dl = float(abs(lg[finite.numpy()] - tl[finite].numpy()).max()) if finite.any() else 0.0
+        print(f"[export] onnxruntime check ({label}, {tuple(inp[4].shape[:2])}): "
+              f"max |value diff| {dv:.2e}, max |logit diff| {dl:.2e}")
+        if dv > 1e-3 or dl > 1e-2 or not same_mask:
+            raise SystemExit("[export] ONNX outputs differ from PyTorch — do not use this file")
 
 
 def main(argv=None):
@@ -73,6 +101,7 @@ def main(argv=None):
              torch.zeros(B, nA, P, dtype=torch.long), torch.zeros(B, nA, P))
     out = Path(a.out) if a.out else run_dir / "export" / f"riftnet-{src.stem}.onnx"
     out.parent.mkdir(parents=True, exist_ok=True)
+    final, out = out, out.with_name(out.stem + ".tmp.onnx")   # only replace a previous export once the new one verifies
     dyn = {"global": {0: "B"}, "entities": {0: "B", 1: "nE"}, "card_idx": {0: "B", 1: "nE"}, "entity_mask": {0: "B", 1: "nE"},
            "actions": {0: "B", 1: "nA"}, "action_mask": {0: "B", 1: "nA"}, "ptr_idx": {0: "B", 1: "nA"},
            "ptr_role": {0: "B", 1: "nA"}, "ptr_val": {0: "B", 1: "nA"}, "value": {0: "B"}, "logits": {0: "B", 1: "nA"}}
@@ -86,7 +115,8 @@ def main(argv=None):
                       "actions": {0: Bd, 1: nAd}, "action_mask": {0: Bd, 1: nAd}, "ptr_idx": {0: Bd, 1: nAd},
                       "ptr_role": {0: Bd, 1: nAd}, "ptr_val": {0: Bd, 1: nAd}}
             torch.onnx.export(model, dummy, str(out), input_names=NAMES, output_names=["value", "logits"],
-                              dynamic_shapes=shapes, opset_version=a.opset, dynamo=True)
+                              dynamic_shapes=shapes, opset_version=a.opset, dynamo=True,
+                              external_data=False)   # one self-contained file (the default writes weights to <name>.data)
             used = "dynamo"
         except Exception as e:  # noqa: BLE001
             errors.append(f"dynamo exporter: {type(e).__name__}: {str(e)[:400]}")
@@ -102,7 +132,12 @@ def main(argv=None):
             errors.append(f"torchscript exporter: {type(e).__name__}: {str(e)[:400]}")
     if used is None:
         raise SystemExit("[export] ONNX export failed:\n  " + "\n  ".join(errors))
-    verify(out, model, dummy)
+    try:
+        verify(out, model, dummy, random_inputs(model, schema, B=3, nE=13, nA=7))
+    except BaseException:
+        out.unlink(missing_ok=True)
+        raise
+    out = out.replace(final)
     meta = {"schemaHash": schema.schema_hash, "step": ck.get("step"), "model_cfg": ck["model_cfg"], "inputs": NAMES,
             "outputs": ["value", "logits"], "exporter": used, "torch": torch.__version__}
     out.with_suffix(".json").write_text(json.dumps(meta, indent=1))

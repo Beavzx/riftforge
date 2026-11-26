@@ -196,6 +196,11 @@ the network. A self-play game has about 160 decisions. With the default playout 
 | RAM | ~10 GB (6 GB replay window + workers) | ~70–80 GB (2 M-position window) |
 | disk | ~15 GB shards (capped by keepShardFiles) + <1 GB checkpoints | ~85 GB shards + a few GB checkpoints |
 
+**Measured on the home PC (2026-11-26, 11-minute rehearsal of `config/train.yaml`, untrained net):** 553 games/hour,
+about 18,700 positions/hour (≈0.45 M/day), so roughly 7 k trainer steps/day at reuse 4. GPU 10–45% busy, average
+inference batch 12, 5–7 GB VRAM. That's about half the estimate above: early random-ish games are long, and the
+figure should rise as play gets purposeful. The CPU is the bottleneck, as expected.
+
 Each position is about 30 KB on disk and in RAM. The bottleneck on both machines is the CPU (the engine), not the
 GPU. To go faster: more workers, a lower `search.fastSims`, or engine speed-ups (caching the legal-action lists,
 cheaper state clones).

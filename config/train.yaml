@@ -20,10 +20,11 @@ run:
 decks:
   mode: pool            # pool: both seats draw from `pool` | matchup: seat A plays `me`, seat B one of `opponents`
   pool:                 # file names in data/meta-decks/, paths relative to the repo, or absolute paths
-    - 01-azir.json      # Azir (1st)
-    - 02-vex.json       # Vex (2nd)
-    - 04-rek-sai.json   # Rek'Sai (4th)
-    - 06-kai-sa.json    # Kai'Sa (6th)
+    - decks/home-azir.json         # Jonathon's lists (2026-11-26), main deck + runes + battlefields; no sideboards
+    - decks/home-vex.json          #   (self-play is single games with the main deck, so sideboards aren't used)
+    - decks/home-rek-sai.json
+    - decks/home-mordekaiser.json
+    # previous meta pool: 01-azir.json, 02-vex.json, 04-rek-sai.json, 06-kai-sa.json
   allowMirror: true     # mirror matches are useful practice too
   # Fine-tuning one matchup (e.g. your deck vs what your friend plays) — see TRAINING.md "Fine-tune a matchup":
   # mode: matchup

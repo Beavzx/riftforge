@@ -8,4 +8,6 @@ numpy>=1.26
 pyyaml>=6.0
 tensorboard>=2.16
 onnx>=1.16
+onnxscript>=0.3      # needed by torch.onnx.export(dynamo=True); without it export falls back to the deprecated TorchScript exporter
+onnxruntime>=1.20    # lets export.py check the exported file's outputs against PyTorch
 pytest>=8.0

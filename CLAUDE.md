@@ -19,8 +19,9 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
 | Self-play training runtime | Written; tested end to end here with a mock (numpy) backend only, **never run with torch/GPU** | `src/ai/selfplay`, `python/riftzero`, `scripts/`, `config/` | `TRAINING.md`, `docs/agents/runtime.md` |
 
 **Next steps, in order:**
-1. `scripts/setup.sh`, then `scripts/smoke.sh` on Jonathon's PC. This is the first time the PyTorch model, trainer
-   and CUDA inference ever run, so expect to fix real bugs in `python/riftzero/{model,train,torch_backend}.py`.
+1. ~~`scripts/setup.sh`, then `scripts/smoke.sh` on Jonathon's PC.~~ Done 2026-11-26: both pass on the RTX 5070 Ti
+   (torch 2.10.0+cu128). The model, trainer and CUDA inference needed no fixes; eval Elo maths and ONNX export did
+   (see CHANGELOG). A rehearsal of `config/train.yaml` and an eval vs searchai/best/bot also ran clean.
 2. First real run with `config/train.yaml`: a narrow deck pool, 1–3 days. The question to answer is whether Elo
    against SearchAI keeps climbing. If it does, move to the EPYC box (`config/train-epyc.yaml`).
 3. Wire the trained net into the coach as the evaluator: the `NNEvaluator` adapter in `src/ai/selfplay/nn-evaluator.ts`
@@ -43,7 +44,7 @@ npm test                         # full suite, ~9,300 tests (≈1–2 min with m
 npx tsx --test <files>           # targeted tests
 npx tsx tools/fuzz.ts            # random-policy fuzzer: run after any engine change
 npx tsx tools/encode-schema.ts   # regenerate python/riftnet/schema.json + card table after ANY encoder feature change
-python3 -m unittest discover -s python/tests
+PYTHONPATH=python .venv/bin/python -m pytest python/tests -q   # (unittest discover only finds 4 of the tests)
 node --import tsx tools/review.ts game.json --player 0 --budget medium   # coach review → review.md
 ```
 
@@ -77,6 +78,6 @@ Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, exp
   zips as a commit on a branch from the last upstream commit, then merge into `main` (the last upstream commit is branch `upstream/engine1`).
 - **Self-play throughput:** measured on the mock backend at about 13 ms per search simulation, 87% of it in the rules
   engine (`getLegalActions` + `applyAction`). `TRAINING.md` estimates about 800–1,000 games/hour on the home PC and
-  4,000–5,000 on the EPYC.
+  4,000–5,000 on the EPYC; **measured on the home PC with an untrained net: 553 games/hour** (GPU mostly idle).
 - **Engine speed:** about 1.7 ms per `applyAction`. Profiling points at `computeChars` and its relatives, plus
   `structuredClone`. Optimise only if self-play throughput is the bottleneck; don't port to Rust yet.

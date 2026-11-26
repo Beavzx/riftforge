@@ -11,19 +11,31 @@ from .checkpoints import best_step, has_weights, promote_best
 FIELDS = ["time", "step", "opponent", "games", "wins", "losses", "draws", "errors", "score", "elo_diff", "elo_lo", "elo_hi", "best_step", "promoted"]
 
 
+def _elo(p: float, n: int) -> float:
+    eps = 0.5 / (n + 1)                      # the most extreme score n games can show (see elo_from_score)
+    p = min(1 - eps, max(eps, p))
+    return 400.0 * math.log10(p / (1 - p))
+
+
 def elo_from_score(s: float, n: int) -> float:
+    """Elo difference for score s over n games, with a half-game prior: (s*n + 0.5) / (n + 1). Keeps 0/n and n/n
+    finite and, unlike clamping s to [0.5/n, 1 - 0.5/n], doesn't turn a single lost game into exactly 0 Elo."""
     if n <= 0:
         return 0.0
-    eps = 0.5 / n
-    s = min(1 - eps, max(eps, s))
-    return 400.0 * math.log10(s / (1 - s))
+    return _elo((s * n + 0.5) / (n + 1), n)
 
 
 def elo_interval(s: float, n: int, z: float = 1.96) -> tuple[float, float]:
+    """Wilson score interval, in Elo. The Wald interval (s ± z*sqrt(s(1-s)/n)) has zero width at 0/n and n/n, which
+    is exactly what early evals vs SearchAI look like."""
     if n <= 0:
         return (0.0, 0.0)
-    se = math.sqrt(max(1e-9, s * (1 - s)) / n)
-    return elo_from_score(s - z * se, n), elo_from_score(s + z * se, n)
+    z2 = z * z
+    centre = (s + z2 / (2 * n)) / (1 + z2 / n)
+    half = z * math.sqrt(s * (1 - s) / n + z2 / (4 * n * n)) / (1 + z2 / n)
+    lo, hi = _elo(centre - half, n), _elo(centre + half, n)
+    e = elo_from_score(s, n)
+    return min(lo, e), max(hi, e)
 
 
 def record_eval(run_dir: str | Path, result_file: str | Path, gating: dict) -> list[dict]:

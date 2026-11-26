@@ -99,9 +99,9 @@ test('Dancing Grenade: 2 damage; the target\'s controller may replay it for [A] 
   assert.equal(dmg(g, mine), 3);                      // 2 + 1 bonus (dealt damage once before)
   expectDecision(g, 'optional', 0);
   g = run(g, 'yes', theirs);
-  assert.equal(dmg(g, theirs), 2 + 4);                // 2 + 2 bonus = 4 more
-  expectDecision(g, 'optional', 1);
-  // RJ#13328: the replay choice is part of the grenade's resolution, so the lethally damaged unit dies at the cleanup after it
+  assert.equal(dmg(g, theirs), 6);                    // 2 + 2 bonus = 4 more
+  expectDecision(g, 'optional', 1);                   // asked while it resolves (DECISIONS #13328): the unit dies in the cleanup after
+  assert.equal(zoneOf(g, dg), 'chain');               // never leaves the chain during the loop
   g = run(g, 'no');
   assert.equal(zoneOf(g, theirs), 'trash');
   assert.equal(zoneOf(g, dg), 'trash');

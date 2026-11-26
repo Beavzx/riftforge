@@ -1,7 +1,7 @@
 // Game actions (CR 407-444). Every state change that cards can cause goes through here so that
 // replacement effects apply and events are emitted for triggers.
 import type { CardId, Domain, GameEvent, GameState, Modifier, ObjId, PlayerId } from './types.ts';
-import { emit } from './events.ts';
+import { emit, abilityFromKey, type QueuedTrigger } from './events.ts';
 import { applyReplacements, hasReplacement } from './replace.ts';
 import { moveToZone, setLocation, locOf, reseat, type Loc, isBattlefieldCard } from './state.ts';
 import { chars, isUnit, might, attachedTo, onBoard, withCharsMemo } from './chars.ts';
@@ -185,12 +185,16 @@ export function burn(g: GameState, p: PlayerId, n: number): ObjId[] {
 
 /** Put a card into its owner's trash, applying "would go to trash" replacements (e.g. banish instead). */
 export function toTrash(g: GameState, id: ObjId): boolean {
+  return toTrashEx(g, id) === 'trash';
+}
+/** As toTrash; 'replaced' when a replacement effect sent it elsewhere (Endless Riches: banished) or nowhere, 'gone' when it ceased to exist (a token). */
+export function toTrashEx(g: GameState, id: ObjId): 'trash' | 'replaced' | 'gone' {
   const o = g.objects[id];
-  if (!o) return false;
+  if (!o) return 'gone';
   const ev = applyReplacements(g, { type: 'toTrash', obj: id, from: o.zone });
-  if (!ev) return false;
-  if (ev.type === 'banish') { moveToZone(g, id, 'banishment'); emit(g, { type: 'banish', obj: id }); return false; }
-  return moveToZone(g, id, 'trash');
+  if (!ev) return 'replaced';
+  if (ev.type === 'banish') { moveToZone(g, id, 'banishment'); emit(g, { type: 'banish', obj: id }); return 'replaced'; }
+  return moveToZone(g, id, 'trash') ? 'trash' : 'gone';
 }
 
 // ---------------- hand / deck manipulation ----------------
@@ -416,7 +420,18 @@ export function kill(g: GameState, ids: ObjId[], by0?: { player?: PlayerId; obj?
     if (!unit) g.ex.counts[`gearDied:${o.controller}`] = (g.ex.counts[`gearDied:${o.controller}`] ?? 0) + 1;
     g.ex.counts[`permanentsDied:${o.controller}`] = (g.ex.counts[`permanentsDied:${o.controller}`] ?? 0) + 1;
     if (unit && g.phase === 'beginning') g.ex.counts[`unitsDiedBeginning:${o.controller}`] = (g.ex.counts[`unitsDiedBeginning:${o.controller}`] ?? 0) + 1;
-    toTrash(g, id);
+    // CR 808.1.d.1 (RJ#13329): "If the Permanent with the effect is not sent to the Trash" (a replacement sends it elsewhere —
+    // Endless Riches banishes it) its Deathknell is removed. Other "when … dies" triggers stay (the unit still died).
+    if (toTrashEx(g, id) === 'replaced') {
+      const q = g.triggerQueue as QueuedTrigger[];
+      for (let j = q.length - 1; j >= 0; j--) {
+        const t = q[j];
+        if (t.event.type === 'die' && t.event.obj === id && (t.abilitySource ?? t.source) === id && (abilityFromKey(g, t.key) as { deathknell?: boolean } | undefined)?.deathknell) {
+          q.splice(j, 1);
+          log(g, o.controller, `${String(lkis[i].name)} wasn't sent to the trash: its Deathknell is removed`, [id]);
+        }
+      }
+    }
     delete g.ex.damageSrc[id];
     emit(g, { type: 'killed', obj: id, lki: lkis[i], by: byOf(id) ?? null });
   }

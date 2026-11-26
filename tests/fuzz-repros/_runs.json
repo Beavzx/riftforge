@@ -2345,6 +2345,38 @@
   ]
  },
  {
+  "date": "2026-11-26T20:50:59.282Z",
+  "seed": 1026,
+  "games": 200,
+  "workers": 2,
+  "seconds": 132,
+  "steps": 28375,
+  "turns": 3833,
+  "ended": 199,
+  "newRepros": 0,
+  "stats": {
+   "probesIllegal": 97755,
+   "probesLegal": 4040,
+   "enumChecks": 1916,
+   "jsonChecks": 1674,
+   "viewChecks": 4497,
+   "rollbacks": 33
+  },
+  "signatures": [
+   {
+    "hash": "d09ae46bc6",
+    "sig": "invariant|oN attached but not at host location|",
+    "kind": "invariant",
+    "soft": false,
+    "games": 1,
+    "cards": [],
+    "seeds": [
+     1123
+    ]
+   }
+  ]
+ },
+ {
   "date": "2026-11-26T21:20:44.084Z",
   "seed": 900001,
   "games": 150,

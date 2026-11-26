@@ -4,7 +4,7 @@
 // They only use public ctx APIs plus a few read-mostly engine helpers; each one notes what it stands in for.
 import { Ctx } from '../../engine/context.ts';
 import { when, type Filter, type TrigOpts } from '../dsl.ts';
-import type { Effect } from '../../engine/abilities.ts';
+import type { Effect, CostModAbility } from '../../engine/abilities.ts';
 import type { GameEvent, ObjId, PlayerId } from '../../engine/types.ts';
 import { allAbilities, dependenciesMet, attachedTo } from '../../engine/chars.ts';
 import { abilityKey, abilityFromKey, type QueuedTrigger } from '../../engine/events.ts';
@@ -97,6 +97,20 @@ export function discountMin1(ctx: Ctx, id: ObjId, n: number): number {
  */
 export function oneOrA(energy: number): { energy?: number; power?: number } {
   return energy > 0 ? { energy: -1 } : { power: -1 };
+}
+/**
+ * "[1] or [A] less" as an either-discount (DECISIONS #13375, RJ#13375/#13317): the payer chooses which component is reduced
+ * (engine play.ts `either` / `modVariants`). `energyOf` returns null when it doesn't apply; with no Energy to reduce it is [A] less.
+ * Supported scopes: 'play', 'additional', 'repeat'.
+ */
+export function costModOneOrA(energyOf: (ctx: Ctx, playedId: ObjId) => number | null, o: { scope?: CostModAbility['scope']; text?: string } = {}): CostModAbility {
+  const ab: CostModAbility = { kind: 'costMod', applies: (ctx, id) => {
+    const e = energyOf(ctx, id);
+    if (e === null) return false;
+    if (e > 0) { ab.energy = -1; ab.power = 0; ab.either = [{ energy: -1 }, { power: -1 }]; } else { ab.energy = 0; ab.power = -1; ab.either = undefined; }
+    return true;
+  }, ...o };
+  return ab;
 }
 
 /** Targets chosen so far by the chain item being paid for (cost modifiers see them on the second pass). */

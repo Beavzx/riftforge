@@ -5,7 +5,7 @@ import { type QueuedTrigger, abilityFromKey, oncePerTurnOk, markUsed, unmarkUsed
 import { makeCtx } from './context.ts';
 import { chooseOrderKind, askYesNo, Rollback } from './ask.ts';
 import { candidatesFor, chooseGroup } from './targets.ts';
-import { ctxForItem, newItemId, runAbilityEffect, beginResolving, endResolving, enterWaitingPlays } from './play.ts';
+import { ctxForItem, newItemId, runAbilityEffect, beginResolving, endResolving, enterWaitingPlays, playCardByEffect } from './play.ts';
 import { moveToZone } from './state.ts';
 import { getScript } from '../cards/registry.ts';
 import { chars } from './chars.ts';
@@ -321,13 +321,13 @@ export function resolveTop(g: GameState): void {
   // remove the item (it may already have been countered/removed by its own effect)
   const i = g.chain.findIndex(c => c.id === item.id);
   if (i >= 0) g.chain.splice(i, 1);
+  // DECISIONS #13328 (Dancing Grenade): "may play this spell again" accepted while it resolved — it doesn't leave the chain: it goes
+  // from resolving straight back to pending (same object) and is played again by that player once this resolution finishes
+  const replay = item.kind === 'spell' ? item.choices.replayAgain as { p: PlayerId; cost: import('./abilities.ts').CostSpec } | undefined : undefined;
   if (item.kind === 'spell') {
     const o = g.objects[item.source];
-    // RJ#13328 (Dancing Grenade): a spell played again by its own resolution is a new chain item for the same object — it
-    // stays on the chain instead of leaving it
-    // (only a new SPELL item counts: a reflexive "do this" item the spell put on the chain shares its source)
-    const replayed = g.chain.some(c => c.kind === 'spell' && c.source === item.source && c.id !== item.id);
-    if (o && o.zone === 'chain' && !replayed) {
+    if (o && o.zone === 'chain' && replay) { /* stays on the chain */ }
+    else if (o && o.zone === 'chain') {
       // B7-4: "play it, then banish / recycle it"
       if (item.viaFlow || item.choices.banishAfter || item.leaveTo === 'banish') banish(g, [item.source]);
       else if (item.leaveTo === 'recycle') recycle(g, [item.source]);
@@ -340,6 +340,15 @@ export function resolveTop(g: GameState): void {
   }
   // CR 354.4: permanents played during this resolution enter now (after the spell's play completed: Diana vs HR, RJ#9227)
   endResolving(g);
+  if (replay && g.objects[item.source]?.zone === 'chain') {
+    const ok = playCardByEffect(g, replay.p, item.source, { cost: { pay: replay.cost }, then: item.leaveTo });
+    if (!ok && g.objects[item.source]?.zone === 'chain') {
+      // the play couldn't complete (CR 358.5): it leaves the chain as a resolved spell would
+      if (item.viaFlow || item.choices.banishAfter || item.leaveTo === 'banish') banish(g, [item.source]);
+      else if (item.leaveTo === 'recycle') recycle(g, [item.source]);
+      else toTrash(g, item.source);
+    }
+  }
   g.ex.revealed = [];
   g.priority = null;
   g.ex.passes = [];

@@ -89,9 +89,6 @@ const REPLAY = delayedAbility('B5:replayForA', when('spellResolved', (ev, ctx) =
   if (!pc.pay(c, id)) return;
   pc.play(id, { ignoreCost: true });
 }, { text: 'You may play this again for [A]' }));
-// No longer scheduled (Dancing Grenade replays inside its own resolution, RJ#13328); kept registered so a saved game that
-// still holds one of these delayed entries resolves it as before.
-void REPLAY;
 
 // =====================================================================================
 // ORIGINS (ogn)
@@ -898,24 +895,23 @@ card('unl-014-219', "[Action]\nDeal 2 to a unit at a battlefield. If you control
 ]);
 
 // Dancing Grenade
-const grenadeKey = (id: ObjId) => `B5:grenadeHits:${id}`;
+// keyed by object (id + epoch): a Grenade that left the chain is a new object whose count starts at 0 (CR 124; DECISIONS #13328)
+const grenadeKey = (id: ObjId, epoch = 0) => `B5:grenadeHits:${id}:${epoch}`;
 card('unl-020-219', "Deal 2 to a unit. Its controller may play this spell again for [A]. If they do, this deals 1 additional Bonus Damage for each time this spell has dealt damage this turn.", [
   spell(ctx => {
     const t = ctx.target(0);
     if (!t) return;
     const p = ctx.ctrl(t);
-    const bonus = ctx.count(grenadeKey(ctx.self));
+    const gk = grenadeKey(ctx.self, ctx.obj(ctx.self)?.epoch ?? 0);
+    const bonus = ctx.count(gk);
     const dealt = ctx.deal(2 + bonus, t);
-    if (Object.values(dealt).some(n => n > 0)) ctx.bump(grenadeKey(ctx.self));
-    // RJ#13328: the replay is part of this spell's own resolution — the target's controller decides (and pays [A]) while the
-    // grenade is still on the chain, and it is played again from there: it never reaches the trash during the loop (same
-    // object, so the damage count accumulates). resolveTop keeps a spell on the chain when it was replayed (chain.ts).
-    const pc = ctx.as(p);
+    if (Object.values(dealt).some(n => n > 0)) ctx.bump(gk);
+    // DECISIONS #13328: decided as this resolves; if accepted the Grenade never leaves the chain — it goes back to pending (same
+    // object, so "this spell has dealt damage this turn" keeps counting) and that player plays it again for [A] after this
+    // resolution (chain.ts resolveTop `replayAgain`); it reaches the trash only when the loop stops
     const c = cost('[A]');
-    if (ctx.obj(ctx.self)?.zone !== 'chain' || !pc.canPay(c, ctx.self)) return;
-    if (!pc.may(`Play ${ctx.name(ctx.self)} again for [A]?`)) return;
-    if (!pc.pay(c, ctx.self)) return;
-    pc.play(ctx.self, { ignoreCost: true });
+    if (!ctx.item || ctx.obj(ctx.self)?.zone !== 'chain' || !ctx.as(p).canPay(c, ctx.self)) return;
+    if (ctx.as(p).may(`Play ${ctx.name(ctx.self)} again for [A]?`)) ctx.item.choices.replayAgain = { p, cost: c };
   }, { targets: [T.unit({ prompt: 'Deal 2 to a unit', ...harm })] }),
 ]);
 

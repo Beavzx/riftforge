@@ -5,7 +5,7 @@ import {
   validateAction, getView, moveDests, chainSources, attackSetup, pass, expectPending, hasKeyword, mightOf, setBattlefieldCard, legal, nextTurn, setRunes, play, passN, answer, mod, kwValue, endTurn, rejects, clearDeck, addRunes,
 } from '../conformance/harness.ts';
 import { setXp, playCostOf, place, attachNow } from '../../src/engine/testkit.ts';
-import { chars } from '../../src/engine/chars.ts';
+import { chars, isUnit } from '../../src/engine/chars.ts';
 import { drive, ans, opt, withTokens, unitsNamed, setLegend, nameOf } from './r11701.helpers.ts';
 import { createGame } from '../../src/engine/index.ts';
 import { fixtureDb } from '../fixtures/conformance/cards.ts';
@@ -10417,7 +10417,7 @@ test('RJ#13151 Imperial Decree vs Zhonya\'s Hourglass: lethal damage → Zhonya\
   }
 });
 
-test('RJ#13152 a Bomb token played to Hunters\' Circle by the Hexplosives Expert legend is the first gear played there: a unit played there next pays full cost', { todo: 'RJ#13152: Hunters\' Circle script ignores token plays (!ev.token), so the next unit still gets the [1] discount' }, () => {
+test('RJ#13152 a Bomb token played to Hunters\' Circle by the Hexplosives Expert legend is the first gear played there: a unit played there next pays full cost', () => {
   let g = withTokens(S0()); fundAll(g, P0, 6);
   setBattlefieldCard(g, BF_A, "Hunters' Circle");
   put(g, P0, 'V(1)', BF_A); control(g, BF_A, P0);
@@ -10440,6 +10440,9 @@ test('RJ#13153 Heimerdinger, Inventor has a Seal\'s [T]: [Reaction] [Add] abilit
   assert.equal(g.objects[hm].exhausted, true);
   assert.equal(g.objects[s1].exhausted, false);
   assert.equal(Object.values(g.players[P0].pool.power).reduce((s, n) => s + (n ?? 0), 0), p0 + 1, '+1 power');
+  // DECISIONS #13153 (aside): the ability is Heimerdinger's own, so its [C] is his domain (Mind), not the Seal's Chaos (CR 135.2.e.5)
+  assert.equal(g.players[P0].pool.power.Mind ?? 0, 1, '[C] = Mind (Heimerdinger\'s domain)');
+  assert.equal(g.players[P0].pool.power.Chaos ?? 0, 0);
   assert.ok(legal(g, P0, 'activate').some(a => a.type === 'activate' && a.obj === s1), 'the Seal itself still usable');
 });
 
@@ -10507,7 +10510,7 @@ test('RJ#13164 a gear animated by Lady of Clockwork is not exhausted by becoming
   assert.ok(moveDests(g, P0, gear).length > 0 || legal(g, P0).some(a => a.type === 'move' && (a as { units?: string[] }).units?.includes(gear)), 'can move');
 });
 
-test('RJ#13165 Temporal Breach on Neeko, Blending In: her legend leaves the Legend Zone at once (duration "while I\'m on the board"), so her replay can choose the same legend again — and it is ready', { todo: 'RJ#13165: Neeko\'s legend removal is a leave-board trigger that resolves after her replayed play trigger, so the same legend isn\'t offered (the other is auto-chosen) and the used one is then removed' }, () => {
+test('RJ#13165 Temporal Breach on Neeko, Blending In: her legend leaves the Legend Zone at once (duration "while I\'m on the board"), so her replay can choose the same legend again — and it is ready', () => {
   let g = S0(); fundAll(g, P0, 10);
   for (const id of ['ogn-267-298', 'ogn-257-298']) if (!g.cards[id]) g.cards = { ...g.cards, [id]: realCard(id) };
   const l1 = newObject(g, 'ogn-267-298', P0, 'setAside').id, l2 = newObject(g, 'ogn-257-298', P0, 'setAside').id;
@@ -10526,4 +10529,627 @@ test('RJ#13165 Temporal Breach on Neeko, Blending In: her legend leaves the Lege
   assert.equal(zone(g, l1), 'legendZone', 'the same legend chosen again');
   assert.equal(g.objects[l1].exhausted, false, 'ready');
   assert.equal(zone(g, l2), 'setAside');
+});
+
+test('RJ#13167 Trifarian Captain looks at Nocturne, Horrifying: banishing/playing him for [A] doesn\'t use up the Captain\'s draw — a qualifying V(2) is still revealed and drawn', () => {
+  let g = S0(); fundAll(g, P0);
+  put(g, P0, 'V(5)', 'deckTop'); put(g, P0, 'V(4)', 'deckTop');
+  const v = put(g, P0, 'V(2)', 'deckTop');
+  const n = put(g, P0, 'Nocturne, Horrifying', 'deckTop');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Trifarian Captain'), destination: 'base' });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(v) ? [v] : o.includes('base') ? 'base' : 'first');
+  }
+  assert.equal(zone(g, n), 'base', 'Nocturne played');
+  assert.equal(zone(g, v), 'hand', 'V(2) drawn');
+});
+
+test('RJ#13169 my Bone Skewer makes the opponent play Brynhir Thundersong into my Teemo, Strategist: her play trigger resolves before combat (Teemo\'s defend trigger comes later) and I can\'t play cards in that combat', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  put(g, P0, 'Teemo, Strategist', BF_A); control(g, BF_A, P0);
+  const b = hand(g, P1, 'Brynhir Thundersong');
+  const pf = hand(g, P0, 'Punch First');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Bone Skewer') });
+  let checked = false;
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (d.kind === 'assignDamage') { g = act(g, { type: 'assignDamage', player: d.player, assignment: (d.data as { suggested: Record<string, number> }).suggested }); continue; }
+    if (d.kind === 'showdownAction' && d.player === P0) { checked = true; assert.ok(!canPlayNow(g, P0, pf), 'no cards for me in the combat'); }
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, d.kind === 'chooseTargets' && /battlefield/i.test(d.prompt ?? '') ? /BF-A|Teemo/ : o.includes(b) ? [b] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.ok(checked);
+  const L = g.log.map(l => l.text);
+  const ib = L.findIndex(t => /Resolving Brynhir/.test(t)), it = L.findIndex(t => /Trigger: Teemo/.test(t));
+  assert.ok(ib >= 0 && it > ib, 'Brynhir resolved before Teemo\'s defend trigger');
+});
+
+test('RJ#13170 a 3-Might attacker into a 9-Might defender already carrying 7 damage: lethal is total marked damage (7 + 3 ≥ 9) → both die', () => {
+  let { g, atk, def } = attackSetup(['V(3)'], ['V(9)']);
+  g.objects[def[0]].damage = 7; g.timestamp++;
+  g = drive(g, Array(6).fill('first'), x => x.pending?.kind === 'mainAction');
+  assert.equal(zone(g, def[0]), 'trash');
+  assert.equal(zone(g, atk[0]), 'trash');
+});
+
+test('RJ#13171 my Blitzcrank, Impassive pulls an enemy unit to my Gravity Field battlefield: the opponent pays nothing and isn\'t asked (it\'s my move, not theirs)', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  put(g, P0, 'Gravity Field', BF_A); put(g, P0, 'V(1)', BF_A); control(g, BF_A, P0);
+  const e = put(g, P1, 'V(2)', 'base');
+  const r0 = g.players[P1].runesInPlay.filter(x => !g.objects[x].exhausted).length;
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Blitzcrank, Impassive'), destination: BF_A });
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0) && g.pending.kind !== 'assignDamage' && !(g.pending.kind === 'showdownAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    assert.notEqual(d.player, P1, 'P1 gets no pay/decline decision');
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(e) ? [e] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(locOf(g, e), BF_A);
+  assert.equal(g.players[P1].runesInPlay.filter(x => !g.objects[x].exhausted).length, r0, 'no runes used by P1');
+});
+
+test('RJ#13172 Battlefield Armorer doesn\'t stop a gear\'s Deathknell: Gravity Field killed at a battlefield → both trigger (I order them); it returns to hand and I still draw 1', () => {
+  let g = S0({ tp: P1 }); fundAll(g, P0); fundAll(g, P1);
+  const gf = put(g, P0, 'Gravity Field', BF_A); put(g, P0, 'V(1)', BF_A); control(g, BF_A, P0);
+  put(g, P0, 'Battlefield Armorer', 'base');
+  const h0 = g.players[P0].hand.length;
+  g = act(g, { type: 'playCard', player: P1, obj: hand(g, P1, 'KillGearM') });
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(gf) ? [gf] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(zone(g, gf), 'hand');
+  assert.equal(g.players[P0].hand.length - h0, 2, 'Gravity Field back + 1 drawn');
+  assert.ok(g.log.some(l => /Resolving Gravity Field: Deathknell/.test(l.text)));
+});
+
+test('RJ#13173 hidden Temporal Breach in response to Frozen Fortress\'s Beginning-Phase trigger on the opponent\'s turn: Brynhir Thundersong is replayed there (her trigger fires again), then still takes the 1 damage', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  setBattlefieldCard(g, BF_A, 'Frozen Fortress');
+  const b = put(g, P0, 'Brynhir Thundersong', BF_A); control(g, BF_A, P0);
+  const tb = put(g, P0, 'Temporal Breach', { facedown: BF_A });
+  g = endTurn(g, P0);
+  g = drive(g, [], y => y.chain.length > 0 && y.pending?.kind === 'chainResponse' && y.pending.player === P0 || y.pending?.kind === 'mainAction');
+  assert.deepEqual(chainLabels(g), ['trigger:Frozen Fortress']);
+  assert.ok(canPlayNow(g, P0, tb), 'Breach playable from hiding in response');
+  g = act(g, { type: 'playCard', player: P0, obj: tb });
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(b) ? [b] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(locOf(g, b), BF_A);
+  assert.equal(g.objects[b].damage, 1);
+  assert.ok(g.log.some(l => /Resolving Brynhir Thundersong/.test(l.text)), 'her play trigger resolved again');
+  assert.ok(!canPlayNow(g, P1, hand(g, P1, 'V(1)'), 'base'), 'the opponent can\'t play cards this turn');
+});
+
+test('RJ#13175 Forbidden Technique discarded to Mordekaiser, Dominating\'s play effect reaches the trash after his 9-cost play: no "play this from your trash" offer', () => {
+  let g = S0(); fundAll(g, P0, 12);
+  const e = put(g, P1, 'V(2)', BF_A); control(g, BF_A, P1);
+  const ft = hand(g, P0, 'Forbidden Technique');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'rad-137-167'), destination: 'base' });
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    assert.ok(!/Forbidden Technique/.test(d.prompt ?? ''), 'no Forbidden Technique trigger');
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(ft) ? [ft] : o.includes(e) ? [e] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(zone(g, ft), 'trash');
+  assert.equal(zone(g, e), 'trash');
+});
+
+test('RJ#13177 conquering Monastery of Hirana with a buffed unit and my Pillaged Armory there: the Monastery\'s buff is spent at finalization, the Armory re-buffs the unit, and I draw 1', () => {
+  let g = S0(); fundAll(g, P0);
+  setBattlefieldCard(g, BF_A, 'Monastery of Hirana');
+  put(g, P0, 'Pillaged Armory', BF_A);
+  const u = put(g, P0, 'V(2)', 'base', { buff: true });
+  const h0 = g.players[P0].hand.length;
+  g = move(g, P0, [u], BF_A);
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(u) ? [u] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(g.objects[u].counters.buff, 1, 'buffed again');
+  assert.equal(g.players[P0].hand.length - h0, 1, 'drew 1');
+});
+
+test('RJ#13178 a unit with Skyfall of Areion and Last Rites conquers: Last Rites\' "conquer or hold" ability triggers once (Skyfall reclassifies, doesn\'t duplicate)', () => {
+  let g = S0(); fundAll(g, P0);
+  const u = put(g, P0, 'V(2)', 'base');
+  attachNow(g, put(g, P0, 'Skyfall of Areion', 'base'), u);
+  attachNow(g, put(g, P0, 'Last Rites', 'base'), u);
+  put(g, P0, 'V(1)', 'trash');
+  g = move(g, P0, [u], BF_A);
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) g = g.pending.inStep ? ans(g, g.pending.kind === 'optional' ? 'no' : 'first') : pass(g);
+  assert.equal(g.log.filter(l => /^Trigger: .*When I conquer or hold, you may play a unit from your trash/.test(l.text)).length, 1);
+});
+
+test('RJ#13182 Blitzcrank, Impassive\'s play trigger on the chain: no Equip (not a Reaction) before it resolves; once the chain is empty Equip is usable', () => {
+  let g = S0(); fundAll(g, P0);
+  put(g, P0, 'V(1)', BF_A); control(g, BF_A, P0);
+  const e = put(g, P1, 'V(2)', 'base');
+  const ga = put(g, P0, 'Guardian Angel', 'base');
+  assert.ok(legal(g, P0, 'activate').some(a => a.type === 'activate' && a.obj === ga), 'Equip usable in the open Main Phase');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Blitzcrank, Impassive'), destination: BF_A });
+  g = drive(g, [[e]], x => x.chain.length > 0 && x.pending?.kind === 'chainResponse' && x.pending.player === P0);
+  assert.ok(g.chain.length > 0);
+  assert.ok(!legal(g, P0, 'activate').some(a => a.type === 'activate' && a.obj === ga), 'no Equip while his trigger is pending');
+});
+
+test('RJ#13187 lone defender V(4) at Forbidding Waste (2 Might): Wages of Pain on it; the defender\'s hidden Edge of Night is played in response and attaches first (+2 → 4) → it survives with 3 damage', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  setBattlefieldCard(g, BF_A, 'Forbidding Waste');
+  const d = put(g, P1, 'V(4)', BF_A); control(g, BF_A, P1);
+  const en = put(g, P1, 'Edge of Night', { facedown: BF_A });
+  g = move(g, P0, [put(g, P0, 'V(1)', 'base')], BF_A);
+  g = drive(g, [], x => x.pending?.kind === 'showdownAction' && x.pending.player === P0 && x.chain.length === 0);
+  assert.equal(mightOf(g, d), 2, 'defending alone: -2');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Wages of Pain') });
+  g = drive(g, [[d]], x => x.pending?.kind === 'chainResponse' && x.pending.player === P1);
+  assert.ok(canPlayNow(g, P1, en));
+  g = act(g, { type: 'playCard', player: P1, obj: en });
+  for (let i = 0; i < 40 && g.pending && g.pending.kind !== 'assignDamage' && !(g.pending.kind === 'showdownAction' && g.chain.length === 0) && g.pending.kind !== 'mainAction'; i++) {
+    const p = g.pending;
+    if (!p.inStep) { g = pass(g); continue; }
+    g = ans(g, p.options!.some(x => x.id === d) ? [d] : 'first');
+  }
+  assert.equal(zone(g, d), 'battlefield');
+  assert.equal(g.objects[d].damage, 3);
+  assert.equal(mightOf(g, d), 4);
+});
+
+test('RJ#13192 Cloth Armor can\'t be attached to a gear (Brutalizer): Equip only chooses a unit you control — with one unit it is auto-chosen', () => {
+  let g = S0(); fundAll(g, P0);
+  const ca = put(g, P0, 'Cloth Armor', 'base');
+  const br = put(g, P0, 'Brutalizer', 'base');
+  const u = put(g, P0, 'V(2)', 'base');
+  g = drive(act(g, legal(g, P0, 'activate').find(a => a.type === 'activate' && a.obj === ca)!));
+  assert.equal(g.objects[ca].attachedTo, u);
+  assert.equal(g.objects[br].attachedTo, undefined);
+});
+
+test('RJ#13193 Guardian Angel attached to Brutalizer while Lady of Clockwork made it a unit; Lady later animates another gear: Brutalizer is a plain gear again, the Angel stays attached and dies instead when Brutalizer is killed', () => {
+  let g = S0({ tp: P1 }); setLegend(g, P0, 'Lady of Clockwork');
+  const br = put(g, P0, 'Brutalizer', 'base');
+  const other = put(g, P0, 'The Ball', 'base');
+  const ga = put(g, P0, 'Guardian Angel', 'base');
+  const toMain = (pick: string) => { for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.activePlayer === P0 && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = act(g, { type: 'pass', player: d.player }); continue; } const o = d.options!.map(x => x.id); g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(pick) ? [pick] : o[0]); } };
+  g = endTurn(g, P1); toMain(br);
+  assert.ok(isUnit(g, br));
+  attachNow(g, ga, br);
+  g = endTurn(g, P0); g = endTurn(g, P1); toMain(other);
+  assert.ok(!isUnit(g, br) && isUnit(g, other), 'Brutalizer reverted');
+  assert.equal(g.objects[ga].attachedTo, br, 'still attached');
+  fundAll(g, P0);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'KillGearM') });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = pass(g); continue; } g = ans(g, d.options!.some(x => x.id === br) ? [br] : 'first'); }
+  assert.equal(zone(g, br), 'base', 'Brutalizer survives');
+  assert.equal(zone(g, ga), 'trash', 'the Angel died instead');
+});
+
+test('RJ#13194 Gust on the friendly unit Shuriken Flip would move doesn\'t counter it: the move does nothing, the 2 damage to the enemy unit still happens', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  const u = put(g, P0, 'V(2)', BF_A); control(g, BF_A, P0);
+  const e = put(g, P1, 'V(5)', BF_B); control(g, BF_B, P1);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Shuriken Flip') });
+  for (let i = 0; i < 6 && g.pending?.inStep; i++) { const o = g.pending.options!.map(x => x.id); g = ans(g, o.includes(e) ? [e] : o.includes(u) ? [u] : o.includes('base') ? 'base' : 'first'); }
+  g = drive(g, [], x => x.pending?.kind === 'chainResponse' && x.pending.player === P1);
+  g = act(g, { type: 'playCard', player: P1, obj: hand(g, P1, 'Gust') });
+  g = drive(g, [[u]], x => x.pending?.kind === 'mainAction');
+  assert.equal(zone(g, u), 'hand');
+  assert.equal(g.objects[e].damage, 2);
+});
+
+test('RJ#13195 Tomb-Raider Barbara triggered with 7 runes; I drop to 6 before it resolves (stand-in for recycling a rune to pay Defy): the gear is still killed (condition checked when it triggered)', () => {
+  let g = S0(); setRunes(g, P0, 7, 'order');
+  const gear = put(g, P1, 'Guardian Angel', 'base');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Tomb-Raider Barbara'), destination: 'base' });
+  g = drive(g, [[gear]], x => x.chain.length > 0 && x.pending?.kind === 'chainResponse');
+  assert.equal(g.chain.length, 1);
+  const r = g.players[P0].runesInPlay.pop()!; delete g.objects[r]; g.timestamp++;
+  g = drive(g, [[gear]], x => x.pending?.kind === 'mainAction');
+  assert.equal(g.players[P0].runesInPlay.length, 6);
+  assert.equal(zone(g, gear), 'trash');
+});
+
+test('RJ#13196 I hold Amateur Recital with a lone V(2) next to the opponent\'s Bomb: the Bomb\'s Deploy kill and Deathknell (2) resolve above my Recital move → V(2) dies, Recital doesn\'t save it; I lose control afterwards', () => {
+  let g = withTokens(S0({ tp: P1 })); fundAll(g, P1, 10);
+  setBattlefieldCard(g, BF_A, 'Amateur Recital');
+  const u = put(g, P0, 'V(2)', BF_A); control(g, BF_A, P0);
+  g = drive(act(g, { type: 'playCard', player: P1, obj: hand(g, P1, 'Amateur Demolitionist'), destination: 'base' }), ['first', String(BF_A), String(BF_A)], x => x.pending?.kind === 'mainAction');
+  const bomb = Object.keys(g.objects).find(id => g.cards[g.objects[id].cardId]?.name === 'Bomb' && g.objects[id].zone === 'battlefield')!;
+  assert.equal(locOf(g, bomb), BF_A);
+  g = endTurn(g, P1);
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(u) ? [u] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(zone(g, u), 'trash');
+  assert.notEqual(g.battlefields[BF_A].controller, P0);
+});
+
+test('RJ#13198 my Stupefy then Hextech Ray on the opponent\'s Irelia, Fervent: no +1 for her (not her controller choosing), 4 → 3, the 3 damage kills her; Deflect [A] paid for each spell', () => {
+  let g = S0(); fundAll(g, P0);
+  const ir = put(g, P1, 'Irelia, Fervent', BF_A); control(g, BF_A, P1);
+  const n0 = g.players[P0].runesInPlay.length;
+  const cast1 = (name: string) => {
+    g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, name) });
+    for (let i = 0; i < 10 && g.pending?.inStep; i++) { const d = g.pending; g = ans(g, d.options!.some(o => o.id === ir) ? [ir] : d.kind === 'optional' ? 'yes' : 'first'); }
+    g = drive(g, [], x => x.pending?.kind === 'mainAction');
+  };
+  cast1('Stupefy');
+  assert.equal(mightOf(g, ir), 3);
+  assert.equal(n0 - g.players[P0].runesInPlay.length, 1, 'Deflect [A] for Stupefy');
+  cast1('Hextech Ray');
+  assert.equal(zone(g, ir), 'trash');
+  assert.equal(n0 - g.players[P0].runesInPlay.length, 3, 'Ray: its power + Deflect [A]');
+});
+
+test('RJ#13200 Lady of Clockwork animates Ephemeral Ward: not "playing a unit" (no self-kill), it stays, Might = cost 4 plus its own +2 = 6; my other units still +2', () => {
+  let g = S0({ tp: P1 }); setLegend(g, P0, 'Lady of Clockwork');
+  const w = put(g, P0, 'Ephemeral Ward', 'base');
+  const v = put(g, P0, 'V(1)', 'base');
+  g = endTurn(g, P1);
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.activePlayer === P0 && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = act(g, { type: 'pass', player: d.player }); continue; } const o = d.options!.map(x => x.id); g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(w) ? [w] : o[0]); }
+  assert.equal(zone(g, w), 'base');
+  assert.ok(isUnit(g, w));
+  assert.equal(mightOf(g, w), 6);
+  assert.equal(mightOf(g, v), 3);
+});
+
+test('RJ#13201 Rift Herald\'s move trigger: revealing and drawing Undertitan adds [2] Energy; revealing another unit (Undertitan only looked at) adds nothing', () => {
+  for (const pickTitan of [true, false]) {
+    let g = S0();
+    put(g, P0, 'V(1)', 'deckTop');
+    const v = put(g, P0, 'V(2)', 'deckTop');
+    const ut = put(g, P0, 'Undertitan', 'deckTop');
+    g = move(g, P0, [put(g, P0, 'Rift Herald', 'base')], BF_A);
+    for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+      const d = g.pending;
+      if (!d.inStep) { g = pass(g); continue; }
+      const o = d.options!.map(x => x.id);
+      g = ans(g, o.includes(ut) && pickTitan ? [ut] : o.includes(v) ? [v] : d.kind === 'optional' ? 'yes' : 'first');
+    }
+    assert.equal(zone(g, pickTitan ? ut : v), 'hand');
+    assert.equal(g.players[P0].pool.energy, pickTitan ? 2 : 0);
+  }
+});
+
+test('RJ#13202 Starry-Eyed Songstress cost reduction exhausts Seraphine (rad-138) to play Raucous Anthem: her Recruit trigger resolves first (fixed order), so the Recruit is readied and gets +3 from Anthem', () => {
+  let g = withTokens(S0()); fundAll(g, P0, 3);
+  setLegend(g, P0, 'Starry-Eyed Songstress');
+  put(g, P0, 'rad-138-167', 'base'); put(g, P0, 'V(1)', 'base'); put(g, P0, 'V(1)', 'base');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Raucous Anthem') });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) g = g.pending.inStep ? ans(g, g.pending.kind === 'optional' ? 'yes' : 'first') : pass(g);
+  const r = unitsNamed(g, 'Recruit');
+  assert.equal(r.length, 1);
+  assert.equal(g.objects[r[0]].exhausted, false, 'readied by Anthem');
+  assert.equal(mightOf(g, r[0]), 4, '1 + 3');
+});
+
+test('RJ#13204 (MISMATCH-RJ) showdown: A passes, B activates a Seal\'s [Add] and passes — activating an ability breaks the pass sequence (CR 347.2.a/348; DECISIONS #552), so A gets focus again; the showdown doesn\'t close', () => {
+  let { g } = attackSetup(['V(3)'], ['V(3)']);
+  for (let i = 0; i < 6 && g.pending?.inStep; i++) g = ans(g, 'first');
+  const seal = put(g, P1, 'Seal of Rage', 'base');
+  expectPending(g, 'showdownAction', P0);
+  g = pass(g);
+  expectPending(g, 'showdownAction', P1);
+  g = act(g, legal(g, P1, 'activate').find(a => a.type === 'activate' && a.obj === seal)!);
+  expectPending(g, 'showdownAction', P1, 'Add keeps priority');
+  g = pass(g);
+  expectPending(g, 'showdownAction', P0, 'focus back to A — no combat damage yet');
+});
+
+test('RJ#13211 Temporal Breach on The Ball animated by Lady of Clockwork at a battlefield: it is replayed there as a plain (Deploy) gear, stays there, and its play trigger fires again', () => {
+  let g = S0({ tp: P1 }); setLegend(g, P0, 'Lady of Clockwork');
+  const b = put(g, P0, 'The Ball', 'base');
+  g = endTurn(g, P1);
+  const run = (pick: string[]) => { for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.activePlayer === P0 && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = act(g, { type: 'pass', player: d.player }); continue; } const o = d.options!.map(x => x.id); const p = pick.find(x => o.includes(x)); g = ans(g, d.kind === 'optional' ? 'yes' : p ? [p] : o[0]); } };
+  run([b]);
+  g = move(g, P0, [b], BF_A); run([]);
+  assert.equal(locOf(g, b), BF_A);
+  fundAll(g, P0);
+  const n0 = g.log.length;
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Temporal Breach') }); run([b]);
+  const nb = Object.keys(g.objects).find(id => g.cards[g.objects[id].cardId]?.name === 'The Ball' && ['base', 'battlefield'].includes(g.objects[id].zone))!;
+  assert.equal(locOf(g, nb), BF_A, 'stays at the battlefield (Deploy)');
+  assert.equal(chars(g, nb).type, 'Gear');
+  assert.ok(g.log.slice(n0).some(l => /Resolving The Ball: When you play or move this/.test(l.text)), 'play trigger again');
+});
+
+test('RJ#13214 Azir, Sovereign attacks A; the opponent Siren\'s Songs him to empty B in response to his attack trigger: the chosen token follows him to B ("this battlefield" read on resolution); the combat at A ends, he conquers B afterwards', () => {
+  let g = withTokens(S0()); fundAll(g, P0); fundAll(g, P1);
+  put(g, P1, 'V(1)', BF_A); control(g, BF_A, P1);
+  const t1 = put(g, P0, 'Recruit', 'base', { token: true });
+  const az = put(g, P0, 'Azir, Sovereign', 'base');
+  g = move(g, P0, [az], BF_A);
+  for (let i = 0; i < 10 && g.pending?.inStep; i++) { const d = g.pending; const o = d.options!.map(x => x.id); g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(t1) ? [t1] : 'first'); }
+  g = drive(g, [], x => x.pending?.kind === 'chainResponse' && x.pending.player === P1);
+  g = act(g, { type: 'playCard', player: P1, obj: hand(g, P1, "Siren's Song") });
+  for (let i = 0; i < 40 && g.pending && g.pending.kind !== 'mainAction'; i++) {
+    const d = g.pending;
+    if (d.kind === 'assignDamage') { g = act(g, { type: 'assignDamage', player: d.player, assignment: (d.data as { suggested: Record<string, number> }).suggested }); continue; }
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(az) ? [az] : o.includes(String(BF_B)) ? String(BF_B) : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(locOf(g, az), BF_B);
+  assert.equal(locOf(g, t1), BF_B);
+  assert.equal(g.battlefields[BF_B].controller, P0);
+  assert.equal(g.battlefields[BF_A].controller, P1);
+});
+
+test('RJ#13215 Thousand-Tailed Watcher played while Ahri, Confident is in my base: enemy units at a battlefield lose Might but not "here" → Ahri gets nothing (nor later when she moves there)', () => {
+  let g = S0(); fundAll(g, P0, 12);
+  const ah = put(g, P0, 'rad-038-167', 'base');
+  const m0 = mightOf(g, ah);
+  put(g, P1, 'V(4)', BF_A); put(g, P1, 'V(4)', BF_A); control(g, BF_A, P1);
+  g = drive(act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Thousand-Tailed Watcher'), destination: 'base' }), Array(4).fill('first'), x => x.pending?.kind === 'mainAction');
+  assert.equal(mightOf(g, ah), m0);
+});
+
+test('RJ#13217 empowered Gangplank, Naval conquers Emperor\'s Dais and is returned as its cost: a cost isn\'t a choosing ability → he goes to hand (no +3 replacement); the Sand Soldier is played', () => {
+  let g = withTokens(S0()); fundAll(g, P0);
+  setBattlefieldCard(g, BF_A, "Emperor's Dais");
+  const gp = put(g, P0, 'Gangplank, Naval', 'base'); g.objects[gp].empowered = 1; g.timestamp++;
+  g = move(g, P0, [gp], BF_A);
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(gp) ? [gp] : 'first');
+  }
+  assert.equal(zone(g, gp), 'hand');
+  assert.equal(unitsNamed(g, 'Sand Soldier').length, 1);
+});
+
+test('RJ#13218 buffed Demacian Illuminators and two other friendly units die at once; The Boss saves the Illuminators (buff spent): one trigger, and it can buff itself in base', () => {
+  let g = S0(); fundAll(g, P0);
+  setLegend(g, P0, 'The Boss');
+  const il = put(g, P0, 'Demacian Illuminators', BF_A, { buff: true }); control(g, BF_A, P0);
+  const a = put(g, P0, 'V(1)', BF_A), b = put(g, P0, 'V(1)', BF_A);
+  for (const x of [il, a, b]) g.objects[x].damage = 9;
+  g.timestamp++;
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'V(1)'), destination: 'base' });   // any action → cleanup
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, d.kind === 'optional' ? 'yes' : o.includes(il) ? [il] : 'first');
+  }
+  assert.equal(locOf(g, il), 'base');
+  assert.equal(g.objects[il].counters.buff, 1, 'buffed itself again');
+  assert.deepEqual([zone(g, a), zone(g, b)], ['trash', 'trash']);
+  assert.equal(g.log.filter(l => /^Trigger: Demacian Illuminators/.test(l.text)).length, 1);
+});
+
+test('RJ#13219 Firebrand Raider\'s "Units don\'t ready during the Awaken Phase" is global: the opponent\'s exhausted unit stays exhausted through their Awaken Phase', () => {
+  let g = S0(); fundAll(g, P0, 12);
+  g = drive(act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Firebrand Raider'), destination: 'base' }), [], x => x.pending?.kind === 'mainAction');
+  const e = put(g, P1, 'V(2)', 'base'); g.objects[e].exhausted = true; g.timestamp++;
+  g = endTurn(g, P0);
+  g = drive(g, [], x => x.pending?.kind === 'mainAction');
+  assert.equal(g.activePlayer, P1);
+  assert.equal(g.objects[e].exhausted, true);
+});
+
+test('RJ#13220 Kharox\'s [Empower] activated ability has no Action/Reaction: usable in my open Main Phase, not during a showdown', () => {
+  let g = S0(); fundAll(g, P0, 12);
+  const k = put(g, P0, 'Kharox', 'base');
+  assert.ok(legal(g, P0, 'activate').some(a => a.type === 'activate' && a.obj === k), 'main phase: Empower available');
+  let { g: h } = attackSetup(['V(3)'], ['V(3)']);
+  for (let i = 0; i < 6 && h.pending?.inStep; i++) h = ans(h, 'first');
+  fundAll(h, P0, 12);
+  const k2 = put(h, P0, 'Kharox', 'base');
+  expectPending(h, 'showdownAction', P0);
+  assert.ok(!legal(h, P0, 'activate').some(a => a.type === 'activate' && a.obj === k2), 'not in the showdown');
+});
+
+test('RJ#13221 Agony\'s Embrace (legend trigger, no [T]) draws when I play a card from face down and doesn\'t exhaust', () => {
+  let g = S0(); fundAll(g, P0);
+  const lg = setLegend(g, P0, "Agony's Embrace");
+  put(g, P0, 'V(1)', BF_A); control(g, BF_A, P0);
+  const h = put(g, P0, 'HidU(2)', { facedown: BF_A });
+  const h0 = g.players[P0].hand.length;
+  g = drive(act(g, { type: 'playCard', player: P0, obj: h, destination: BF_A }), ['first', 'first'], x => x.pending?.kind === 'mainAction');
+  assert.equal(g.players[P0].hand.length - h0, 1, 'drew 1 (my turn: no discard)');
+  assert.equal(g.objects[lg].exhausted, false);
+});
+
+test('RJ#13223 Heimerdinger, Academy Instructor at the battlefield + Keeper of Masks: each Reflection may be replaced by a Mech, and "they become copies of me" then applies to the Mechs → 3 Keepers', () => {
+  let g = withTokens(S0()); fundAll(g, P0);
+  put(g, P0, 'rad-132-167', BF_A); control(g, BF_A, P0);
+  const k = put(g, P0, 'Keeper of Masks', { facedown: BF_A });
+  g = act(g, { type: 'playCard', player: P0, obj: k });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) g = g.pending.inStep ? ans(g, g.pending.kind === 'optional' ? 'yes' : 'first') : pass(g);
+  const here = Object.keys(g.objects).filter(id => g.objects[id].zone === 'battlefield' && locOf(g, id) === BF_A);
+  assert.equal(g.log.filter(l => /creates a Mech token/.test(l.text)).length, 2, 'two Mechs instead of Reflections');
+  assert.equal(here.filter(id => chars(g, id).name === 'Keeper of Masks').length, 3);
+});
+
+test('RJ#13224 Heimerdinger, Academy Instructor replaces Carrion Dredger\'s Deathknell Bird (with Deflect) by a plain 3-Might Mech: no Deflect', () => {
+  let g = withTokens(S0()); fundAll(g, P0);
+  const hm = put(g, P0, 'rad-132-167', BF_A); control(g, BF_A, P0);
+  const cd = put(g, P0, 'Carrion Dredger', 'base');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'ZapM') });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = pass(g); continue; } const o = d.options!.map(x => x.id); g = ans(g, o.includes(cd) ? [cd] : d.kind === 'optional' ? 'yes' : 'first'); }
+  assert.equal(zone(g, hm), 'battlefield');
+  const m = unitsNamed(g, 'Mech');
+  assert.equal(m.length, 1);
+  assert.equal(unitsNamed(g, 'Bird').length, 0);
+  assert.ok(!hasKeyword(g, m[0], 'Deflect'));
+  assert.equal(mightOf(g, m[0]), 3);
+});
+
+test('RJ#13226 Heimerdinger, Academy Instructor replaces Sprite Fountain\'s ready Sprite (with Temporary) by a Mech: it enters ready (play modification kept) but without Temporary', () => {
+  let g = withTokens(S0()); fundAll(g, P0);
+  put(g, P0, 'rad-132-167', BF_A); control(g, BF_A, P0);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Sprite Fountain') });
+  for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) g = g.pending.inStep ? ans(g, g.pending.kind === 'optional' ? 'yes' : 'first') : pass(g);
+  const m = unitsNamed(g, 'Mech');
+  assert.equal(m.length, 1);
+  assert.equal(unitsNamed(g, 'Sprite').length, 0);
+  assert.equal(g.objects[m[0]].exhausted, false, 'ready');
+  assert.ok(!hasKeyword(g, m[0], 'Temporary'));
+});
+
+test('RJ#13228 Pendulum Blade\'s "When I move to a battlefield, +2 this turn" triggers on each move: two moves to battlefields → +4 total', () => {
+  let g = S0(); fundAll(g, P0);
+  const u = put(g, P0, 'V(2)', 'base');
+  attachNow(g, put(g, P0, 'Pendulum Blade', 'base'), u);
+  const m0 = mightOf(g, u);
+  const run = () => { for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = pass(g); continue; } const o = d.options!.map(x => x.id); g = ans(g, o.includes(u) ? [u] : o.includes(String(BF_B)) ? String(BF_B) : d.kind === 'optional' ? 'yes' : 'first'); } };
+  g = move(g, P0, [u], BF_A); run();
+  assert.equal(mightOf(g, u), m0 + 2);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Shuriken Flip') }); run();
+  assert.equal(locOf(g, u), BF_B);
+  assert.equal(mightOf(g, u), m0 + 4);
+});
+
+test('RJ#13230 Mask of Foresight: my lone attacker gets +1 at A; Ride the Wind moves it to enemy B mid-showdown → a new combat there, it attacks alone again → +2 total', () => {
+  let g = S0(); fundAll(g, P0);
+  put(g, P0, 'Mask of Foresight', 'base');
+  const u = put(g, P0, 'V(5)', 'base');
+  put(g, P1, 'V(1)', BF_A); control(g, BF_A, P1);
+  put(g, P1, 'V(1)', BF_B); control(g, BF_B, P1);
+  g = move(g, P0, [u], BF_A);
+  g = drive(g, Array(4).fill('first'), x => x.pending?.kind === 'showdownAction' && x.chain.length === 0 && x.pending.player === P0);
+  assert.equal(mightOf(g, u), 6);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Ride the Wind') });
+  for (let i = 0; i < 60 && g.pending && g.pending.kind !== 'mainAction'; i++) {
+    const d = g.pending;
+    if (d.kind === 'assignDamage') { g = act(g, { type: 'assignDamage', player: d.player, assignment: (d.data as { suggested: Record<string, number> }).suggested }); continue; }
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(u) ? [u] : o.includes(String(BF_B)) ? String(BF_B) : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(locOf(g, u), BF_B);
+  assert.equal(mightOf(g, u), 7);
+  assert.equal(g.log.filter(l => /^Resolving Mask of Foresight/.test(l.text)).length, 2);
+});
+
+test('RJ#13233 11 combat damage as 4/4/3 into four 4-Might Spiderlings: two die together; the third (3 damage) isn\'t re-checked after they leave — the combat cleanup heals it, it lives', () => {
+  let g = S0({ tp: P1 });
+  const sp = [0, 1, 2, 3].map(() => put(g, P0, 'Spiderling', BF_A)); control(g, BF_A, P0);
+  assert.deepEqual(sp.map(s => mightOf(g, s)), [4, 4, 4, 4]);
+  const a = put(g, P1, 'V(9)', 'base'); mod(g, a, { might: 2 });
+  g = move(g, P1, [a], BF_A);
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const p = g.pending;
+    if (p.kind === 'assignDamage') { g = act(g, { type: 'assignDamage', player: p.player, assignment: p.player === P1 ? { [sp[0]]: 4, [sp[1]]: 4, [sp[2]]: 3 } : (p.data as { suggested: Record<string, number> }).suggested }); continue; }
+    g = p.inStep ? ans(g, p.kind === 'optional' ? 'yes' : 'first') : pass(g);
+  }
+  assert.deepEqual(sp.map(s => zone(g, s)), ['trash', 'trash', 'battlefield', 'battlefield']);
+  assert.equal(g.objects[sp[2]].damage, 0, 'healed');
+  assert.equal(zone(g, a), 'trash');
+});
+
+test('RJ#13235 I hold a battlefield with the opponent\'s Bomb there: the hold point is scored first; Flash my unit to base in response to the Deploy kill → the Deathknell finds no enemy unit there (removed), my unit is unharmed', () => {
+  let g = withTokens(S0({ tp: P1 })); fundAll(g, P1, 10); fundAll(g, P0);
+  const u = put(g, P0, 'V(2)', BF_A); control(g, BF_A, P0);
+  g = drive(act(g, { type: 'playCard', player: P1, obj: hand(g, P1, 'Amateur Demolitionist'), destination: 'base' }), ['first', String(BF_A), String(BF_A)], x => x.pending?.kind === 'mainAction');
+  const pts = g.players[P0].points;
+  g = endTurn(g, P1);
+  g = drive(g, [], x => x.chain.length > 0 && x.pending?.kind === 'chainResponse' && x.pending.player === P0 || x.pending?.kind === 'mainAction');
+  assert.equal(g.players[P0].points, pts + 1, 'hold point already scored');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Flash') });
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = pass(g); continue; } const o = d.options!.map(x => x.id); g = ans(g, o.includes(u) ? [u] : d.kind === 'optional' ? 'yes' : 'first'); }
+  assert.equal(locOf(g, u), 'base');
+  assert.equal(g.objects[u].damage, 0);
+  assert.equal(g.players[P0].points, pts + 1, 'point kept');
+});
+
+test('RJ#13236 conquering Monastery of Hirana with no buffed unit and my Pillaged Armory there: the Monastery\'s buff cost is due at finalization, before the Armory resolves → buffed, but no draw', () => {
+  let g = S0(); fundAll(g, P0);
+  setBattlefieldCard(g, BF_A, 'Monastery of Hirana');
+  put(g, P0, 'Pillaged Armory', BF_A);
+  const u = put(g, P0, 'V(2)', 'base');
+  const h0 = g.players[P0].hand.length;
+  g = move(g, P0, [u], BF_A);
+  for (let i = 0; i < 40 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) {
+    const d = g.pending;
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(u) ? [u] : d.kind === 'optional' ? 'yes' : d.kind === 'orderTriggers' ? (d.options!.find(x => /Pillaged/.test(x.label))?.id ?? 'first') : 'first');
+  }
+  assert.equal(g.objects[u].counters.buff, 1);
+  assert.equal(g.players[P0].hand.length, h0, 'no draw');
+});
+
+test('RJ#13237 Satchel Charge needs a friendly unit to move (chosen as it is played): not playable with no units; playable with one', () => {
+  const g = withTokens(S0()); fundAll(g, P0);
+  const sc = hand(g, P0, 'Satchel Charge');
+  assert.ok(!canPlayNow(g, P0, sc), 'no friendly unit → no legal choice');
+  put(g, P0, 'V(1)', 'base');
+  assert.ok(canPlayNow(g, P0, sc));
+});
+
+test('RJ#13240 Altar of Memories: a unit killed as Sacrifice\'s cost → Altar resolves before Sacrifice (its draw first); killed by Deathgrip\'s effect → Altar triggers after Deathgrip resolved', () => {
+  for (const sp of ['Sacrifice', 'Deathgrip']) {
+    let g = S0(); fundAll(g, P0);
+    put(g, P0, 'Altar of Memories', 'base');
+    const v = put(g, P0, 'V(5)', 'base'); put(g, P0, 'V(1)', 'base');
+    const n0 = g.log.length;
+    g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, sp) });
+    for (let i = 0; i < 30 && g.pending && !(g.pending.kind === 'mainAction' && g.chain.length === 0); i++) { const d = g.pending; if (!d.inStep) { g = pass(g); continue; } const o = d.options!.map(x => x.id); g = ans(g, o.includes(v) ? [v] : d.kind === 'optional' ? 'yes' : 'first'); }
+    const L = g.log.slice(n0).map(l => l.text);
+    const ia = L.findIndex(t => /^Resolving Altar of Memories/.test(t)), is = L.findIndex(t => t === `Resolving ${sp}`);
+    assert.ok(ia >= 0 && is >= 0, sp);
+    assert.ok(sp === 'Sacrifice' ? ia < is : is < ia, `${sp}: order`);
+  }
+});
+
+test('RJ#13243 (MISMATCH-RJ partial) in response to Hidden Blade the opponent may Ambush Vi, Peacekeeper to their battlefield with units — not to base (Ambush is her only Reaction permission); no combat → no stun, the unit still dies and they draw 2', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  const e = put(g, P1, 'V(2)', BF_A); control(g, BF_A, P1);
+  const vi = hand(g, P1, 'Vi, Peacekeeper');
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Hidden Blade') });
+  g = drive(g, [[e]], x => x.pending?.kind === 'chainResponse' && x.pending.player === P1);
+  assert.ok(canPlayNow(g, P1, vi, BF_A), 'Ambush to the battlefield with their unit');
+  assert.ok(!canPlayNow(g, P1, vi, 'base'), 'not to base (card text unl-176: Ambush only)');
+  const h1 = g.players[P1].hand.length;
+  g = act(g, { type: 'playCard', player: P1, obj: vi, destination: BF_A });
+  g = drive(g, Array(4).fill('first'), x => x.pending?.kind === 'mainAction');
+  assert.equal(zone(g, e), 'trash');
+  assert.equal(locOf(g, vi), BF_A);
+  assert.equal(g.players[P1].hand.length - h1, 1, 'Vi left the hand, then drew 2');
+});
+
+test('RJ#13246 empowered Akali, Deadly Weapon deals 2 to Stalwart Poro moving in; Discipline in response (4); in the combat showdown Akali leaves (Flash) and deals 2 more: the Poro is still a Defender with Shield (5) → survives 4 damage, healed after', () => {
+  let g = S0(); fundAll(g, P0); fundAll(g, P1);
+  const po = put(g, P1, 'Stalwart Poro', BF_A); control(g, BF_A, P1);
+  const ak = put(g, P0, 'ven-021-166', 'base'); g.objects[ak].empowered = 1; g.timestamp++;
+  g = move(g, P0, [ak], BF_A);
+  for (let i = 0; i < 10 && g.pending?.inStep; i++) { const d = g.pending; const o = d.options!.map(x => x.id); g = ans(g, o.includes(po) ? [po] : d.kind === 'optional' ? 'yes' : 'first'); }
+  g = drive(g, [], x => x.pending?.kind === 'chainResponse' && x.pending.player === P1);
+  g = act(g, { type: 'playCard', player: P1, obj: hand(g, P1, 'Discipline') });
+  g = drive(g, [[po], [po]], x => x.pending?.kind === 'showdownAction' && x.chain.length === 0);
+  assert.equal(mightOf(g, po), 5, '2 + 2 (Discipline) + 1 (Shield, defending)');
+  assert.equal(g.objects[po].damage, 2);
+  if (g.pending?.player === P1) g = pass(g);
+  g = act(g, { type: 'playCard', player: P0, obj: hand(g, P0, 'Flash') });
+  for (let i = 0; i < 40 && g.pending && g.pending.kind !== 'mainAction'; i++) {
+    const d = g.pending;
+    if (d.kind === 'assignDamage') { g = act(g, { type: 'assignDamage', player: d.player, assignment: (d.data as { suggested: Record<string, number> }).suggested }); continue; }
+    if (!d.inStep) { g = pass(g); continue; }
+    const o = d.options!.map(x => x.id);
+    g = ans(g, o.includes(ak) && zone(g, ak) === 'battlefield' && /base/i.test(d.prompt ?? '') ? [ak] : o.includes(po) ? [po] : d.kind === 'optional' ? 'yes' : 'first');
+  }
+  assert.equal(locOf(g, ak), 'base');
+  assert.ok(g.log.filter(l => /Akali deals 2 to Stalwart Poro/.test(l.text)).length === 2);
+  assert.equal(zone(g, po), 'battlefield', 'survived');
 });

@@ -72,5 +72,8 @@ Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, exp
 - **The factored layer** knowingly skips outcome-irrelevant variants: overkill splits, which ready rune gives
   energy, and payments that overpay.
 - **Engine todos:** 2v2 invite timing (RJ#906), Hunters' Circle token discount (RJ#13152), Neeko legend replay (RJ#13165).
+- **Self-play throughput:** measured on the mock backend at about 13 ms per search simulation, 87% of it in the rules
+  engine (`getLegalActions` + `applyAction`). `TRAINING.md` estimates about 800–1,000 games/hour on the home PC and
+  4,000–5,000 on the EPYC.
 - **Engine speed:** about 1.7 ms per `applyAction`. Profiling points at `computeChars` and its relatives, plus
   `structuredClone`. Optimise only if self-play throughput is the bottleneck; don't port to Rust yet.

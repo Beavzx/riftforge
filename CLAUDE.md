@@ -1,0 +1,76 @@
+# Riftforge: notes for Claude Code
+
+Owner: Jonathon. This repo is a fully automated Riftbound (League of Legends TCG) rules engine and online game, plus
+the framework for training a high-level Riftbound AI on it. **The goal** is an extremely strong practice partner,
+and a coach that explains its moves so Jonathon can talk through his decisions with Claude and learn faster.
+
+## Where things stand (handover from the claude.ai session, 2026-11-26)
+
+The work so far was done in one claude.ai session with five parallel agents, merged on `master`. Per-agent notes
+are in `docs/agents/*.md`; read the relevant one before changing an area.
+
+| Area | Status | Code | Notes |
+|---|---|---|---|
+| Rules engine | Done before this session; ~9,300 tests | `src/engine`, `src/cards` | `ARCHITECTURE.md`, `AI-STARTER.md` |
+| Fuzz + bug fixes | 200-game fuzz clean; RJ#13328 Dancing Grenade fixed | `tools/fuzz.ts` | `docs/agents/fuzz.md` |
+| Factored action layer | Every decision gets a complete, finite list of choices | `src/ai/env/factored.ts` | `docs/agents/enum.md` |
+| NN encoders + wire format | Done, leak-tested, 0.4 ms per observation | `src/ai/encode`, `python/riftnet` | `docs/agents/encoder.md` |
+| Coach / review | Done; uses the hand-tuned eval for now | `src/ai/coach`, `tools/review.ts` | `docs/agents/coach.md` |
+| Self-play training runtime | Written; tested end to end here with a mock (numpy) backend only, **never run with torch/GPU** | `src/ai/selfplay`, `python/riftzero`, `scripts/`, `config/` | `TRAINING.md`, `docs/agents/runtime.md` |
+
+**Next steps, in order:**
+1. `scripts/setup.sh`, then `scripts/smoke.sh` on Jonathon's PC. This is the first time the PyTorch model, trainer
+   and CUDA inference ever run, so expect to fix real bugs in `python/riftzero/{model,train,torch_backend}.py`.
+2. First real run with `config/train.yaml`: a narrow deck pool, 1–3 days. The question to answer is whether Elo
+   against SearchAI keeps climbing. If it does, move to the EPYC box (`config/train-epyc.yaml`).
+3. Wire the trained net into the coach as the evaluator: the `NNEvaluator` adapter in `src/ai/selfplay/nn-evaluator.ts`
+   goes into `src/ai/coach/analyse.ts`. That gives real win% in reviews instead of calibrated heuristic scores.
+4. Later: ONNX export into the browser game as an opponent; opponent modelling for hand reads.
+
+## Machines
+
+- **Primary now:** Jonathon's home PC. Windows + **WSL2 (Ubuntu)**, Ryzen 7 9800X3D (8 cores / 16 threads), one RTX 5070 Ti 16 GB (Blackwell, needs CUDA 12.8+ PyTorch wheels).
+  - Keep the repo inside the WSL filesystem (`~/riftforge`), never under `/mnt/c`.
+  - The NVIDIA driver comes from Windows. Never install a Linux NVIDIA driver inside WSL.
+- **Later:** "simulation-server", AMD EPYC 9754 (128 cores), 512 GB RAM, Ubuntu 24.04, several RTX 5070 Ti.
+
+## Commands
+
+```bash
+npm install                      # node >= 22
+npx tsc -p .                     # must be clean
+npm test                         # full suite, ~9,300 tests (≈1–2 min with many cores; was 10+ min on 2 cores)
+npx tsx --test <files>           # targeted tests
+npx tsx tools/fuzz.ts            # random-policy fuzzer: run after any engine change
+npx tsx tools/encode-schema.ts   # regenerate python/riftnet/schema.json + card table after ANY encoder feature change
+python3 -m unittest discover -s python/tests
+node --import tsx tools/review.ts game.json --player 0 --budget medium   # coach review → review.md
+```
+
+Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, export) is in `TRAINING.md`.
+
+## Rules that matter
+
+- **The engine is the spec.** Don't change Decision/Action semantics or the UI contract. ~9,300 tests and the online
+  game depend on them. Engine bug fixes always come with a regression test, and the fuzzer runs afterwards.
+- **Never train or act on hidden information.** Encode from what the player can see; `tests/ai/encode/leak.test.ts`
+  must stay green. Decklists are treated as known (open-decklist), matching `src/ai/determinize.ts`.
+- **Schema hash.** Any encoder feature change changes `schemaHash()`. Regenerate the schema; old checkpoints are then
+  incompatible, and the inference server refuses mismatched workers on purpose.
+- **Rollbacks.** Some enumerated targets lead to a payment failure that undoes the whole play: `applyAction` returns
+  `events[0].type === 'rollback'` with the state unchanged. Search and self-play must mask these, not count them as moves.
+- **Caps for RL self-play** (from the fuzz agent's study): maxTurns 60 while play is near random, then 40 (trained
+  play ends by about turn 26); maxActions 1500; maxMainPerTurn 40. Score a timeout as a draw, well below a win.
+- **Determinism.** Same seed and same actions give the same game. All randomness goes through `state.rng`.
+- **Documentation.** Changes go in `docs/CHANGELOG.md`.
+
+## Known limitations
+
+- **Coach win%** comes from a logistic calibration of the hand-tuned eval (held-out AUC 0.80). It's overconfident
+  in lost positions. The trained net replaces it.
+- **Hand reads** are decklist priors only; there's no inference from how the opponent played yet.
+- **The factored layer** knowingly skips outcome-irrelevant variants: overkill splits, which ready rune gives
+  energy, and payments that overpay.
+- **Engine todos:** 2v2 invite timing (RJ#906), Hunters' Circle token discount (RJ#13152), Neeko legend replay (RJ#13165).
+- **Engine speed:** about 1.7 ms per `applyAction`. Profiling points at `computeChars` and its relatives, plus
+  `structuredClone`. Optimise only if self-play throughput is the bottleneck; don't port to Rust yet.

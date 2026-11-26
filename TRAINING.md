@@ -97,7 +97,12 @@ inference server, workers. Everything for a run lives in `runs/<name>/`:
 
 ```bash
 scripts/status.sh --watch
+scripts/dashboard.sh             # live web dashboard: open http://localhost:8050 (also from Windows when run in WSL)
 ```
+The dashboard shows Elo per eval opponent with 95% ranges, value/policy loss and entropy (raw + smoothed), self-play
+throughput, deck win rates, the matchup matrix, the latest eval by deck and the eval history, refreshing every 30 s.
+It only reads the run's files, so starting or stopping it never affects training. For a remote box, forward the
+port instead of exposing it: `ssh -L 8050:localhost:8050 <host>`, then open http://localhost:8050 locally.
 It shows games per hour, positions, trainer step and losses, the inference batch size, and the latest eval with an
 Elo-vs-SearchAI history. What to look at:
 - **Elo vs SearchAI** is the main number. The hand-built SearchAI is the yardstick, and the net starts far below

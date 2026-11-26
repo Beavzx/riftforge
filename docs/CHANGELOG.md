@@ -1053,3 +1053,8 @@
     player's private pick lives in `ex.unit.actions`, which `determinize()` copies, so the second player's search
     would see it. Resample it in determinize (with a leak test) first.
   - Stop/resume with a different worker count tested on the GPU (trainer step and deck stats carry over).
+- home-1 started 2026-11-26 23:26 on the home PC (tmux session `train`: window 0 = launcher, window 1 = dashboard).
+- Training dashboard: `scripts/dashboard.sh` (python/riftzero/dashboard.py + dashboard.html, stdlib server, no
+  external assets, localhost only). Elo per opponent with 95% bands, losses/entropy (raw + EMA), throughput, deck
+  win %, matchup matrix, latest eval by deck, eval history; table views, keyboard crosshair, light/dark. Palette is
+  the validated default (3 slots, both modes). Tests: python/tests/test_dashboard.py.

@@ -24,6 +24,17 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
    (see CHANGELOG). A rehearsal of `config/train.yaml` and an eval vs searchai/best/bot also ran clean.
 2. First real run with `config/train.yaml`: a narrow deck pool, 1–3 days. The question to answer is whether Elo
    against SearchAI keeps climbing. If it does, move to the EPYC box (`config/train-epyc.yaml`).
+   **Status:** `home-1` started 2026-11-26 23:26 on the home PC, pool = Jonathon's four lists in `decks/` (he plays
+   all four), tmux session `train` (window 0 launcher, window 1 `scripts/dashboard.sh` on :8050). Jonathon plans to
+   move to the EPYC on 2026-11-27. Plan for that move:
+   - On the home PC: `scripts/stop.sh`, then copy the small run summary (`runs/home-1/elo.csv`, `metrics.jsonl`,
+     `eval/`) into `docs/runs/home-1/` and push. Don't commit shards or checkpoints (GBs; `runs/` is gitignored).
+   - On the EPYC: clone, `scripts/setup.sh`, `scripts/smoke.sh`, set `inference.gpus` in `config/train-epyc.yaml` to
+     the GPUs present (`nvidia-smi -L`), then `scripts/start.sh --config config/train-epyc.yaml` in tmux.
+   - Start epyc-1 fresh: it uses a `medium` model, so home-1's `small` checkpoint can't load. Home shards *could*
+     seed its buffer (same schema), but the EPYC regenerates a day of home data in ~3 hours, so it isn't worth moving.
+   - Before ever using `battlefieldSelection: 'choose'` in self-play, fix the leak noted in docs/CHANGELOG.md
+     (the first player's private pick is visible to the second player's search via `ex.unit`).
 3. Wire the trained net into the coach as the evaluator: the `NNEvaluator` adapter in `src/ai/selfplay/nn-evaluator.ts`
    goes into `src/ai/coach/analyse.ts`. That gives real win% in reviews instead of calibrated heuristic scores.
 4. Later: ONNX export into the browser game as an opponent; opponent modelling for hand reads.
@@ -48,7 +59,7 @@ PYTHONPATH=python .venv/bin/python -m pytest python/tests -q   # (unittest disco
 node --import tsx tools/review.ts game.json --player 0 --budget medium   # coach review → review.md
 ```
 
-Training workflow (setup, smoke, start, status, stop, fine-tuning a matchup, export) is in `TRAINING.md`.
+Training workflow (setup, smoke, start, status, dashboard, stop/pause, fine-tuning a matchup, export) is in `TRAINING.md`.
 
 ## Rules that matter
 

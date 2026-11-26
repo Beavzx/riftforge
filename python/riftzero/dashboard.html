@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riftforge training</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --page: #f9f9f9; --surface-1: #ffffff; --border: rgba(11,11,11,0.10);
+  --text-primary: #191919; --text-secondary: #666666;
+  --grid: #e7e7e7; --axis: #c2c2c2;
+  --series-1: #257de0; --series-2: #f47230; --series-3: #00b894;
+  --good: #0aac23; --warning: #fbb315; --critical: #dc3c3d; --neutral: #9c9c9c;
+  --win: 37,125,224; --loss: 236,70,71;   /* rgb for the matchup washes (blue = row deck wins, red = loses) */
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --page: #0b0b0b; --surface-1: #191919; --border: rgba(255,255,255,0.10);
+    --text-primary: #efefef; --text-secondary: #9c9c9c;
+    --grid: #303030; --axis: #474747;
+    --series-1: #338ced; --series-2: #e76624; --series-3: #00a888;
+    --win: 51,140,237; --loss: 235,98,99;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --page: #0b0b0b; --surface-1: #191919; --border: rgba(255,255,255,0.10);
+  --text-primary: #efefef; --text-secondary: #9c9c9c;
+  --grid: #303030; --axis: #474747;
+  --series-1: #338ced; --series-2: #e76624; --series-3: #00a888;
+  --win: 51,140,237; --loss: 235,98,99;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.viz-root { min-height: 100vh; background: var(--page); color: var(--text-primary);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { max-width: 1400px; margin: 0 auto; padding: 20px 24px 8px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; }
+header h1 { font-size: 20px; font-weight: 600; margin: 0; }
+.meta { color: var(--text-secondary); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); font-weight: 600; font-size: 13px; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.banner { max-width: 1352px; margin: 8px auto 0; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); display: none; }
+.banner.show { display: block; }
+main { max-width: 1400px; margin: 0 auto; padding: 12px 24px 40px; display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.s12 { grid-column: span 12; } .s6 { grid-column: span 6; } .s4 { grid-column: span 4; }
+@media (max-width: 1000px) { .s6, .s4 { grid-column: span 12; } }
+.card h2 { font-size: 15px; font-weight: 600; margin: 0; }
+.card .sub { color: var(--text-secondary); font-size: 13px; margin: 2px 0 10px; }
+.tiles { grid-column: span 12; display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .tiles { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } .tile.hero { grid-column: 1 / -1; } }
+.tile .label { color: var(--text-secondary); font-size: 13px; }
+.tile .value { font-size: 26px; font-weight: 600; margin-top: 2px; }
+.tile .note { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+.tile.hero .value { font-size: 48px; line-height: 1.1; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 6px; color: var(--text-secondary); font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.chart svg:focus { outline: 2px solid var(--series-1); outline-offset: 2px; border-radius: 4px; }
+.empty { color: var(--text-secondary); padding: 28px 0; text-align: center; }
+.tick { fill: var(--text-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
+.reflabel { fill: var(--text-secondary); font-size: 11px; }
+.endlabel { fill: var(--text-primary); font-size: 12px; font-weight: 600; }
+#tip { position: fixed; pointer-events: none; z-index: 10; background: var(--surface-1); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: none; min-width: 140px; }
+#tip .row { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+#tip b.k { width: 10px; height: 3px; border-radius: 2px; display: inline-block; }
+#tip .h { color: var(--text-secondary); margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--text-secondary); padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+td { padding: 6px 8px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; }
+td.num, th.num { text-align: right; }
+td.cell { text-align: center; }
+details { margin-top: 8px; color: var(--text-secondary); font-size: 13px; }
+details table { margin-top: 6px; color: var(--text-primary); }
+.scroll { max-height: 320px; overflow: auto; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+<header>
+  <h1 id="title">Riftforge training</h1>
+  <span id="state" class="chip"><i></i><span>Loading…</span></span>
+  <span class="meta" id="meta"></span>
+</header>
+<div class="banner" id="banner"></div>
+<main>
+  <div class="tiles" id="tiles"></div>
+
+  <section class="card s12">
+    <h2>Elo by eval opponent</h2>
+    <div class="sub">Strength of each evaluated checkpoint relative to the opponent (0 = even, −200 ≈ wins 24%, +200 ≈ wins 76%). Shaded = 95% range. Judge the trend across evals, not one result.</div>
+    <div class="legend" id="eloLegend"></div>
+    <div class="chart" id="eloChart"></div>
+  </section>
+
+  <section class="card s4">
+    <h2>Value loss</h2>
+    <div class="sub">Should fall below 0.9 within about a day; ~1.0 means it has learnt nothing. Faint = raw, solid = smoothed.</div>
+    <div class="chart" id="vChart"></div>
+  </section>
+  <section class="card s4">
+    <h2>Policy loss</h2>
+    <div class="sub">Cross-entropy against the search's improved policy. Faint = raw, solid = smoothed.</div>
+    <div class="chart" id="pChart"></div>
+  </section>
+  <section class="card s4">
+    <h2>Policy entropy</h2>
+    <div class="sub">Should fall slowly. A drop to about 0 in the first hours means collapse: lower train.lr.</div>
+    <div class="chart" id="eChart"></div>
+  </section>
+
+  <section class="card s6">
+    <h2>Self-play throughput</h2>
+    <div class="sub">Training positions generated per hour, over hours since the run started.</div>
+    <div class="chart" id="tChart"></div>
+  </section>
+  <section class="card s6">
+    <h2>Deck win rate in self-play</h2>
+    <div class="sub">Non-mirror games, both sides the same net. Early on this only says which deck wins when both sides play badly.</div>
+    <div class="chart" id="deckChart"></div>
+  </section>
+
+  <section class="card s6">
+    <h2>Self-play matchups</h2>
+    <div class="sub">Row deck's win % against the column deck (n = games). Blue = row deck wins more, red = loses more.</div>
+    <div id="matrix"></div>
+  </section>
+  <section class="card s6">
+    <h2>Latest eval by the net's deck</h2>
+    <div class="sub" id="evalDeckSub">Wins-losses-draws for each deck the net played, per opponent.</div>
+    <div id="evalDeck"></div>
+  </section>
+
+  <section class="card s12">
+    <h2>Eval history</h2>
+    <div class="sub">Every eval, newest first. Games are played in pairs (same deal, seats swapped). Timeouts also count as draws.</div>
+    <div class="scroll" id="evalTable"></div>
+  </section>
+</main>
+<div id="tip"></div>
+</div>
+
+<script>
+"use strict";
+const OPP = [  // fixed slot per opponent: colour follows the entity
+  { key: "searchai", name: "SearchAI", color: "var(--series-1)" },
+  { key: "bot", name: "Rules bot", color: "var(--series-2)" },
+  { key: "best", name: "Previous best", color: "var(--series-3)" },
+];
+const SVGNS = "http://www.w3.org/2000/svg";
+let DATA = null;
+
+// ---------- formatting
+const nf = new Intl.NumberFormat("en-GB");
+function compact(v) {
+  const a = Math.abs(v);
+  if (a >= 1e6) return (v / 1e6).toFixed(a >= 1e7 ? 0 : 1).replace(/\.0$/, "") + "M";
+  if (a >= 1e4) return (v / 1e3).toFixed(a >= 1e5 ? 0 : 1).replace(/\.0$/, "") + "K";
+  return nf.format(Math.round(v));
+}
+const signed = v => (v > 0 ? "+" : v < 0 ? "−" : "") + nf.format(Math.abs(Math.round(v)));
+const fix = (v, d) => (v === null || v === undefined || !isFinite(v)) ? "—" : Number(v).toFixed(d);
+const pct = v => Math.round(100 * v) + "%";
+function dur(s) {
+  s = Math.max(0, Math.floor(s));
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return d ? `${d}d ${h}h ${m}m` : h ? `${h}h ${m}m` : `${m}m ${s % 60}s`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const short = d => String(d).replace(/^home-/, "");
+
+// ---------- small svg helpers
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function niceTicks(lo, hi, n) {
+  if (!(hi > lo)) { hi = lo + 1; }
+  const raw = (hi - lo) / Math.max(1, n), mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(f => f * mag).find(s => s >= raw) || 10 * mag;
+  const t0 = Math.ceil(lo / step) * step, out = [];
+  for (let t = t0; t <= hi + step * 1e-9; t += step) out.push(+t.toFixed(10));
+  return out;
+}
+function ema(pts, w) {   // debiased exponential smoothing, like TensorBoard's slider
+  let acc = 0, wsum = 0;
+  return pts.map(p => { acc = acc * w + (1 - w) * p.y; wsum = wsum * w + (1 - w); return { x: p.x, y: acc / wsum }; });
+}
+
+// ---------- tooltip
+const tip = document.getElementById("tip");
+function showTip(html, cx, cy) {
+  tip.innerHTML = html; tip.style.display = "block";
+  const r = tip.getBoundingClientRect();
+  let x = cx + 14, y = cy + 14;
+  if (x + r.width > innerWidth - 8) x = cx - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = cy - r.height - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+const hideTip = () => { tip.style.display = "none"; };
+
+// ---------- line chart: crosshair + tooltip, optional CI bands, markers, end labels, reference lines
+function lineChart(host, o) {
+  host.innerHTML = "";
+  const all = o.series.flatMap(s => s.pts);
+  if (!all.length) { host.innerHTML = `<div class="empty">${esc(o.empty || "No data yet")}</div>`; return; }
+  const W = Math.max(280, host.clientWidth), H = o.height || 220;
+  const m = { l: 50, r: o.endLabels ? 118 : 14, t: 10, b: o.xTitle ? 42 : 30 };
+  let x0 = Math.min(...all.map(p => p.x)), x1 = Math.max(...all.map(p => p.x));
+  if (x1 === x0) { x0 -= 1; x1 += 1; }
+  const ys = all.flatMap(p => [p.y, p.lo, p.hi]).concat((o.refs || []).map(r => r.y)).concat(o.series.flatMap(s => (s.raw || []).map(p => p.y)))
+    .filter(v => v !== undefined && v !== null && isFinite(v));
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  if (o.yMin !== undefined) y0 = Math.min(y0, o.yMin);
+  if (o.clamp) { y0 = Math.max(y0, o.clamp[0]); y1 = Math.min(y1, o.clamp[1]); }
+  const pad = (y1 - y0 || 1) * 0.08; y0 -= pad; y1 += pad;
+  if (o.yMin !== undefined) y0 = Math.max(y0, o.yMin);
+  const yt = niceTicks(y0, y1, 5); y0 = Math.min(y0, yt[0]); y1 = Math.max(y1, yt[yt.length - 1]);
+  const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const Y = v => m.t + (1 - (Math.min(y1, Math.max(y0, v)) - y0) / (y1 - y0)) * (H - m.t - m.b);
+  // direct end labels only when they don't collide (else the legend alone carries identity), and only then reserve room
+  const ends = o.endLabels ? o.series.filter(s => s.pts.length).map(s => ({ s, p: s.pts[s.pts.length - 1] })).sort((a, b) => Y(a.p.y) - Y(b.p.y)) : [];
+  const endsOk = ends.length > 0 && ends.every((e, i) => !i || Y(e.p.y) - Y(ends[i - 1].p.y) >= 15);
+  if (!endsOk) m.r = 14;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", tabindex: 0, "aria-label": o.label || "chart" }, host);
+  for (const t of yt) {
+    el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), style: "stroke:var(--grid)", "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+    el("text", { x: m.l - 8, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg).textContent = (o.yFmt || compact)(t);
+  }
+  el("line", { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, style: "stroke:var(--axis)", "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+  for (const t of niceTicks(x0, x1, Math.max(2, Math.floor((W - m.l - m.r) / 90))))
+    el("text", { x: X(t), y: H - m.b + 18, "text-anchor": "middle", class: "tick" }, svg).textContent = (o.xFmt || compact)(t);
+  if (o.xTitle) el("text", { x: W - m.r, y: H - 2, "text-anchor": "end", class: "tick" }, svg).textContent = o.xTitle;
+  for (const r of o.refs || []) {
+    if (r.y < y0 || r.y > y1) continue;
+    el("line", { x1: m.l, x2: W - m.r, y1: Y(r.y), y2: Y(r.y), style: "stroke:var(--axis)", "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+    const left = r.align === "left";
+    el("text", { x: left ? m.l + 6 : W - m.r - 4, y: Y(r.y) - 5, "text-anchor": left ? "start" : "end", class: "reflabel" }, svg).textContent = r.label;
+  }
+  const path = pts => pts.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.y).toFixed(1)).join("");
+  for (const s of o.series) {
+    const band = s.pts.filter(p => p.lo !== undefined && p.hi !== undefined);
+    if (band.length > 1) {
+      const d = band.map((p, i) => (i ? "L" : "M") + X(p.x) + " " + Y(p.hi)).join("") + band.slice().reverse().map(p => "L" + X(p.x) + " " + Y(p.lo)).join("") + "Z";
+      el("path", { d, style: `fill:${s.color}`, "fill-opacity": 0.1 }, svg);
+    }
+    if (s.raw && s.raw.length > 1) el("path", { d: path(s.raw), fill: "none", style: `stroke:${s.color}`, "stroke-opacity": 0.3, "stroke-width": 1, "stroke-linejoin": "round" }, svg);
+    if (s.pts.length > 1) el("path", { d: path(s.pts), fill: "none", style: `stroke:${s.color}`, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    if (o.markers || s.pts.length === 1)
+      for (const p of s.pts) el("circle", { cx: X(p.x), cy: Y(p.y), r: 4, style: `fill:${s.color};stroke:var(--surface-1)`, "stroke-width": 2 }, svg);
+  }
+  if (endsOk) {
+    for (const e of ends) {
+      el("line", { x1: X(e.p.x) + 6, x2: X(e.p.x) + 14, y1: Y(e.p.y), y2: Y(e.p.y), style: `stroke:${e.s.color}`, "stroke-width": 2 }, svg);
+      el("text", { x: X(e.p.x) + 18, y: Y(e.p.y) + 4, class: "endlabel" }, svg).textContent = `${e.s.name} ${(o.yFmt || compact)(e.p.y)}`;
+    }
+  }
+  // hover / keyboard layer
+  const xs = [...new Set(all.map(p => p.x))].sort((a, b) => a - b);
+  const cross = el("line", { y1: m.t, y2: H - m.b, style: "stroke:var(--axis)", "stroke-width": 1, visibility: "hidden" }, svg);
+  const hit = el("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" }, svg);
+  const at = (s, x) => s.pts.reduce((b, p) => (!b || Math.abs(p.x - x) < Math.abs(b.x - x)) ? p : b, null);
+  let idx = xs.length - 1;
+  const show = (i, cx, cy) => {
+    idx = Math.max(0, Math.min(xs.length - 1, i));
+    const x = xs[idx];
+    cross.setAttribute("x1", X(x)); cross.setAttribute("x2", X(x)); cross.setAttribute("visibility", "visible");
+    let h = `<div class="h">${esc((o.xTipFmt || o.xFmt || compact)(x))}${o.xTitle ? " " + esc(o.xTitle) : ""}</div>`;
+    for (const s of o.series) {
+      const p = at(s, x); if (!p) continue;
+      h += `<div class="row"><b class="k" style="background:${s.color}"></b>${esc(s.name)}: <strong>${esc((o.yTipFmt || o.yFmt || compact)(p.y))}</strong>${p.note ? " " + esc(p.note) : ""}</div>`;
+    }
+    if (cx === undefined) { const b = svg.getBoundingClientRect(); cx = b.left + X(x) * b.width / W; cy = b.top + m.t; }
+    showTip(h, cx, cy);
+  };
+  const nearest = cx => { const b = svg.getBoundingClientRect(); const vx = (cx - b.left) * W / b.width; let bi = 0;
+    xs.forEach((x, i) => { if (Math.abs(X(x) - vx) < Math.abs(X(xs[bi]) - vx)) bi = i; }); return bi; };
+  hit.addEventListener("mousemove", e => show(nearest(e.clientX), e.clientX, e.clientY));
+  hit.addEventListener("mouseleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  svg.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); show(idx + (e.key === "ArrowRight" ? 1 : -1)); }
+    if (e.key === "Escape") { cross.setAttribute("visibility", "hidden"); hideTip(); }
+  });
+  svg.addEventListener("blur", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  if (o.table) host.insertAdjacentHTML("beforeend", o.table);
+}
+
+// ---------- horizontal bar chart (one series), value at the tip, optional reference
+function barChart(host, rows, o) {
+  host.innerHTML = "";
+  if (!rows.length) { host.innerHTML = `<div class="empty">${esc(o.empty)}</div>`; return; }
+  const W = Math.max(280, host.clientWidth), bar = 18, gap = 14, m = { l: 110, r: 120, t: 6, b: 24 };
+  const H = m.t + m.b + rows.length * (bar + gap) - gap;
+  const X = v => m.l + v * (W - m.l - m.r);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": o.label }, host);
+  for (const t of [0, 0.25, 0.5, 0.75, 1]) {
+    el("line", { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, style: `stroke:${t === 0 ? "var(--axis)" : "var(--grid)"}`, "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+    el("text", { x: X(t), y: H - 6, "text-anchor": "middle", class: "tick" }, svg).textContent = pct(t);
+  }
+  rows.forEach((r, i) => {
+    const y = m.t + i * (bar + gap), w = Math.max(0, X(r.v) - X(0));
+    el("text", { x: m.l - 10, y: y + bar / 2 + 4, "text-anchor": "end", class: "tick", style: "fill:var(--text-primary);font-size:13px" }, svg).textContent = r.name;
+    if (w > 0) {   // 4px rounded data end, square at the baseline
+      const rr = Math.min(4, w);
+      el("path", { d: `M${X(0)} ${y}H${X(0) + w - rr}Q${X(0) + w} ${y} ${X(0) + w} ${y + rr}V${y + bar - rr}Q${X(0) + w} ${y + bar} ${X(0) + w - rr} ${y + bar}H${X(0)}Z`, style: "fill:var(--series-1)" }, svg);
+    }
+    el("text", { x: X(0) + w + 8, y: y + bar / 2 + 4, class: "tick", style: "fill:var(--text-primary);font-size:12px" }, svg).textContent = r.label;
+    const hitR = el("rect", { x: m.l, y: y - gap / 2, width: W - m.l - m.r, height: bar + gap, fill: "transparent" }, svg);
+    hitR.addEventListener("mousemove", e => showTip(`<div class="h">${esc(r.name)}</div>${esc(r.tip)}`, e.clientX, e.clientY));
+    hitR.addEventListener("mouseleave", hideTip);
+  });
+  if (o.ref !== undefined) {
+    el("line", { x1: X(o.ref), x2: X(o.ref), y1: m.t - 4, y2: H - m.b, style: "stroke:var(--text-secondary)", "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+  }
+  if (o.table) host.insertAdjacentHTML("beforeend", o.table);
+}
+
+function tableHtml(head, rows, numCols = []) {
+  return `<table><thead><tr>${head.map((h, i) => `<th${numCols.includes(i) ? ' class="num"' : ""}>${esc(h)}</th>`).join("")}</tr></thead><tbody>` +
+    rows.map(r => `<tr>${r.map((c, i) => `<td${numCols.includes(i) ? ' class="num"' : ""}>${esc(c)}</td>`).join("")}</tr>`).join("") + `</tbody></table>`;
+}
+const details = (summary, inner) => `<details><summary>${esc(summary)}</summary>${inner}</details>`;
+
+// ---------- page sections
+function renderHeader(d) {
+  const st = d.status || {};
+  document.getElementById("title").textContent = `Riftforge training · ${d.run}`;
+  document.title = `${d.run} · Riftforge training`;
+  const age = st.updated ? d.now - st.updated : null;
+  const running = d.running && st.state === "running";
+  const stale = running && age !== null && age > 120;
+  const chip = document.getElementById("state");
+  const [col, txt] = stale ? ["var(--warning)", "Not responding"] : running ? ["var(--good)", "Running"]
+    : st.state === "error" ? ["var(--critical)", "Stopped with an error"] : ["var(--neutral)", st.state ? "Stopped" : "Not started"];
+  chip.querySelector("i").style.background = col; chip.querySelector("span").textContent = txt;
+  const parts = [];
+  if (st.uptimeSec !== undefined) parts.push(`up ${dur(st.uptimeSec)}`);
+  if (d.config.modelSize) parts.push(`model ${d.config.modelSize}`);
+  if (d.decks.length) parts.push(d.decks.map(short).join(" · "));
+  parts.push(`updated ${new Date(d.now * 1000).toLocaleTimeString()}`);
+  document.getElementById("meta").textContent = parts.join("   ·   ");
+  const ban = document.getElementById("banner");
+  const msgs = [];
+  if (stale) msgs.push(`The run's status file is ${dur(age)} old: the launcher may have stopped or hung. Check the tmux session.`);
+  if (st.reason) msgs.push(`Launcher: ${st.reason}`);
+  if (d.errorGames) msgs.push(`${d.errorGames} self-play games hit an engine error (discarded; see runs/${d.run}/errors/).`);
+  ban.textContent = msgs.join("  "); ban.classList.toggle("show", msgs.length > 0);
+}
+
+function renderTiles(d) {
+  const st = d.status || {}, sp = st.selfplay || {}, M = d.metrics, last = M[M.length - 1];
+  const sa = d.evals.filter(e => e.opponent === "searchai"), lastSa = sa[sa.length - 1];
+  const tiles = [];
+  const every = (d.config.ckptEverySteps || 500) * (d.config.evalEveryCheckpoints || 3);
+  tiles.push(`<div class="card tile hero"><div class="label">Elo vs SearchAI</div>` + (lastSa
+    ? `<div class="value">${signed(lastSa.elo)}</div><div class="note">95% range ${signed(lastSa.lo)} to ${signed(lastSa.hi)} · ${lastSa.wins}-${lastSa.losses}-${lastSa.draws} at step ${compact(lastSa.step)}${sa.length > 1 ? ` · previous ${signed(sa[sa.length - 2].elo)}` : ""}</div>`
+    : `<div class="value">—</div><div class="note">First eval at about step ${compact(every)} (every ${d.config.evalEveryCheckpoints || 3} checkpoints)</div>`) + `</div>`);
+  const tile = (label, value, note) => tiles.push(`<div class="card tile"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div><div class="note">${esc(note || "")}</div></div>`);
+  tile("Trainer step", last ? compact(last.step) : "0", last ? `${compact(last.samples_per_s || 0)} samples/s · reuse ${fix(last.reuse, 2)}` : `waiting for ${compact(d.config.minPositions || 10000)} positions`);
+  tile("Games / hour", st.gamesPerSec !== undefined ? compact(st.gamesPerSec * 3600) : "—", `${compact(sp.games || 0)} games since this launch`);
+  tile("Positions", compact(last ? Math.max(last.positions_seen || 0, sp.positions || 0) : sp.positions || 0), `${compact(sp.timeouts || 0)} timeouts · ${compact(sp.errors || 0)} errors`);
+  const sm = M.length ? ema(M.filter(r => r.loss_value != null).map(r => ({ x: r.step, y: r.loss_value })), 0.9) : [];
+  tile("Value loss", sm.length ? fix(sm[sm.length - 1].y, 3) : "—", "smoothed · target < 0.9 by day 1");
+  tile("Workers", st.workers ? `${st.workersAlive}/${st.workers}` : "—", `${st.workerRestarts || 0} restarts` + (d.servers[0] ? ` · GPU batch ${fix(d.servers[0].avgBatch, 1)}` : ""));
+  document.getElementById("tiles").innerHTML = tiles.join("");
+}
+
+function renderElo(d) {
+  const present = OPP.filter(o => d.evals.some(e => e.opponent === o.key));
+  document.getElementById("eloLegend").innerHTML = present.map(o => `<span><b style="background:${o.color}"></b>${esc(o.name)}</span>`).join("");
+  const series = present.map(o => ({ name: o.name, color: o.color, pts: d.evals.filter(e => e.opponent === o.key)
+    .map(e => ({ x: e.step, y: e.elo, lo: e.lo, hi: e.hi, note: `(${e.wins}-${e.losses}-${e.draws}${e.timeouts ? `, ${e.timeouts} timeouts` : ""})` })) }));
+  const rows = d.evals.slice().reverse().map(e => [compact(e.step), (OPP.find(o => o.key === e.opponent) || { name: e.opponent }).name, `${e.wins}-${e.losses}-${e.draws}`, signed(e.elo), `${signed(e.lo)} to ${signed(e.hi)}`]);
+  lineChart(document.getElementById("eloChart"), {
+    series, height: 280, markers: true, endLabels: true, clamp: [-800, 800], yFmt: signed, xTitle: "trainer step",
+    refs: [{ y: 0, label: "even", align: "left" }], label: "Elo by eval opponent over trainer steps",
+    empty: "No evals yet. The first one runs after a few checkpoints; this chart fills in from there.",
+    table: rows.length ? details("Table view", tableHtml(["Step", "Opponent", "W-L-D", "Elo", "95% range"], rows, [0, 3])) : "",
+  });
+}
+
+function renderLosses(d) {
+  const M = d.metrics;
+  const one = (id, key, refs, empty) => {
+    const raw = M.filter(r => r[key] != null).map(r => ({ x: r.step, y: r[key] }));
+    const sm = ema(raw, 0.9);
+    const tail = raw.slice(-40).reverse().map((p, i) => [compact(p.x), fix(p.y, 4), fix(sm[sm.length - 1 - i].y, 4)]);
+    lineChart(document.getElementById(id), {
+      series: [{ name: "smoothed", color: "var(--series-1)", pts: sm, raw }], refs, height: 200, xTitle: "step",
+      yFmt: v => fix(v, 2), yTipFmt: v => fix(v, 3), label: key, empty,
+      table: raw.length ? details("Table view (latest 40)", tableHtml(["Step", "Raw", "Smoothed"], tail, [0, 1, 2])) : "",
+    });
+  };
+  const wait = `Waiting for the trainer (it starts after ${compact(d.config.minPositions || 10000)} positions).`;
+  one("vChart", "loss_value", [{ y: 1.0, label: "1.0 learnt nothing" }, { y: 0.9, label: "0.9 day-1 target" }], wait);
+  one("pChart", "loss_policy", [], wait);
+  one("eChart", "policy_entropy", [], wait);
+}
+
+function renderThroughput(d) {
+  const M = d.metrics.filter(r => r.t && r.positions_seen != null);
+  const pts = [];
+  if (M.length > 1) {
+    const t0 = M[0].t;
+    let j = 0;
+    for (let i = 1; i < M.length; i++) {
+      while (j < i - 1 && M[i].t - M[j].t > 1800) j++;          // window of about 30 minutes
+      const dt = M[i].t - M[j].t, dp = M[i].positions_seen - M[j].positions_seen;
+      const gap = M[i].t - M[i - 1].t > 1800;                   // a pause: don't bridge it
+      if (gap) { j = i; continue; }
+      if (dt >= 300 && dp >= 0) pts.push({ x: (M[i].t - t0) / 3600, y: dp / dt * 3600 });
+    }
+  }
+  lineChart(document.getElementById("tChart"), {
+    series: [{ name: "positions/hour", color: "var(--series-1)", pts }], height: 200, xTitle: "hours", yMin: 0,
+    xFmt: v => fix(v, Number.isInteger(v) ? 0 : 1), xTipFmt: v => fix(v, 2), label: "positions per hour",
+    empty: "Shown once the trainer has logged for a few minutes.",
+  });
+}
+
+function renderDecks(d) {
+  const per = {};
+  for (const [k, [a, b, dr]] of Object.entries(d.matchups)) {
+    const [x, y] = k.split(" vs ");
+    if (x === y) continue;
+    for (const [n, w] of [[x, a], [y, b]]) { per[n] = per[n] || { w: 0, g: 0 }; per[n].w += w; per[n].g += a + b + dr; }
+  }
+  const rows = Object.entries(per).map(([n, v]) => ({ name: short(n), v: v.g ? v.w / v.g : 0, label: `${pct(v.g ? v.w / v.g : 0)} · n=${compact(v.g)}`, tip: `${v.w} wins in ${v.g} non-mirror games` }))
+    .sort((a, b) => b.v - a.v);
+  barChart(document.getElementById("deckChart"), rows, { ref: 0.5, label: "deck win rate in self-play", empty: "No finished self-play games yet.",
+    table: rows.length ? details("Table view", tableHtml(["Deck", "Win %", "Games"], rows.map(r => [r.name, pct(r.v), r.label.split("n=")[1]]), [1, 2])) : "" });
+
+  const decks = (d.decks.length ? d.decks : Object.keys(per)).slice();
+  const cell = (r, c) => {
+    if (r === c) { const k = `${r} vs ${r}`, v = d.matchups[k]; return `<td class="cell" style="color:var(--text-secondary)">mirror${v ? ` (n=${v[0] + v[1] + v[2]})` : ""}</td>`; }
+    const flip = r > c, k = flip ? `${c} vs ${r}` : `${r} vs ${c}`, v = d.matchups[k];
+    if (!v) return `<td class="cell" style="color:var(--text-secondary)">—</td>`;
+    const n = v[0] + v[1] + v[2], w = flip ? v[1] : v[0], p = n ? w / n : 0.5;
+    const a = (Math.min(1, Math.abs(p - 0.5) * 2) * 0.35).toFixed(3);
+    return `<td class="cell" style="background:rgba(var(${p >= 0.5 ? "--win" : "--loss"}),${a})">${pct(p)} <span style="color:var(--text-secondary)">(n=${n})</span></td>`;
+  };
+  document.getElementById("matrix").innerHTML = decks.length && Object.keys(d.matchups).length
+    ? `<table><thead><tr><th>Row deck vs</th>${decks.map(c => `<th style="text-align:center">${esc(short(c))}</th>`).join("")}</tr></thead><tbody>` +
+      decks.map(r => `<tr><td><strong>${esc(short(r))}</strong></td>${decks.map(c => cell(r, c)).join("")}</tr>`).join("") + `</tbody></table>`
+    : `<div class="empty">No finished self-play games yet.</div>`;
+}
+
+function renderEvalDeck(d) {
+  const L = d.evalLatest, host = document.getElementById("evalDeck");
+  if (!L) { host.innerHTML = `<div class="empty">No evals yet.</div>`; return; }
+  document.getElementById("evalDeckSub").textContent = `Eval at step ${compact(L.step)}: wins-losses-draws for each deck the net played, per opponent.`;
+  const opps = OPP.filter(o => L.byOpponent[o.key]);
+  const decks = d.decks.length ? d.decks : [...new Set(Object.values(L.byOpponent).flatMap(m => Object.keys(m).map(k => k.split(" vs ")[0])))];
+  const rows = decks.map(dk => [short(dk), ...opps.map(o => {
+    let w = 0, l = 0, dr = 0, any = false;
+    for (const [k, v] of Object.entries(L.byOpponent[o.key])) if (k.split(" vs ")[0] === dk) { any = true; w += v[0]; l += v[1]; dr += v[2]; }
+    return any ? `${w}-${l}-${dr}` : "—";
+  })]);
+  host.innerHTML = tableHtml(["Net's deck", ...opps.map(o => o.name)], rows);
+}
+
+function renderEvalTable(d) {
+  const rows = d.evals.slice().reverse().map(e => [compact(e.step), (OPP.find(o => o.key === e.opponent) || { name: e.opponent }).name,
+    `${e.wins}-${e.losses}-${e.draws}`, e.timeouts == null ? "—" : String(e.timeouts), fix(e.score, 3), signed(e.elo), `${signed(e.lo)} to ${signed(e.hi)}`,
+    new Date(e.time).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })]);
+  document.getElementById("evalTable").innerHTML = rows.length
+    ? tableHtml(["Step", "Opponent", "W-L-D", "Timeouts", "Score", "Elo", "95% range", "When"], rows, [0, 3, 4, 5])
+    : `<div class="empty">No evals yet.</div>`;
+}
+
+function render() {
+  if (!DATA) return;
+  renderHeader(DATA); renderTiles(DATA); renderElo(DATA); renderLosses(DATA); renderThroughput(DATA);
+  renderDecks(DATA); renderEvalDeck(DATA); renderEvalTable(DATA);
+}
+
+async function refresh() {
+  try {
+    const r = await fetch("api/data", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    DATA = await r.json();
+    render();   // the previous render stays on screen until new data is in: no flash
+  } catch (e) {
+    const ban = document.getElementById("banner");
+    ban.textContent = `Can't reach the dashboard server (${e.message || e}). Is scripts/dashboard.sh still running? Showing the last data.`;
+    ban.classList.add("show");
+  }
+}
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+refresh(); setInterval(refresh, 30000);
+</script>
+</body>
+</html>

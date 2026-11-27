@@ -29,6 +29,7 @@ function canon(x: unknown, top = false): string {
   return '{' + keys.map(k => JSON.stringify(k) + ':' + canon(o[k])).join(',') + '}';
 }
 const stateKey = (g: GameState) => canon(g, true);
+const OFF = Number(process.env.GOLDEN_OFFSET ?? 0);   // seed offset for extra golden sets
 
 function decks(): NamedDeck[] {
   const home = readdirSync(join(ROOT, 'decks')).filter(f => f.endsWith('.json')).sort().map(f => loadDeckFile(join(ROOT, 'decks', f)));
@@ -39,12 +40,12 @@ function decks(): NamedDeck[] {
 async function selfplayGame(i: number) {
   const all = decks();
   const env = new FactoredEnv();
-  const rng = makeRng(9000 + i);
+  const rng = makeRng(9000 + OFF + i);
   const search = { ...DEFAULT_SEARCH, fullSims: 16, fastSims: 8, fullProb: 0.5, maxConsidered: 8 };
   const agent = new SearchAgent('nn', env, new UniformEvaluator(0, 0.3), search, DEFAULT_CAPS, { record: true, noise: true, rng });
   const d: [NamedDeck, NamedDeck] = [all[i % all.length], all[(i * 7 + 3) % all.length]];
   const t0 = performance.now();
-  const r = await playGame({ env, agents: [agent, agent], decks: d, seed: 1000 + i, firstPlayer: (i % 2) as 0 | 1, caps: DEFAULT_CAPS });
+  const r = await playGame({ env, agents: [agent, agent], decks: d, seed: 1000 + OFF + i, firstPlayer: (i % 2) as 0 | 1, caps: DEFAULT_CAPS });
   const ms = performance.now() - t0;
   const h = createHash('sha256');
   const { ms: _ms, error, ...res } = r;
@@ -55,7 +56,7 @@ async function selfplayGame(i: number) {
 }
 
 function engineGame(i: number) {
-  const spec = makeSpec(50000 + i);
+  const spec = makeSpec(50000 + OFF + i);
   const t0 = performance.now();
   const fr = playFuzzGame(spec, NO_CHECKS);
   const playMs = performance.now() - t0;

@@ -8,7 +8,7 @@
 // use the same decks, seed and first player with the seats swapped, and every opponent gets the same deals. Timeouts
 // are counted (they also score as draws) and results are broken down by matchup (net's deck vs opponent's deck).
 // Writes runs/<name>/eval/step-<step>.json.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { GameState } from '../src/engine/types.ts';
 import { chooseAction } from '../src/engine/index.ts';
@@ -20,6 +20,15 @@ import { evalSlot, InferenceClient, SLOT_BEST } from '../src/ai/selfplay/client.
 import { UniformEvaluator, type Evaluator } from '../src/ai/selfplay/evaluator.ts';
 import { DeckPicker, pairedDeals } from '../src/ai/selfplay/decks.ts';
 import { EngineBotAgent, playGame, SearchAgent, type Agent } from '../src/ai/selfplay/game.ts';
+
+/** Progress for the dashboard ("Next eval" tile): runs/<name>/eval/progress-<step>.jsonl gets one `start` line, one line
+ *  per finished game (from every shard) and one `done` line. Best effort: never fails the eval. */
+function progress(runDir: string, step: number, o: Record<string, unknown>) {
+  try {
+    mkdirSync(join(runDir, 'eval'), { recursive: true });
+    appendFileSync(join(runDir, 'eval', `progress-${step}.jsonl`), JSON.stringify({ t: Date.now() / 1000, ...o }) + '\n');
+  } catch { /* ignore */ }
+}
 
 function arg(n: string, d?: string) { const i = process.argv.indexOf(`--${n}`); return i >= 0 ? process.argv[i + 1] : d; }
 
@@ -43,6 +52,7 @@ async function main() {
   const shard = arg('shard') === undefined ? null : Number(arg('shard'));
   const shards = Number(arg('shards', '1'));
   const procs = Math.max(1, Math.min(Number(arg('procs', String(conc))), Math.ceil(games / 2)));
+  if (shard === null) progress(runDir, step, { start: true, games, opponents, procs });
   if (shard === null && procs > 1) return runSharded(runDir, cfg, step, games, opponents, conc, procs);
   const ev: Evaluator = arg('backend') === 'inproc' ? new UniformEvaluator() : await InferenceClient.connect({ host: cfg.servers.host, port: Number(arg('port', String(cfg.servers.ports[0]))), clientId: 9999 });
   const picker = new DeckPicker(cfg.decks);
@@ -77,6 +87,7 @@ async function main() {
         const agents: [Agent<any>, Agent<any>] = nnSeat === 0 ? [mine, theirs] : [theirs, mine];
         const g = await playGame({ env, agents, decks: deal.decks, seed: deal.seed, firstPlayer: deal.firstPlayer, caps });
         r.games++; turns += g.turns;
+        progress(runDir, step, { game: true, opp, k, shard: shard ?? 0, status: g.status });
         if (g.status === 'error') { r.errors++; continue; }
         if (g.status === 'timeout') r.timeouts++;
         const key = `${deal.decks[nnSeat].name} vs ${deal.decks[1 - nnSeat].name}`;
@@ -95,6 +106,7 @@ async function main() {
   const out = arg('out') ?? join(runDir, 'eval', `step-${step}.json`);
   mkdirSync(join(runDir, 'eval'), { recursive: true });
   writeFileSync(out, JSON.stringify({ step, time: Date.now(), results }, null, 1));
+  if (shard === null) progress(runDir, step, { done: true });
   await ev.close?.();
   process.exit(0);
 }
@@ -138,6 +150,7 @@ async function runSharded(runDir: string, cfg: ReturnType<typeof loadResolved>, 
   const out = arg('out') ?? join(runDir, 'eval', `step-${step}.json`);
   writeFileSync(out, JSON.stringify({ step, time: Date.now(), results }, null, 1));
   rmSync(tmp, { recursive: true, force: true });
+  progress(runDir, step, { done: true });
   console.log(`[eval] step ${step}: ${procs} processes, ${((performance.now() - t0) / 1000).toFixed(0)}s`);
   process.exit(0);
 }

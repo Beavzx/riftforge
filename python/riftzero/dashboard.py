@@ -69,6 +69,102 @@ def read_evals(rd: Path) -> list[dict]:
     return out
 
 
+def _jsonl(p: Path) -> list[dict]:
+    out = []
+    try:
+        with open(p, encoding="utf-8", errors="replace") as f:
+            for line in f:
+                try:
+                    out.append(json.loads(line))
+                except ValueError:
+                    continue   # a line being written right now
+    except OSError:
+        pass
+    return out
+
+
+def _opp_cost(rd: Path, before_step: int) -> dict:
+    """Measured seconds per game for each eval opponent, from the newest finished eval with progress lines before
+    `before_step` (best games cost about twice the others). Falls back to equal weights."""
+    d = rd / "eval"
+    for p in sorted(d.glob("progress-*.jsonl"), key=lambda q: int(q.stem.split("-")[1]), reverse=True):
+        step = int(p.stem.split("-")[1])
+        if step >= before_step:
+            continue
+        rows = _jsonl(p)
+        start = next((r for r in rows if r.get("start")), None)
+        if not start or not any(r.get("done") for r in rows):
+            continue
+        # per shard, a game's cost is the time since the shard's previous game (or the start)
+        last: dict = {}
+        cost: dict = {}
+        for r in rows:
+            if not r.get("game"):
+                continue
+            sh = r.get("shard", 0)
+            prev = last.get(sh, start["t"])
+            cost.setdefault(r["opp"], []).append(max(0.0, r["t"] - prev))
+            last[sh] = r["t"]
+        if cost:
+            return {o: sum(v) / len(v) for o, v in cost.items()}
+    return {}
+
+
+def eval_schedule(rd: Path, cfg: dict, evals: list[dict], metrics: list[dict]) -> dict:
+    """The "Next eval" tile: the eval in progress (games done, ETA from measured pace weighted by each opponent's
+    measured cost per game) or, if none, which step is evaluated next and when the trainer gets there."""
+    now = time.time()
+    d = rd / "eval"
+    every = int((cfg.get("train") or {}).get("ckptEverySteps") or 500) * int((cfg.get("eval") or {}).get("everyCheckpoints") or 3)
+    out: dict = {"every": every}
+    progs = sorted(d.glob("progress-*.jsonl"), key=lambda q: int(q.stem.split("-")[1])) if d.exists() else []
+    steps_seen = [int(p.stem.split("-")[1]) for p in progs] + [e["step"] for e in evals]
+    # the launcher pins ckpt/eval.pt for every eval it starts, finished or not: its next eval is that step + every
+    try:
+        steps_seen.append(int((rd / "ckpt" / "eval_step.txt").read_text().strip()))
+    except (OSError, ValueError):
+        pass
+    for p in reversed(progs):
+        step = int(p.stem.split("-")[1])
+        rows = _jsonl(p)
+        start = next((r for r in rows if r.get("start")), None)
+        if not start or any(r.get("done") for r in rows) or (d / f"step-{step}.json").exists():
+            continue
+        last_t = max(r.get("t", 0) for r in rows)
+        if now - last_t > 3 * 3600:      # no game finished for 3 h: killed or hung, not running
+            continue
+        opps, games = start.get("opponents") or [], int(start.get("games") or 0)
+        done = [r for r in rows if r.get("game")]
+        by_opp = {o: sum(1 for r in done if r.get("opp") == o) for o in opps}
+        cost = _opp_cost(rd, step)
+        w = {o: cost.get(o, 1.0) for o in opps}
+        total_w = sum(w[o] * games for o in opps)
+        done_w = sum(w[o] * by_opp[o] for o in opps)
+        elapsed = now - start["t"]
+        eta = elapsed * (total_w - done_w) / done_w if done_w > 0 else None
+        out["running"] = {"step": step, "started": start["t"], "elapsed": elapsed, "done": len(done),
+                          "total": games * len(opps), "byOpponent": by_opp, "gamesPerOpponent": games,
+                          "eta": eta, "weighted": bool(cost)}
+        break
+    last_step = max(steps_seen) if steps_seen else 0
+    nxt = last_step + every if steps_seen else every
+    out["nextStep"] = nxt
+    cur = metrics[-1]["step"] if metrics else 0
+    recent = [m for m in metrics if m.get("t") and m["t"] >= metrics[-1]["t"] - 3600] if metrics else []
+    rate = (recent[-1]["step"] - recent[0]["step"]) / max(1.0, recent[-1]["t"] - recent[0]["t"]) * 3600 if len(recent) > 1 else None
+    out["trainerStep"], out["stepsPerHour"] = cur, rate
+    out["startsIn"] = max(0.0, (nxt - cur) / rate * 3600) if rate else None
+    # how long the last finished eval took (progress lines), for "results about ... after it starts"
+    for p in reversed(progs):
+        rows = _jsonl(p)
+        start = next((r for r in rows if r.get("start")), None)
+        fin = next((r for r in rows if r.get("done")), None)
+        if start and fin:
+            out["lastDuration"] = fin["t"] - start["t"]
+            break
+    return out
+
+
 def collect(rd: Path) -> dict:
     """Everything the page shows, as one JSON document."""
     cfg = _json(rd / "config.json") or {}
@@ -91,6 +187,7 @@ def collect(rd: Path) -> dict:
         with open(p, encoding="utf-8", errors="replace") as f:
             n_err += sum(1 for _ in f)
     tr, ev = cfg.get("train", {}), cfg.get("eval", {})
+    metrics = read_metrics(rd)
     return {
         "run": rd.name, "now": time.time(), "running": (rd / "run.pid").exists(),
         "status": _json(rd / "status.json"),
@@ -98,7 +195,8 @@ def collect(rd: Path) -> dict:
         "config": {"ckptEverySteps": tr.get("ckptEverySteps"), "evalEveryCheckpoints": ev.get("everyCheckpoints"),
                    "minPositions": tr.get("minPositions"), "gamesPerOpponent": ev.get("gamesPerOpponent"),
                    "modelSize": (cfg.get("model") or {}).get("size")},
-        "metrics": read_metrics(rd), "evals": evals, "evalLatest": latest,
+        "metrics": metrics, "evals": evals, "evalLatest": latest,
+        "evalSchedule": eval_schedule(rd, cfg, evals, metrics),
         "matchups": selfplay_matchups(rd), "servers": servers, "errorGames": n_err,
     }
 

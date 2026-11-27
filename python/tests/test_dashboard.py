@@ -71,3 +71,39 @@ def test_server_serves_page_and_data(tmp_path):
     finally:
         srv.shutdown()
         srv.server_close()
+
+
+def test_eval_schedule_running_eta_weighted_by_measured_opponent_cost(tmp_path):
+    """Next-eval tile: a running eval's ETA uses each opponent's seconds per game from the previous eval's progress lines
+    (best games cost twice the others here), and the next eval is the newest evaluated step + every."""
+    import time as _t
+    from riftzero.dashboard import eval_schedule
+    rd = tmp_path / "run"
+    (rd / "eval").mkdir(parents=True)
+    (rd / "ckpt").mkdir()
+    cfg = {"train": {"ckptEverySteps": 500}, "eval": {"everyCheckpoints": 12}}
+    # finished eval at step 6000: one shard, searchai 10 s/game, best 20 s/game, bot 10 s/game
+    t0 = 1000.0
+    rows = [{"t": t0, "start": True, "games": 2, "opponents": ["searchai", "best", "bot"], "procs": 1}]
+    t = t0
+    for opp, c in (("searchai", 10), ("best", 20), ("bot", 10)):
+        for k in range(2):
+            t += c
+            rows.append({"t": t, "game": True, "opp": opp, "k": k, "shard": 0})
+    rows.append({"t": t, "done": True})
+    (rd / "eval" / "progress-6000.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    (rd / "ckpt" / "eval_step.txt").write_text("12000")
+    # running eval at step 12000: started 40 s ago, both searchai games done (2 × 10 of 80 weighted units)
+    now = _t.time()
+    run = [{"t": now - 40, "start": True, "games": 2, "opponents": ["searchai", "best", "bot"], "procs": 1},
+           {"t": now - 30, "game": True, "opp": "searchai", "k": 0, "shard": 0},
+           {"t": now - 20, "game": True, "opp": "searchai", "k": 1, "shard": 0}]
+    (rd / "eval" / "progress-12000.jsonl").write_text("".join(json.dumps(r) + "\n" for r in run))
+    metrics = [{"t": now - 3600, "step": 10000}, {"t": now, "step": 12400}]
+    s = eval_schedule(rd, cfg, [], metrics)
+    r = s["running"]
+    assert r["step"] == 12000 and r["done"] == 2 and r["total"] == 6 and r["weighted"]
+    # 20 of 80 weighted units done in 40 s → 120 s left (a plain game count would say 80 s)
+    assert abs(r["eta"] - 120) < 2
+    assert s["nextStep"] == 18000 and s["lastDuration"] == 80
+    assert abs(s["stepsPerHour"] - 2400) < 1 and abs(s["startsIn"] - (18000 - 12400) / 2400 * 3600) < 2

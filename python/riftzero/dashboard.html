@@ -49,7 +49,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 12px 24px 40px; display: grid
 @media (max-width: 1000px) { .s6, .s4 { grid-column: span 12; } }
 .card h2 { font-size: 15px; font-weight: 600; margin: 0; }
 .card .sub { color: var(--text-secondary); font-size: 13px; margin: 2px 0 10px; }
-.tiles { grid-column: span 12; display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) repeat(5, minmax(0, 1fr)); }
+.tiles { grid-column: span 12; display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) repeat(6, minmax(0, 1fr)); }
 @media (max-width: 1100px) { .tiles { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } .tile.hero { grid-column: 1 / -1; } }
 .tile .label { color: var(--text-secondary); font-size: 13px; }
 .tile .value { font-size: 26px; font-weight: 600; margin-top: 2px; }
@@ -369,6 +369,14 @@ function renderTiles(d) {
   const sm = M.length ? ema(M.filter(r => r.loss_value != null).map(r => ({ x: r.step, y: r.loss_value })), 0.9) : [];
   tile("Value loss", sm.length ? fix(sm[sm.length - 1].y, 3) : "—", "smoothed · target < 0.9 by day 1");
   tile("Workers", st.workers ? `${st.workersAlive}/${st.workers}` : "—", `${st.workerRestarts || 0} restarts` + (d.servers[0] ? ` · GPU batch ${fix(d.servers[0].avgBatch, 1)}` : ""));
+  const es = d.evalSchedule || {}, clock = s => new Date((d.now + s) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (es.running) {
+    const r = es.running, opp = Object.entries(r.byOpponent).map(([o, n]) => `${o} ${n}/${r.gamesPerOpponent}`).join(" · ");
+    tile("Eval running", `${r.done}/${r.total} games`, `step ${compact(r.step)} · ` + (r.eta != null ? `about ${dur(r.eta)} left (≈${clock(r.eta)})${r.weighted ? "" : " · rough: no earlier eval to calibrate"}` : "measuring pace…") + ` · ${opp}`);
+  } else if (es.nextStep !== undefined) {
+    const when = es.startsIn == null ? "—" : es.startsIn < 60 ? "due now" : `in ${dur(es.startsIn)}`;
+    tile("Next eval", when, `step ${compact(es.nextStep)} (trainer ${compact(es.trainerStep)}` + (es.stepsPerHour ? `, ${compact(es.stepsPerHour)} steps/h` : "") + `)` + (es.startsIn != null && es.startsIn >= 60 ? ` · starts ≈${clock(es.startsIn)}` : "") + (es.lastDuration ? ` · last eval took ${dur(es.lastDuration)}` : ""));
+  }
   document.getElementById("tiles").innerHTML = tiles.join("");
 }
 

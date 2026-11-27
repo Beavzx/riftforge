@@ -1158,3 +1158,9 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
     plays 3 at once (~53% CPU each, ~4.3 cores in total vs 0.85 single-process). The launcher's step-6,000 eval was
     stopped (it would have taken an estimated 5–8 h); step 12,500 was evaluated by hand with the new code and recorded
     with `riftzero.elo.record_eval` (tmux window `eval`, log `runs/epyc-1/logs/eval-manual.log`).
+- Dashboard: "Eval running" / "Next eval" tile. `tools/train-eval.ts` appends progress lines to
+  `runs/<name>/eval/progress-<step>.jsonl` (start, one per finished game from every shard, done). The tile shows games
+  done per opponent with an ETA from the measured pace, weighted by each opponent's measured seconds per game in the
+  previous eval (best games cost about twice the others); otherwise the next eval's step (newest evaluated or pinned
+  step from `ckpt/eval_step.txt` + every) and when the trainer reaches it at its last-hour step rate, plus how long the
+  last eval took. Test: python/tests/test_dashboard.py.

@@ -1105,3 +1105,17 @@
   cleanly if any DDR5 ≥ 80 °C, CPU ≥ 90 °C or M.2 ≥ 78 °C (log in `~/thermal-guard.log`).
 - epyc-1 restarted 15:56 at 60 workers (77 % of 120-worker throughput for about half the load), to step up while
   DIMMs stay under ~75 °C.
+
+## 2026-11-27 — epyc-1: trainer OOM on the 8 GB card; batch 256
+- The trainer crashed with CUDA out-of-memory as soon as it reached minPositions (16:24, again at 16:26): batch 1024
+  with the `medium` model needs over 6.5 GB, and the two inference servers hold up to ~4 GB. Measured trainer peak
+  (bf16, medium): batch 256 1.5 GB, 384 3.0 GB, 512 4.4 GB, 768 6.4 GB.
+- `config/train-epyc.yaml`: batchSize 256, lr 3e-4, warmup 500 (home-1's settings), ckptEverySteps 500 (≈32k new
+  positions per self-play net), eval every 12 checkpoints (≈384k positions), maxTurnsAnneal 20k→60k steps (as home-1),
+  inference.memoryFraction 0.25.
+- Resuming restores the optimizer/scheduler from the checkpoint, so a changed `train.lr` does not apply to a resumed
+  run. epyc-1's one-step checkpoint was moved to `runs/epyc-1/ckpt.oom-2026-11-27` and the trainer started fresh
+  (its 64k self-play positions were kept; none had been trained on).
+- `scripts/start.sh` exports `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` (unless set): with variable-size
+  batches the trainer had reserved 4 GB of CUDA cache for a 1.5 GB working set.
+- epyc-1 runs at 120 workers again (DIMMs 52 °C at 60 workers, 58 °C at 90, with the desk fan).

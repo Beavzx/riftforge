@@ -19,7 +19,7 @@ decks:
 
 caps:
   maxTurns: 60
-  maxTurnsAnneal: { to: 40, startStep: 30000, endStep: 100000 }
+  maxTurnsAnneal: { to: 40, startStep: 20000, endStep: 60000 }   # same as home-1 (same batch size)
   timeoutShaping: 0.2
   maxActions: 1500
   maxMainPerTurn: 40
@@ -52,27 +52,27 @@ inference:
   batchTimeoutMs: 2.0
   dtype: bf16
   reloadEverySec: 20
-  memoryFraction: 0.30
+  memoryFraction: 0.25  # 2 servers + trainer share one 8 GB card
 
 model:
   size: medium          # ≈ 6M params
 
 train:
   gpu: 0                # put the trainer on a GPU of its own if you have one more than `inference.gpus`
-  batchSize: 1024
-  lr: 6.0e-4
-  warmupSteps: 1000
+  batchSize: 256        # 8 GB card: trainer peak 1.5 GB at 256, 4.4 GB at 512, >6.5 GB at 1024 (OOM beside 2 servers)
+  lr: 3.0e-4            # as home-1 (batch 256)
+  warmupSteps: 500
   schedule: cosine
   totalSteps: 400000
   minPositions: 50000
   replayPositions: 2000000   # ~60 GB RAM
   maxSampleReuse: 4.0
-  ckptEverySteps: 250    # ≈ 64k positions (~30 min) per new self-play net; 1000 × batch 1024 meant ~2 h on a stale net (home-1: 32k)
+  ckptEverySteps: 500    # 500 × 256 ÷ reuse 4 ≈ 32k new positions (~15 min) per self-play net, as home-1
   keepCheckpoints: 100
   keepShardFiles: 8000   # ~8000 × 8 games × ~40 positions × ~33 KB ≈ 85 GB of shards on disk
 
 eval:
-  everyCheckpoints: 6   # every 1,500 steps ≈ 384k positions (~3 h); one 40-game eval vs 3 opponents takes ~1 h
+  everyCheckpoints: 12  # every 6,000 steps ≈ 384k positions (~3.5 h); one 40-game eval vs 3 opponents takes ~1 h
   gamesPerOpponent: 40
   opponents: [searchai, best, bot]
   concurrentGames: 8

@@ -1148,3 +1148,9 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   workers waited on them (workers 73% CPU, servers ~125% each, Python-bound): 6,975 evals/s. `inference.serversPerGpu`
   2 → 4, `memoryFraction` 0.25 → 0.15: **8,598 evals/s (old engine ~5,100: 1.69×), ~4,370 games/h**, workers 91%,
   GPU 88% busy, 5.0 / 8 GB. The single 3060 Ti is now close to the limit, alongside the CPU.
+- `tools/train-eval.ts`: evals ran all `concurrentGames` in ONE process, so the whole eval (engine + SearchAI search)
+  shared one CPU core: epyc-1's first eval (step 6,000, 3 × 40 games) was still running after 2 h 20 min. It now starts
+  one child process per concurrent game (`--procs`, default = concurrentGames), each playing whole seat-swapped pairs
+  of the same deals, spread over the inference servers; the parent merges into the same `step-<step>.json`. Tested
+  with the in-process evaluator: same format and totals; 2 processes 151 s vs 230 s for 4 games. The launcher starts
+  train-eval.ts afresh per eval, so it applies from the next eval without a restart.

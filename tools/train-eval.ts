@@ -104,7 +104,8 @@ async function main() {
 async function runSharded(runDir: string, cfg: ReturnType<typeof loadResolved>, step: number, games: number, opponents: string[], conc: number, procs: number) {
   const { spawn } = await import('node:child_process');
   const { readFileSync, rmSync } = await import('node:fs');
-  const lanes = Math.max(1, Math.ceil(conc / procs));
+  // one game per process leaves it mostly waiting on inference (~30% CPU on epyc-1): 3 lanes overlap those waits
+  const lanes = Math.max(3, Math.ceil(conc / procs));
   const tmp = join(runDir, 'eval', `.step-${step}.shards`);
   mkdirSync(tmp, { recursive: true });
   const ports = cfg.servers.ports;

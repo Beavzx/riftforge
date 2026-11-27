@@ -1154,3 +1154,7 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   of the same deals, spread over the inference servers; the parent merges into the same `step-<step>.json`. Tested
   with the in-process evaluator: same format and totals; 2 processes 151 s vs 230 s for 4 games. The launcher starts
   train-eval.ts afresh per eval, so it applies from the next eval without a restart.
+  - With one game per process each eval process sat at ~29% CPU (waiting on the busy inference servers); each now
+    plays 3 at once (~53% CPU each, ~4.3 cores in total vs 0.85 single-process). The launcher's step-6,000 eval was
+    stopped (it would have taken an estimated 5–8 h); step 12,500 was evaluated by hand with the new code and recorded
+    with `riftzero.elo.record_eval` (tmux window `eval`, log `runs/epyc-1/logs/eval-manual.log`).

@@ -47,12 +47,12 @@ inference:
   host: 127.0.0.1
   basePort: 47000
   gpus: [0]             # simulation-server has one RTX 3060 Ti 8 GB (nvidia-smi -L, 2026-11-27); list every GPU here
-  serversPerGpu: 2      # Python request handling is the limit before the GPU is: 2 processes per GPU
+  serversPerGpu: 4      # after the engine perf pass, 2 servers (each ~125% CPU, Python-bound) left workers waiting (73% CPU)
   maxBatch: 512
   batchTimeoutMs: 2.0
   dtype: bf16
   reloadEverySec: 20
-  memoryFraction: 0.25  # 2 servers + trainer share one 8 GB card
+  memoryFraction: 0.15  # 4 servers + trainer share one 8 GB card
 
 model:
   size: medium          # ≈ 6M params

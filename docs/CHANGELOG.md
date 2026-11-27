@@ -1144,3 +1144,7 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   enumeration: a unit's destinations ~7 times).
 - Measured A/B, alternating on the same box: self-play games 1.84x, engine-only fuzz games 1.53x. Remaining profile
   is flat (clone ~14%, then nothing above ~4%).
+- epyc-1 restarted on the faster engine (18:25; schema unchanged, resumed at step 4,650). With 2 inference servers the
+  workers waited on them (workers 73% CPU, servers ~125% each, Python-bound): 6,975 evals/s. `inference.serversPerGpu`
+  2 → 4, `memoryFraction` 0.25 → 0.15: **8,598 evals/s (old engine ~5,100: 1.69×), ~4,370 games/h**, workers 91%,
+  GPU 88% busy, 5.0 / 8 GB. The single 3060 Ti is now close to the limit, alongside the CPU.

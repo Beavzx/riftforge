@@ -1,0 +1,183 @@
+{
+ "step": 1500,
+ "time": 1795750997704,
+ "results": [
+  {
+   "opponent": "searchai",
+   "games": 16,
+   "wins": 0,
+   "losses": 16,
+   "draws": 0,
+   "errors": 0,
+   "score": 0,
+   "avgTurns": 12.5,
+   "sec": 910.293612985,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-azir vs home-mordekaiser": [
+     0,
+     2,
+     0
+    ],
+    "home-azir vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-azir": [
+     0,
+     2,
+     0
+    ],
+    "home-vex vs home-azir": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     0,
+     2,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-vex": [
+     0,
+     4,
+     0
+    ]
+   }
+  },
+  {
+   "opponent": "best",
+   "games": 16,
+   "wins": 16,
+   "losses": 0,
+   "draws": 0,
+   "errors": 0,
+   "score": 1,
+   "avgTurns": 17.875,
+   "sec": 1948.1178963549999,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-vex vs home-azir": [
+     1,
+     0,
+     0
+    ],
+    "home-azir vs home-vex": [
+     1,
+     0,
+     0
+    ],
+    "home-mordekaiser vs home-azir": [
+     2,
+     0,
+     0
+    ],
+    "home-azir vs home-mordekaiser": [
+     2,
+     0,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     1,
+     0,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     1,
+     0,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     2,
+     0,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     2,
+     0,
+     0
+    ],
+    "home-vex vs home-vex": [
+     4,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "opponent": "bot",
+   "games": 16,
+   "wins": 1,
+   "losses": 15,
+   "draws": 0,
+   "errors": 0,
+   "score": 0.0625,
+   "avgTurns": 13.5625,
+   "sec": 1091.3406006299997,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-azir vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-azir vs home-mordekaiser": [
+     0,
+     2,
+     0
+    ],
+    "home-mordekaiser vs home-azir": [
+     1,
+     1,
+     0
+    ],
+    "home-vex vs home-azir": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     0,
+     2,
+     0
+    ],
+    "home-vex vs home-vex": [
+     0,
+     4,
+     0
+    ]
+   }
+  }
+ ]
+}

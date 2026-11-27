@@ -1,0 +1,24 @@
+run home-1  (RUNNING)  /home/beavz/riftforge/runs/home-1
+  uptime 14h 46m 0s  (status 6s old)  backend torch
+  workers 14/14 alive, 0 restarts
+  self-play: 14203 games (1079/h), 482580 positions, timeouts 7, errors 2, rollbacks 6, sims/decision 26.7
+  self-play deck win % (non-mirror, both sides the same net): mordekaiser 57% (n=5346)  rek-sai 51% (n=5306)  vex 48% (n=5341)  azir 44% (n=5367)
+            azir vs azir         435-466-0  (mirror)
+            azir vs mordekaiser  722-1045-3  (41%)
+            azir vs rek-sai      768-1012-2  (43%)
+            azir vs vex          850-964-1  (47%)
+     mordekaiser vs mordekaiser  458-448-0  (mirror)
+     mordekaiser vs rek-sai      1026-760-1  (57%)
+     mordekaiser vs vex          978-811-0  (55%)
+         rek-sai vs rek-sai      399-445-0  (mirror)
+         rek-sai vs vex          935-802-0  (54%)
+             vex vs vex          420-451-0  (mirror)
+  trainer: step 7500  loss 1.5981 (policy 1.2635, value 0.3346)  entropy 1.265  lr 2.99e-04  buffer 200000  reuse 4.00  37 samples/s
+  server 47000: 53290090 requests, avg batch 17.0, model step 7500, clients 19
+  eval @ step 6000:
+    vs searchai  0-16-0  score 0.000  Elo -607 [-607, -248]
+    vs best      8-8-0  score 0.500  Elo +0 [-164, +164]
+    vs bot       1-15-0  score 0.062  Elo -406 [-607, -161]
+    net's deck, all opponents: azir 3-12-0  mordekaiser 1-5-0  rek-sai 3-9-0  vex 2-13-0
+  Elo vs SearchAI over time: 1500:-607  3000:-607  4500:-607  6000:-607
+  2 game errors logged in /home/beavz/riftforge/runs/home-1/errors (engine bugs; games are discarded)

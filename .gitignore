@@ -2,7 +2,7 @@ node_modules
 dist/
 *.cpuprofile
 tests/ui/shots/
-runs/
+/runs/
 .venv/
 __pycache__/
 *.pyc

@@ -24,15 +24,22 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
    (see CHANGELOG). A rehearsal of `config/train.yaml` and an eval vs searchai/best/bot also ran clean.
 2. First real run with `config/train.yaml`: a narrow deck pool, 1–3 days. The question to answer is whether Elo
    against SearchAI keeps climbing. If it does, move to the EPYC box (`config/train-epyc.yaml`).
-   **Status:** `home-1` started 2026-11-26 23:26 on the home PC, pool = Jonathon's four lists in `decks/` (he plays
-   all four), tmux session `train` (window 0 launcher, window 1 `scripts/dashboard.sh` on :8050). Jonathon plans to
-   move to the EPYC on 2026-11-27. Plan for that move:
-   - On the home PC: `scripts/stop.sh`, then copy the small run summary (`runs/home-1/elo.csv`, `metrics.jsonl`,
-     `eval/`) into `docs/runs/home-1/` and push. Don't commit shards or checkpoints (GBs; `runs/` is gitignored).
-   - On the EPYC: clone, `scripts/setup.sh`, `scripts/smoke.sh`, set `inference.gpus` in `config/train-epyc.yaml` to
-     the GPUs present (`nvidia-smi -L`), then `scripts/start.sh --config config/train-epyc.yaml` in tmux.
+   **Status:** `home-1` ran 2026-11-26 23:26 → 2026-11-27 14:12 on the home PC and is **stopped**. The summary is in
+   `docs/runs/home-1/README.md`.
+   - 14.2k games, 480k positions, 7,500 steps. Value loss 0.99 → 0.335.
+   - Still below the rules bot (best 4–12), and 0 wins against SearchAI in 4 evals. The Elo question is still open.
+   - 2 engine errors to fix (repro seeds in `docs/runs/home-1/errors.jsonl`).
+
+   **Next: start `epyc-1` on the EPYC ("simulation-server"):**
+   - Clone, `scripts/setup.sh`, `scripts/smoke.sh`, set `inference.gpus` in `config/train-epyc.yaml` to the GPUs
+     present (`nvidia-smi -L`), then `scripts/start.sh --config config/train-epyc.yaml` in a tmux session `train`,
+     with `scripts/dashboard.sh` in a second window (view remotely with `ssh -L 8050:localhost:8050`).
+   - Before starting, check `pgrep -af 'riftzero|selfplay'` is empty. An interrupted smoke run can orphan its
+     trainer, server and workers; on the home PC they ran for all of home-1 and took about 2 cores.
    - Start epyc-1 fresh: it uses a `medium` model, so home-1's `small` checkpoint can't load. Home shards *could*
      seed its buffer (same schema), but the EPYC regenerates a day of home data in ~3 hours, so it isn't worth moving.
+   - Watch vs-bot first: it should pass 50% by about 2–3M positions, then the first SearchAI wins should follow. If
+     not, investigate before spending more compute (see the run README).
    - Before ever using `battlefieldSelection: 'choose'` in self-play, fix the leak noted in docs/CHANGELOG.md
      (the first player's private pick is visible to the second player's search via `ex.unit`).
 3. Wire the trained net into the coach as the evaluator: the `NNEvaluator` adapter in `src/ai/selfplay/nn-evaluator.ts`

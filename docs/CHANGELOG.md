@@ -1058,3 +1058,14 @@
   external assets, localhost only). Elo per opponent with 95% bands, losses/entropy (raw + EMA), throughput, deck
   win %, matchup matrix, latest eval by deck, eval history; table views, keyboard crosshair, light/dark. Palette is
   the validated default (3 slots, both modes). Tests: python/tests/test_dashboard.py.
+
+## 2026-11-27 — home-1 stopped, handover to the EPYC
+- home-1 stopped cleanly at 14:12 after 14 h 46 m: 14,203 games, 480k positions, 7,500 trainer steps, value loss
+  0.99 → 0.335.
+  - Evals at 1,500 / 3,000 / 4,500 / 6,000: 0–16 against SearchAI every time; 1, 2, 4 and 1 wins out of 16 against
+    the rules bot; it beat the previous checkpoint up to step 4,500 (8–8 at 6,000).
+  - Summary, evals, metrics and config are in `docs/runs/home-1/`. Checkpoints and shards stay on the home PC.
+- Found at the stop: an interrupted `runs/smoke` run had left its trainer, inference server and 2 workers running
+  for the whole of home-1 (about 2 cores). They were killed. CLAUDE.md now says to check `pgrep` before starting.
+- Two engine errors, both Mordekaiser vs Rek'Sai: `no legal options for chooseTargets (all rolled back)`. Every
+  offered target leads to a payment-failure rollback. Seeds are in `docs/runs/home-1/errors.jsonl`. Not fixed yet.

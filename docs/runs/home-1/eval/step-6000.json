@@ -1,0 +1,228 @@
+{
+ "step": 6000,
+ "time": 1795782914521,
+ "results": [
+  {
+   "opponent": "searchai",
+   "games": 16,
+   "wins": 0,
+   "losses": 16,
+   "draws": 0,
+   "errors": 0,
+   "score": 0,
+   "avgTurns": 12.375,
+   "sec": 1161.2461778910001,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-vex vs home-vex": [
+     0,
+     2,
+     0
+    ],
+    "home-azir vs home-rek-sai": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-azir": [
+     0,
+     2,
+     0
+    ],
+    "home-azir vs home-azir": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-azir vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-azir": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  {
+   "opponent": "best",
+   "games": 16,
+   "wins": 8,
+   "losses": 8,
+   "draws": 0,
+   "errors": 0,
+   "score": 0.5,
+   "avgTurns": 15.375,
+   "sec": 2453.8411935470003,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-vex vs home-vex": [
+     0,
+     2,
+     0
+    ],
+    "home-azir vs home-azir": [
+     1,
+     1,
+     0
+    ],
+    "home-rek-sai vs home-azir": [
+     2,
+     0,
+     0
+    ],
+    "home-azir vs home-rek-sai": [
+     1,
+     1,
+     0
+    ],
+    "home-rek-sai vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-azir": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-azir vs home-vex": [
+     1,
+     0,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     1,
+     0,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     1,
+     0,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     1,
+     0,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  {
+   "opponent": "bot",
+   "games": 16,
+   "wins": 1,
+   "losses": 15,
+   "draws": 0,
+   "errors": 0,
+   "score": 0.0625,
+   "avgTurns": 13.1875,
+   "sec": 1203.398616881,
+   "timeouts": 0,
+   "byMatchup": {
+    "home-vex vs home-vex": [
+     0,
+     2,
+     0
+    ],
+    "home-azir vs home-rek-sai": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-azir": [
+     0,
+     2,
+     0
+    ],
+    "home-rek-sai vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-azir vs home-azir": [
+     0,
+     2,
+     0
+    ],
+    "home-vex vs home-rek-sai": [
+     0,
+     1,
+     0
+    ],
+    "home-vex vs home-azir": [
+     1,
+     0,
+     0
+    ],
+    "home-vex vs home-mordekaiser": [
+     0,
+     1,
+     0
+    ],
+    "home-azir vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-rek-sai vs home-vex": [
+     0,
+     1,
+     0
+    ],
+    "home-mordekaiser vs home-vex": [
+     0,
+     1,
+     0
+    ]
+   }
+  }
+ ]
+}

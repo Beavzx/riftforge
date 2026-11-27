@@ -1,0 +1,85 @@
+{
+ "runName": "home-1",
+ "runDir": "/home/beavz/riftforge/runs/home-1",
+ "repoRoot": "/home/beavz/riftforge",
+ "seed": 1,
+ "decks": {
+  "mode": "pool",
+  "allowMirror": true,
+  "pool": [
+   "/home/beavz/riftforge/decks/home-azir.json",
+   "/home/beavz/riftforge/decks/home-vex.json",
+   "/home/beavz/riftforge/decks/home-rek-sai.json",
+   "/home/beavz/riftforge/decks/home-mordekaiser.json"
+  ],
+  "me": null,
+  "opponents": []
+ },
+ "caps": {
+  "maxTurns": 60,
+  "maxTurnsAnneal": {
+   "to": 40,
+   "startStep": 20000,
+   "endStep": 60000
+  },
+  "timeoutShaping": 0.2,
+  "maxActions": 1500,
+  "maxMainPerTurn": 40
+ },
+ "search": {
+  "algorithm": "gumbel",
+  "fullSims": 64,
+  "fastSims": 16,
+  "fullProb": 0.25,
+  "maxConsidered": 16,
+  "cVisit": 50,
+  "cScale": 1.0,
+  "cPuct": 1.5,
+  "dirichletAlpha": 0.3,
+  "dirichletFrac": 0.25,
+  "temperatureMoves": 12,
+  "forcedStepCap": 64
+ },
+ "evalSearch": {
+  "algorithm": "gumbel",
+  "fullSims": 64,
+  "fastSims": 64,
+  "fullProb": 1.0,
+  "maxConsidered": 16,
+  "cVisit": 50,
+  "cScale": 1.0,
+  "cPuct": 1.5,
+  "dirichletAlpha": 0.3,
+  "dirichletFrac": 0.25,
+  "temperatureMoves": 12,
+  "forcedStepCap": 64
+ },
+ "workers": {
+  "count": 14,
+  "concurrentGames": 4,
+  "gamesPerShard": 4,
+  "statsEverySec": 10
+ },
+ "servers": {
+  "host": "127.0.0.1",
+  "ports": [
+   47000
+  ]
+ },
+ "env": {
+  "kind": "factored"
+ },
+ "target": {
+  "pointsShaping": 0.0
+ },
+ "eval": {
+  "gamesPerOpponent": 16,
+  "opponents": [
+   "searchai",
+   "best",
+   "bot"
+  ],
+  "concurrentGames": 4,
+  "searchAiOptions": {}
+ }
+}

@@ -207,11 +207,24 @@ let memo: Map<ObjId, Chars> | null = null;
 let memoOwner: GameState | null = null;
 let staticsMemo: ActiveStatic[] | null = null;
 let grantsMemo: Map<ObjId, Pick<Chars, 'grants' | 'extraRefs'>> | null = null;
+let scopeMemo: Map<string, unknown> | null = null;
 export function withCharsMemo<T>(g: GameState, f: () => T): T {
   if (memo && memoOwner === g) return f();        // already inside a read-only scope of this state
-  const prev = memo, prevOwner = memoOwner, prevStatics = staticsMemo, prevGrants = grantsMemo;
-  memo = new Map(); memoOwner = g; staticsMemo = null; grantsMemo = new Map();
-  try { return f(); } finally { memo = prev; memoOwner = prevOwner; staticsMemo = prevStatics; grantsMemo = prevGrants; }
+  const prev = memo, prevOwner = memoOwner, prevStatics = staticsMemo, prevGrants = grantsMemo, prevScope = scopeMemo;
+  memo = new Map(); memoOwner = g; staticsMemo = null; grantsMemo = new Map(); scopeMemo = new Map();
+  try { return f(); } finally { memo = prev; memoOwner = prevOwner; staticsMemo = prevStatics; grantsMemo = prevGrants; scopeMemo = prevScope; }
+}
+
+/** PERF: memoise a pure read of `g` for the rest of the current read-only scope (withCharsMemo), under the same
+ *  conditions as the chars memo (no characteristic computation or static evaluation in progress, whose recursion
+ *  guards can change results). Outside such a scope, or for another state, f() simply runs. `key` must identify
+ *  every input besides g. Callers must not mutate the returned value (copy arrays before handing them out). */
+export function memoInScope<T>(g: GameState, key: string, f: () => T): T {
+  if (!memo || memoOwner !== g || computing.size || evaluating.size) return f();
+  if (scopeMemo!.has(key)) return scopeMemo!.get(key) as T;
+  const v = f();
+  if (!computing.size && !evaluating.size) scopeMemo!.set(key, v);
+  return v;
 }
 
 export function chars(g: GameState, id: ObjId): Chars {

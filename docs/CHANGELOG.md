@@ -1090,3 +1090,18 @@
   $(tailscale ip -4)`), http://simulation-server:8050 from any tailnet device. Without `--config` it shows home-1.
 - A third `no legal options for chooseTargets (all rolled back)` error (Rek'Sai vs Mordekaiser, seed 49036357,
   firstPlayer 0), about 1 in 800 games on the EPYC.
+
+## 2026-11-27 — simulation-server crash: DIMM heat, thermal guard
+- 15:28: the box hard-crashed during epyc-1 (60 min of near-full CPU load; trainer not yet started). Nothing in the
+  journal; on reboot the firmware reported a fatal hardware error from the previous boot (BERT, locator `P0MC0`,
+  most likely socket 0 memory controller 0). No corrected ECC errors before or since.
+- The BMC event log had been full since 2026-06-29 (FAN7 drops to 0 RPM for ~3 s, ~1,750 times), so the crash was
+  not logged there. Before that it recorded DDR5 sticks B1/C1/H1/I1 reaching 85 °C (critical) under load on
+  2026-03-22 and 2026-05-24. Leading explanation: DIMM overheating under sustained memory-heavy load (the engine is
+  allocation/clone heavy). The M.2 SSD (Micron 7450) also runs hot (83–87 °C hottest sensor at idle, never throttled).
+- Temporary fix: side panel off and a fan on the DIMMs (idle DDR5 35–42 → 24–28 °C, M.2 67 → 37 °C).
+- `~/hw-setup.sh` (outside the repo) cleared the SEL and added a root cron logging all temperature and fan sensors
+  every minute to `/var/log/hwtemps.log`. `~/thermal-guard.sh` runs in tmux window `guard`: it stops training
+  cleanly if any DDR5 ≥ 80 °C, CPU ≥ 90 °C or M.2 ≥ 78 °C (log in `~/thermal-guard.log`).
+- epyc-1 restarted 15:56 at 60 workers (77 % of 120-worker throughput for about half the load), to step up while
+  DIMMs stay under ~75 °C.

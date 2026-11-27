@@ -37,6 +37,10 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
      trainer shares the same card. ~3,700 games/h. More workers (192/240, using SMT) gave +1%; the GPU is not the
      limit either. Engine speed is now the throughput lever on this box.
 
+   - **Thermal:** the box hard-crashed at 15:28 on 2026-11-27 (fatal memory-controller error; DIMMs have hit 85 °C
+     before). Never run it at full load without `~/thermal-guard.sh` running (tmux window `guard`) and the DIMM
+     fan in place. Sensors: `/var/log/hwtemps.log` (every minute). Details in CHANGELOG.
+
    How it was set up (redo these steps on a fresh box):
    - Clone, `scripts/setup.sh`, `scripts/smoke.sh`, set `inference.gpus` in `config/train-epyc.yaml` to the GPUs
      present (`nvidia-smi -L`), then `scripts/start.sh --config config/train-epyc.yaml` in a tmux session `train`,

@@ -207,11 +207,24 @@ let memo: Map<ObjId, Chars> | null = null;
 let memoOwner: GameState | null = null;
 let staticsMemo: ActiveStatic[] | null = null;
 let grantsMemo: Map<ObjId, Pick<Chars, 'grants' | 'extraRefs'>> | null = null;
+let scopeMemo: Map<string, unknown> | null = null;
 export function withCharsMemo<T>(g: GameState, f: () => T): T {
   if (memo && memoOwner === g) return f();        // already inside a read-only scope of this state
-  const prev = memo, prevOwner = memoOwner, prevStatics = staticsMemo, prevGrants = grantsMemo;
-  memo = new Map(); memoOwner = g; staticsMemo = null; grantsMemo = new Map();
-  try { return f(); } finally { memo = prev; memoOwner = prevOwner; staticsMemo = prevStatics; grantsMemo = prevGrants; }
+  const prev = memo, prevOwner = memoOwner, prevStatics = staticsMemo, prevGrants = grantsMemo, prevScope = scopeMemo;
+  memo = new Map(); memoOwner = g; staticsMemo = null; grantsMemo = new Map(); scopeMemo = new Map();
+  try { return f(); } finally { memo = prev; memoOwner = prevOwner; staticsMemo = prevStatics; grantsMemo = prevGrants; scopeMemo = prevScope; }
+}
+
+/** PERF: memoise a pure read of `g` for the rest of the current read-only scope (withCharsMemo), under the same
+ *  conditions as the chars memo (no characteristic computation or static evaluation in progress, whose recursion
+ *  guards can change results). Outside such a scope, or for another state, f() simply runs. `key` must identify
+ *  every input besides g. Callers must not mutate the returned value (copy arrays before handing them out). */
+export function memoInScope<T>(g: GameState, key: string, f: () => T): T {
+  if (!memo || memoOwner !== g || computing.size || evaluating.size) return f();
+  if (scopeMemo!.has(key)) return scopeMemo!.get(key) as T;
+  const v = f();
+  if (!computing.size && !evaluating.size) scopeMemo!.set(key, v);
+  return v;
 }
 
 export function chars(g: GameState, id: ObjId): Chars {
@@ -506,6 +519,28 @@ export function activeAbilities(g: GameState, id: ObjId, forStatics = false, inc
 }
 
 const mayGrant = (ab: StaticAbility) => typeof ab.mods === 'function' || !!ab.mods.grants || !!ab.mods.grantRefs || !!ab.mods.copyAbilitiesOf;
+
+// PERF: does any static that collectStatics() could return possibly grant abilities (grants / grantRefs /
+// copyAbilitiesOf), or expand references? A superset test that never evaluates a static: collectStatics() only reads
+// delayed statics, the script statics of ability sources, and (for sources with grant/copy modifiers) their
+// active abilities; `refs` statics add more by reference. If this is false, every static's mods lack grants, so
+// grantsOf() is exactly the object's modifier grants and no extraRefs.
+const grantingIdx = new WeakMap<object, boolean>();
+function scriptMayGrant(s: { abilities: Ability[] }): boolean {
+  let v = grantingIdx.get(s);
+  if (v === undefined) { v = scriptStatics(s).some(({ ab }) => mayGrant(ab) || !!ab.refs); grantingIdx.set(s, v); }
+  return v;
+}
+export function mayHaveGrantedAbilities(g: GameState): boolean {
+  for (const d of g.ex.delayed) { const ab = getDelayed(d.key); if (ab?.kind === 'static' && (mayGrant(ab) || ab.refs)) return true; }
+  for (const src of abilitySources(g)) {
+    const o = g.objects[src];
+    if (o.modifiers.length && o.modifiers.some(m => m.grants?.length || m.copyOf)) return true;
+    const s = getScript(o.cardId);
+    if (s && scriptMayGrant(s)) return true;
+  }
+  return false;
+}
 /**
  * MS-2: the ability-granting part of chars() (modifier grants, then static grants / grantRefs / copyAbilitiesOf in timestamp
  * order — the same lists and order computeChars builds), without evaluating the other statics or the layers.
@@ -518,6 +553,7 @@ function grantsOf(g: GameState, id: ObjId): Pick<Chars, 'grants' | 'extraRefs'> 
   const cache = memoOk && !computing.size && !evaluating.size;
   for (const m of o.modifiers) if (m.grants) out.grants.push(...m.grants);
   if (staticDepth > 5) return out;
+  if (!mayHaveGrantedAbilities(g)) { if (cache) grantsMemo!.set(id, out); return out; }   // PERF: no static can add any
   const hits: { ts: number; m: StaticMods }[] = [];
   computing.add(id);
   staticDepth++;

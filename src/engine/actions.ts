@@ -4,7 +4,7 @@ import type { CardId, Domain, GameEvent, GameState, Modifier, ObjId, PlayerId } 
 import { emit, abilityFromKey, type QueuedTrigger } from './events.ts';
 import { applyReplacements, hasReplacement } from './replace.ts';
 import { moveToZone, setLocation, locOf, reseat, type Loc, isBattlefieldCard } from './state.ts';
-import { chars, isUnit, might, attachedTo, onBoard, withCharsMemo } from './chars.ts';
+import { chars, isUnit, might, attachedTo, onBoard, withCharsMemo, memoInScope } from './chars.ts';
 import { log, cardName, opponents, nextPlayer, teamOf, isOpponent, turnOrderFrom } from './util.ts';
 import { shuffle } from './rng.ts';
 import { ruleApplies, victoryScore, anyDamageLethal } from './rules.ts';
@@ -30,6 +30,10 @@ export function lki(g: GameState, id: ObjId): Record<string, unknown> {
 
 /** Units at a location. For 'base' you must say whose base. */
 export function unitsAtLoc(g: GameState, loc: Loc, basePlayer?: PlayerId): ObjId[] {
+  // PERF: a full scan of g.objects; memoised within a read-only scope (legal enumeration, rule checks)
+  return memoInScope(g, `units|${loc}|${basePlayer}`, () => unitsAtLocNow(g, loc, basePlayer)).slice();
+}
+function unitsAtLocNow(g: GameState, loc: Loc, basePlayer?: PlayerId): ObjId[] {
   const out: ObjId[] = [];
   for (const id in g.objects) {
     const o = g.objects[id];
@@ -40,6 +44,9 @@ export function unitsAtLoc(g: GameState, loc: Loc, basePlayer?: PlayerId): ObjId
 }
 
 export function allUnits(g: GameState): ObjId[] {
+  return memoInScope(g, 'allUnits', () => allUnitsNow(g)).slice();
+}
+function allUnitsNow(g: GameState): ObjId[] {
   const out: ObjId[] = [];
   for (const id in g.objects) {
     const o = g.objects[id];

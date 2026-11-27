@@ -219,6 +219,19 @@ function run(base: GameState, actions: Action[], top: boolean, eventsFrom = 0, p
   return { state: g, events: g.ex.lastEvents.slice(eventsFrom) };
 }
 
+/** PERF: the replay base of a new top-level action, i.e. cloneState(s) with ex.unit = null, but sharing s's contents
+ *  instead of deep-copying them. Safe because applyAction never mutates its input (ARCHITECTURE.md), run() deep-copies
+ *  the base before changing anything (and again on rollback), and a stored base (ex.unit.base) is only ever read or
+ *  copied. Same keys in the same order as cloneState's result. */
+function snapshotBase(s: GameState): GameState {
+  const { cards, ex, log: lg, ...rest } = s;
+  const { unit: _u, lastEvents: _e, ...exRest } = ex;
+  const c = { ...rest, ex: { ...exRest, unit: null, lastEvents: [] } } as unknown as GameState;
+  c.cards = cards;
+  c.log = lg;
+  return c;
+}
+
 function cloneState(s: GameState): GameState {
   const { cards, ex, log: lg, ...rest } = s;
   const { unit, lastEvents, ...exRest } = ex;
@@ -264,9 +277,7 @@ function applyActionInner(state: GameState, action: Action): { state: GameState;
     const from = (state.ex as { unitEvents?: number }).unitEvents ?? 0;
     res = run(u.base, [...u.actions, action], !!(u.base.pending && !u.base.pending.inStep), from, state.ex.cancelFor);
   } else {
-    const base = cloneState(state);
-    base.ex.unit = null;
-    res = run(base, [action], true);
+    res = run(snapshotBase(state), [action], true);
   }
   res.state.actionCount = state.actionCount + 1;
   if (res.events[0]?.type !== 'rollback' && !res.state.pending?.inStep && res.state.ex.memo) delete res.state.ex.memo.__rolledBack;

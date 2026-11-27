@@ -1,12 +1,25 @@
 // Rule hooks (card-patterns.md section 6): static "rule" abilities that change how the engine
 // applies a rule. The engine calls ruleApplies / ruleValues at the relevant points.
 import type { GameState, ObjId, PlayerId } from './types.ts';
-import type { RuleAbility, RuleName, CostSpec } from './abilities.ts';
-import { abilitySources, allAbilities, abilityController, withCharsMemo, chars } from './chars.ts';
+import type { Ability, RuleAbility, RuleName, CostSpec } from './abilities.ts';
+import { abilitySources, allAbilities, abilityController, withCharsMemo, chars, mayHaveGrantedAbilities, dependenciesMet } from './chars.ts';
 import { getScript, getDelayed } from '../cards/registry.ts';
 import { makeCtx } from './context.ts';
 
 interface ActiveRule { ab: RuleAbility; src: ObjId | null; controller: PlayerId; data?: Record<string, unknown>; abSrc?: ObjId }
+
+// PERF: a script's rule abilities by rule name, in ability order (computed once per script)
+const ruleIdx = new WeakMap<object, Map<string, RuleAbility[]>>();
+function scriptRules(s: { abilities: Ability[] }, rule: RuleName): RuleAbility[] {
+  let m = ruleIdx.get(s);
+  if (!m) {
+    m = new Map();
+    for (const ab of s.abilities) if (ab.kind === 'rule') { const l = m.get(ab.rule); if (l) l.push(ab); else m.set(ab.rule, [ab]); }
+    ruleIdx.set(s, m);
+  }
+  return m.get(rule) ?? NONE;
+}
+const NONE: RuleAbility[] = [];
 
 function activeRules(g: GameState, rule: RuleName, args: unknown[] = []): ActiveRule[] {
   const out: ActiveRule[] = [];
@@ -17,7 +30,25 @@ function activeRules(g: GameState, rule: RuleName, args: unknown[] = []): Active
     if (!o || o.zone === 'base' || o.zone === 'battlefield' || o.zone === 'legendZone') continue;
     for (const ab of getScript(o.cardId)?.abilities ?? []) if (ab.kind === 'rule' && ab.rule === rule) out.push({ ab, src: a, controller: o.controller });
   }
-  for (const src of abilitySources(g)) {
+  if (!mayHaveGrantedAbilities(g)) {
+    // PERF fast path, same result as the loop below: nothing on the board grants or copies abilities, so each source's
+    // abilities are exactly its own script's (activeAbilities: section filter + dependencies), in ability order
+    for (const src of abilitySources(g)) {
+      const o = g.objects[src];
+      const s = getScript(o.cardId);
+      if (!s) continue;
+      const list = scriptRules(s, rule);
+      if (!list.length) continue;
+      const attached = !!o.attachedTo;
+      for (const ab of list) {
+        const section = ab.section ?? 'rules';
+        if (attached ? section === 'rules' : section === 'effect') continue;
+        if (!dependenciesMet(g, src, ab)) continue;
+        const self = section === 'effect' ? (o.attachedTo ?? src) : src;
+        out.push({ ab, src: self, controller: abilityController(g, self), ...(src !== self ? { abSrc: src } : {}) });
+      }
+    }
+  } else for (const src of abilitySources(g)) {
     const o = g.objects[src];
     // a copy (Shady Spectacles, Mirror Image) has the copied card's rules even when its own card has no script (RJ#12474)
     if (!getScript(o.cardId) && !o.modifiers.some(m => m.grants?.length || m.copyOf) && !chars(g, src).copyOf) continue;

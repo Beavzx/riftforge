@@ -63,8 +63,48 @@ export function isOpponent(g: GameState, a: PlayerId, b: PlayerId): boolean {
   return true;
 }
 
+/** Deep copy with structuredClone's semantics for the plain JSON-like data the engine keeps in state: own enumerable
+ *  keys in order (undefined-valued keys kept), and objects reachable by two paths stay shared in the copy (the state
+ *  relies on that, e.g. a chain item's choices.paid and choices.playEvent.paid). Anything that is not a plain object or
+ *  packed plain array (Map, Set, Date, class instances, typed arrays, sparse arrays, arrays with extra keys) goes to
+ *  structuredClone, and so does anything uncloneable (functions, symbols: those throw, as before).
+ *  Several times faster than structuredClone on game states (PERF, 2026-11-27; tools/perf-state-shape.ts). */
 export function clone<T>(x: T): T {
-  return structuredClone(x);
+  if (typeof x !== 'object' || x === null) return typeof x === 'function' || typeof x === 'symbol' ? structuredClone(x) : x;
+  return cloneInner(x, new Map()) as T;
+}
+
+function cloneInner(x: object, seen: Map<object, unknown>): unknown {
+  const done = seen.get(x);
+  if (done !== undefined) return done;
+  if (Array.isArray(x)) {
+    const n = x.length;
+    let keys = 0;
+    for (const _k in x) keys++;          // holes or extra (non-index) keys make this differ from n
+    if (keys !== n) return slowClone(x, seen);
+    const out: unknown[] = [];
+    seen.set(x, out);
+    for (let i = 0; i < n; i++) {
+      const v = x[i];
+      out.push(typeof v === 'object' && v !== null ? cloneInner(v, seen) : typeof v === 'function' || typeof v === 'symbol' ? structuredClone(v) : v);
+    }
+    return out;
+  }
+  if (Object.getPrototypeOf(x) !== Object.prototype) return slowClone(x, seen);
+  const out: Record<string, unknown> = {};
+  seen.set(x, out);
+  for (const k of Object.keys(x)) {
+    const v = (x as Record<string, unknown>)[k];
+    out[k] = typeof v === 'object' && v !== null ? cloneInner(v, seen) : typeof v === 'function' || typeof v === 'symbol' ? structuredClone(v) : v;
+  }
+  return out;
+}
+
+/** Rare shapes (never seen in real states): structuredClone that subtree. */
+function slowClone(x: object, seen: Map<object, unknown>): unknown {
+  const c = structuredClone(x);
+  seen.set(x, c);
+  return c;
 }
 
 export function cardName(g: GameState, id: ObjId): string {

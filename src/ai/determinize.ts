@@ -6,8 +6,9 @@
 // in-step decisions are applied by replaying from that base.
 import type { GameState, ObjId, PlayerId } from '../engine/types.ts';
 import { seedToState } from '../engine/rng.ts';
+import { clone } from '../engine/util.ts';
 
-function cloneDeep<T>(x: T): T { return structuredClone(x); }
+const cloneDeep = clone;   // structuredClone semantics for game states, several times faster (engine/util.ts)
 
 /** Swap cardIds of a set of object ids according to `perm` (objId -> new cardId). */
 function applyPerm(g: GameState, perm: Map<ObjId, string>): void {

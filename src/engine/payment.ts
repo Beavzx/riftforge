@@ -3,7 +3,7 @@
 // (exhaust first, then recycle), so energy and power choices never conflict.
 import type { Domain, GameState, ObjId, PlayerId, PaymentPlan, RestrictedResource } from './types.ts';
 import type { CostSpec, PowerSym, ActivatedAbility } from './abilities.ts';
-import { chars, allAbilities, onBoard, isUnit } from './chars.ts';
+import { chars, allAbilities, onBoard, isUnit, memoInScope } from './chars.ts';
 import { exhaust, recycle, addResources } from './actions.ts';
 import { makeCtx } from './context.ts';
 import { emit } from './events.ts';
@@ -90,6 +90,10 @@ function matchPower(reqs: PowerReq[], units: PowerUnit[]): number[] | null {
  * of that domain in play; also [C]/domain power in keyword costs and in activated-ability costs on the board (ENGINE-9). Lower = recycled first. Only orders runes the Pareto rules leave open (same readiness).
  */
 function domainKeepScore(g: GameState, p: PlayerId): Partial<Record<string, number>> {
+  // PERF: independent of the cost being planned; memoised within a read-only scope (legal enumeration tries many plans)
+  return { ...memoInScope(g, `keep|${p}`, () => domainKeepScoreNow(g, p)) };
+}
+function domainKeepScoreNow(g: GameState, p: PlayerId): Partial<Record<string, number>> {
   const pl = g.players[p];
   const sc: Partial<Record<string, number>> = {};
   const need = (doms0: Domain[], n: number) => {
@@ -132,6 +136,10 @@ interface AddSource { key: string; obj: ObjId; index: number; energy: number; po
 
 /** Add abilities usable during payment (CR 429.3): activated, isAdd, no resource cost. */
 export function addSources(g: GameState, p: PlayerId, exclude?: ObjId): AddSource[] {
+  // PERF: a scan of every object's abilities; memoised within a read-only scope (items are never mutated by callers)
+  return memoInScope(g, `adds|${p}|${exclude}`, () => addSourcesNow(g, p, exclude)).slice();
+}
+function addSourcesNow(g: GameState, p: PlayerId, exclude?: ObjId): AddSource[] {
   const out: AddSource[] = [];
   for (const id in g.objects) {
     const o = g.objects[id];

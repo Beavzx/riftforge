@@ -3,7 +3,7 @@
 // and an illegal play throws Rollback which restores the pre-play state (CR 358).
 import type { Action, ChainItem, GameEvent, GameState, ObjId, PlayerId, PaymentPlan, Domain } from './types.ts';
 import type { CardScript, Ability, ActivatedAbility, CostModAbility, Destination, Mode, PlayRuleAbility, SpellAbility, TargetSpec, PlayPermissionAbility, AsPlayAbility } from './abilities.ts';
-import { chars, isUnit, isGear, abilitySources, allAbilities, keywordAbilities, abilityByIndex, keywordCost, keywordCosts, playGrants, onBoard, hasKw, dependenciesMet, abilityController } from './chars.ts';
+import { chars, isUnit, isGear, abilitySources, allAbilities, keywordAbilities, abilityByIndex, keywordCost, keywordCosts, playGrants, onBoard, hasKw, dependenciesMet, abilityController, memoInScope } from './chars.ts';
 import { getScript, getDelayed } from '../cards/registry.ts';
 import { makeCtx, Ctx, PENDING_EXTRA } from './context.ts';
 import { ask, chooseOptions, chooseOne, chooseNumber, askYesNo, Rollback, registerValidator } from './ask.ts';
@@ -51,7 +51,12 @@ function playRules(g: GameState, p: PlayerId, self?: ObjId): { src: ObjId | null
   if (self && g.objects[self] && !(g.objects[self].zone === 'base' || g.objects[self].zone === 'battlefield')) {
     for (const ab of getScript(g.objects[self].cardId)?.abilities ?? []) if (ab.kind === 'playRule' && dependenciesMet(g, self, ab)) out.push({ src: self, ab, controller: p });
   }
-  for (const src of abilitySources(g)) for (const r of allAbilities(g, src)) if (r.ability.kind === 'playRule') out.push({ src: r.viaHost ?? src, ab: r.ability, controller: abilityController(g, r.viaHost ?? src) });
+  // PERF: the board part depends only on g (not on p or self): computed once per read-only scope
+  for (const r of memoInScope(g, 'playRules:board', () => {
+    const board: { src: ObjId | null; ab: PlayRuleAbility; controller: PlayerId }[] = [];
+    for (const src of abilitySources(g)) for (const r of allAbilities(g, src)) if (r.ability.kind === 'playRule') board.push({ src: r.viaHost ?? src, ab: r.ability, controller: abilityController(g, r.viaHost ?? src) });
+    return board;
+  })) out.push({ ...r });
   for (const d of g.ex.delayed) { const ab = getDelayed(d.key); if (ab?.kind === 'playRule') out.push({ src: d.source, ab, controller: d.controller, data: d.data, delayedId: d.id }); }
   void p;
   return out;
@@ -133,6 +138,11 @@ export function playOptions(g: GameState, p: PlayerId): PlayOption[] {
 
 /** Legal destinations for a permanent being played (CR 355.3). */
 export function destinations(g: GameState, p: PlayerId, id: ObjId, via: PlayVia): Destination[] {
+  // PERF: legal enumeration asks for the same destinations several times per card (topLevelActions, canPlay per
+  // destination, freeDestinations); memoised within the read-only scope, keyed by every input incl. suppressRuleDest
+  return memoInScope(g, `dest|${p}|${id}|${via}|${suppressRuleDest ? 1 : 0}`, () => destinationsNow(g, p, id, via)).slice();
+}
+function destinationsNow(g: GameState, p: PlayerId, id: ObjId, via: PlayVia): Destination[] {
   const o = g.objects[id];
   const c = chars(g, id);
   if (c.type !== 'Unit' && c.type !== 'Gear') return [];

@@ -1119,3 +1119,28 @@
 - `scripts/start.sh` exports `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` (unless set): with variable-size
   batches the trainer had reserved 4 GB of CUDA cache for a 1.5 GB working set.
 - epyc-1 runs at 120 workers again (DIMMs 52 °C at 60 workers, 58 °C at 90, with the desk fan).
+
+## 2026-11-27 — Engine speed: 1.53x engine, 1.84x self-play (branch perf/engine)
+No behaviour change: every optimisation was checked against golden traces recorded on the unmodified engine.
+`tools/perf-golden.ts` / `tools/perf-golden.sh` hash, after EVERY action, the full state (sorted keys), the events,
+the pending player's legal actions and both players' views (fuzz games, random decks from the whole pool, random /
+chaos / bot policies), plus every recorded self-play position (factored env + Gumbel search + determinisation,
+uniform evaluator). Final: 2,792 games (664 on seeds used while optimising + 2,128 on fresh seeds) all identical.
+Full suite identical to main (9,403 pass; the same 18 environment failures: Playwright browsers / `sharp` not
+installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 1500 --seed 7`: identical on both trees
+(212,700 actions, same 2 known signatures, 0 new repros), 297 s vs 419 s.
+- `clone` (engine/util.ts, also used by determinize): a structuredClone-compatible deep copy for plain state data
+  (undefined-valued keys kept; objects reachable by two paths stay shared — the state relies on that, e.g. a chain
+  item's `choices.paid` and `choices.playEvent.paid`; anything else falls back to structuredClone). ~1.8x faster than
+  structuredClone. `tools/perf-state-shape.ts` lists what the state actually contains.
+- applyAction: the replay base of a new top-level action shares the (immutable) input state instead of deep-copying it
+  (one deep copy per action instead of two). Relies on the documented contract that callers never mutate a state
+  after passing it to the engine.
+- `mayHaveGrantedAbilities` (chars.ts): exact superset test; when nothing on the board can grant or copy abilities
+  (72% of meta-deck states), `grantsOf` skips evaluating statics and `activeRules` reads a per-script rule index.
+- `memoInScope` (chars.ts): memoises pure reads for the rest of a read-only scope (withCharsMemo: legal enumeration,
+  validation, rule checks), under the chars memo's own conditions. Used for `destinations`, the board part of
+  `playRules`, `unitsAtLoc` / `allUnits`, `domainKeepScore` and `addSources` (each was recomputed many times per
+  enumeration: a unit's destinations ~7 times).
+- Measured A/B, alternating on the same box: self-play games 1.84x, engine-only fuzz games 1.53x. Remaining profile
+  is flat (clone ~14%, then nothing above ~4%).

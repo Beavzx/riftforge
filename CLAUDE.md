@@ -108,5 +108,6 @@ Training workflow (setup, smoke, start, status, dashboard, stop/pause, fine-tuni
 - **Self-play throughput:** measured on the mock backend at about 13 ms per search simulation, 87% of it in the rules
   engine (`getLegalActions` + `applyAction`). `TRAINING.md` estimates about 800–1,000 games/hour on the home PC and
   4,000–5,000 on the EPYC; **measured on the home PC with an untrained net: 553 games/hour** (GPU mostly idle).
-- **Engine speed:** about 1.7 ms per `applyAction`. Profiling points at `computeChars` and its relatives, plus
-  `structuredClone`. Optimise only if self-play throughput is the bottleneck; don't port to Rust yet.
+- **Engine speed:** 2026-11-27 perf pass (CHANGELOG): engine 1.53x, self-play 1.84x, behaviour identical. Any engine
+  speed change must pass `tools/perf-golden.sh check <baseline>` against a baseline recorded on the unmodified engine
+  (`tools/perf-golden.sh record`), plus the full suite and the fuzzer. The profile is now flat (clone ~14%).

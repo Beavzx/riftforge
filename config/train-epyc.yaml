@@ -25,7 +25,7 @@ caps:
   maxMainPerTurn: 40
 
 selfplay:
-  workers: 120          # one per physical core minus 8 (SMT threads add little for this engine); try 160 and compare games/h
+  workers: 120          # measured 2026-11-27: 60 → 3.97k evals/s, 120 → 5.14k, 192 → 5.18k, 240 → 5.19k (not the GPU: small model no faster). 120 it is
   concurrentGames: 4
   gamesPerShard: 8
 
@@ -46,7 +46,7 @@ inference:
   backend: torch
   host: 127.0.0.1
   basePort: 47000
-  gpus: [0, 1]          # list every GPU you want serving inference (nvidia-smi -L)
+  gpus: [0]             # simulation-server has one RTX 3060 Ti 8 GB (nvidia-smi -L, 2026-11-27); list every GPU here
   serversPerGpu: 2      # Python request handling is the limit before the GPU is: 2 processes per GPU
   maxBatch: 512
   batchTimeoutMs: 2.0
@@ -67,12 +67,12 @@ train:
   minPositions: 50000
   replayPositions: 2000000   # ~60 GB RAM
   maxSampleReuse: 4.0
-  ckptEverySteps: 1000
-  keepCheckpoints: 40
+  ckptEverySteps: 250    # ≈ 64k positions (~30 min) per new self-play net; 1000 × batch 1024 meant ~2 h on a stale net (home-1: 32k)
+  keepCheckpoints: 100
   keepShardFiles: 8000   # ~8000 × 8 games × ~40 positions × ~33 KB ≈ 85 GB of shards on disk
 
 eval:
-  everyCheckpoints: 2
+  everyCheckpoints: 6   # every 1,500 steps ≈ 384k positions (~3 h); one 40-game eval vs 3 opponents takes ~1 h
   gamesPerOpponent: 40
   opponents: [searchai, best, bot]
   concurrentGames: 8

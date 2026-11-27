@@ -30,7 +30,14 @@ are in `docs/agents/*.md`; read the relevant one before changing an area.
    - Still below the rules bot (best 4–12), and 0 wins against SearchAI in 4 evals. The Elo question is still open.
    - 2 engine errors to fix (repro seeds in `docs/runs/home-1/errors.jsonl`).
 
-   **Next: start `epyc-1` on the EPYC ("simulation-server"):**
+   **Status:** `epyc-1` started 2026-11-27 14:26 on the EPYC ("simulation-server"), tmux session `train`
+   (window `launcher`; window `dashboard` bound to the tailscale IP, http://simulation-server:8050 from any tailnet
+   device). Resumed 15:17 with ckptEverySteps 250 / eval every 6 checkpoints (see CHANGELOG).
+   - The box has **one RTX 3060 Ti 8 GB** (sm_86), not several 5070 Tis: `inference.gpus: [0]`, 2 servers, and the
+     trainer shares the same card. ~3,700 games/h. More workers (192/240, using SMT) gave +1%; the GPU is not the
+     limit either. Engine speed is now the throughput lever on this box.
+
+   How it was set up (redo these steps on a fresh box):
    - Clone, `scripts/setup.sh`, `scripts/smoke.sh`, set `inference.gpus` in `config/train-epyc.yaml` to the GPUs
      present (`nvidia-smi -L`), then `scripts/start.sh --config config/train-epyc.yaml` in a tmux session `train`,
      with `scripts/dashboard.sh` in a second window (view remotely with `ssh -L 8050:localhost:8050`).

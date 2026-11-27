@@ -1069,3 +1069,24 @@
   for the whole of home-1 (about 2 cores). They were killed. CLAUDE.md now says to check `pgrep` before starting.
 - Two engine errors, both Mordekaiser vs Rek'Sai: `no legal options for chooseTargets (all rolled back)`. Every
   offered target leads to a payment-failure rollback. Seeds are in `docs/runs/home-1/errors.jsonl`. Not fixed yet.
+
+## 2026-11-27 — epyc-1 started on simulation-server
+- `scripts/setup.sh` and `scripts/smoke.sh` pass on the EPYC (Ubuntu 24.04, torch 2.10.0+cu128, all smoke checks).
+- The box has one RTX 3060 Ti 8 GB (sm_86, bf16 ok), not the several 5070 Tis `config/train-epyc.yaml` assumed:
+  `inference.gpus` is now `[0]` (2 servers × 0.30 memory); the trainer shares that GPU.
+- Throughput sweep (5 min each, trainer off, inference evals/s): 60 workers 3,967; 120 → 5,137; 192 (4 servers) →
+  5,181; 240 (4 servers) → 5,191. 120 workers with the `small` model: 4,377 (GPU 39% busy). So neither SMT threads
+  nor the GPU are the limit: past ~120 workers per-worker speed falls as fast as workers are added. Likely shared
+  CPU resources (Zen 4c has 2 MB L3 per core; all-core clock ~2.6 of 3.1 GHz) on an allocation-heavy engine. The
+  lever for more games/h on this box is engine speed (`computeChars`, `structuredClone`), not more workers.
+  Workers stay at 120 (~3,700 games/h).
+- Checkpoint cadence: `train.ckptEverySteps` 1000 → 250. With batch 1024, 1,000 steps ≈ 256k positions (~2 h of
+  self-play on one stale net; home-1 refreshed every 32k). 250 ≈ 64k positions (~30 min). `keepCheckpoints` 100,
+  `eval.everyCheckpoints` 2 → 6 (every 1,500 steps ≈ 384k positions; an eval takes about an hour).
+- Checked in the home-1 data: policy loss ≈ policy entropy at every step is *not* a sign that the search target
+  equals the prior. Search targets on epyc-1 shards are much sharper than uniform even from an untrained net
+  (mean target entropy 0.86 vs log(options) 1.33).
+- Dashboard: runs on the tailscale address (`scripts/dashboard.sh --config config/train-epyc.yaml --host
+  $(tailscale ip -4)`), http://simulation-server:8050 from any tailnet device. Without `--config` it shows home-1.
+- A third `no legal options for chooseTargets (all rolled back)` error (Rek'Sai vs Mordekaiser, seed 49036357,
+  firstPlayer 0), about 1 in 800 games on the EPYC.

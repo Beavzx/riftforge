@@ -506,6 +506,28 @@ export function activeAbilities(g: GameState, id: ObjId, forStatics = false, inc
 }
 
 const mayGrant = (ab: StaticAbility) => typeof ab.mods === 'function' || !!ab.mods.grants || !!ab.mods.grantRefs || !!ab.mods.copyAbilitiesOf;
+
+// PERF: does any static that collectStatics() could return possibly grant abilities (grants / grantRefs /
+// copyAbilitiesOf), or expand references? A superset test that never evaluates a static: collectStatics() only reads
+// delayed statics, the script statics of ability sources, and (for sources with grant/copy modifiers) their
+// active abilities; `refs` statics add more by reference. If this is false, every static's mods lack grants, so
+// grantsOf() is exactly the object's modifier grants and no extraRefs.
+const grantingIdx = new WeakMap<object, boolean>();
+function scriptMayGrant(s: { abilities: Ability[] }): boolean {
+  let v = grantingIdx.get(s);
+  if (v === undefined) { v = scriptStatics(s).some(({ ab }) => mayGrant(ab) || !!ab.refs); grantingIdx.set(s, v); }
+  return v;
+}
+export function mayHaveGrantedAbilities(g: GameState): boolean {
+  for (const d of g.ex.delayed) { const ab = getDelayed(d.key); if (ab?.kind === 'static' && (mayGrant(ab) || ab.refs)) return true; }
+  for (const src of abilitySources(g)) {
+    const o = g.objects[src];
+    if (o.modifiers.length && o.modifiers.some(m => m.grants?.length || m.copyOf)) return true;
+    const s = getScript(o.cardId);
+    if (s && scriptMayGrant(s)) return true;
+  }
+  return false;
+}
 /**
  * MS-2: the ability-granting part of chars() (modifier grants, then static grants / grantRefs / copyAbilitiesOf in timestamp
  * order — the same lists and order computeChars builds), without evaluating the other statics or the layers.
@@ -518,6 +540,7 @@ function grantsOf(g: GameState, id: ObjId): Pick<Chars, 'grants' | 'extraRefs'> 
   const cache = memoOk && !computing.size && !evaluating.size;
   for (const m of o.modifiers) if (m.grants) out.grants.push(...m.grants);
   if (staticDepth > 5) return out;
+  if (!mayHaveGrantedAbilities(g)) { if (cache) grantsMemo!.set(id, out); return out; }   // PERF: no static can add any
   const hits: { ts: number; m: StaticMods }[] = [];
   computing.add(id);
   staticDepth++;

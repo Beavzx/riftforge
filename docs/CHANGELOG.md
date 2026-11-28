@@ -1199,3 +1199,58 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
 - Tested on a scratch copy of epyc-1, on CPU: both change messages printed, held-out scoring ran each checkpoint, and
   the warmup lr followed the new base lr. New test `test_replay_window_holds_out_whole_files_never_trained_on`;
   python suite 30 passed.
+
+## 2026-11-28 — Self-play opponent pool: fixed opponents mixed into training games (branch feat/opponent-pool)
+- Why: on epyc-1 the eval score against the rules bot fell 40% → 27.5% → 17.5% while the net kept beating its own
+  previous checkpoints. That is self-play forgetting (AlphaStar: naive self-play gets a high Elo but a low minimum win
+  rate against other opponents; a league fixed it).
+- Config `selfplay.opponents` (resolved.json `opponents`): `weights` over `self`, `best`, `bot`, `searchai`, plus
+  `searchAiOptions` (SearchAI options, same shape as `eval.searchAi`). Weights are normalised; a missing `self` takes
+  what the others leave of 1.0 (`--set selfplay.opponents.weights.bot=0.1` = 10% bot games). Unknown kinds,
+  negative weights or a zero total are rejected (`config.py opponent_weights`, mirrored by `config.ts
+  opponentWeights`). The launch log and each worker log print the mix. **Default: self only, unchanged behaviour.**
+  `config/*.yaml` carry it as a commented-out example; the live epyc-1 config is not changed.
+- `src/ai/selfplay/opponents.ts`: per game the worker draws the kind from its seeded rng (`drawOpponent`; with one
+  weighted kind nothing is drawn, so the rng stream and every game are exactly as before), and for a fixed opponent
+  the net's seat (random). `playTrainingGame` is now the worker's game:
+  - `best`: `SearchAgent` on inference slot 1 (`best.pt`; latest until the first eval) with the self-play search
+    config, root noise and playout-cap randomisation (new `SearchAgent` option `playoutCap`; without it a
+    non-recording agent searched every decision with `fullSims`), recording nothing.
+  - `bot`: `EngineBotAgent` over the engine's `chooseAction`; `searchai`: `EngineBotAgent` over
+    `new SearchAI({ seed: <game seed>, ...searchAiOptions })`, both as in tools/train-eval.ts.
+  - Only the net's decisions are recorded; `assignOutcome` scores each position from its actor, which is always the
+    net, so z is from the net's side. Caps, forced moves and rollback masking are playGame's, unchanged.
+- Worker stats: games vs fixed opponents count in games / positions / timeouts / errors (new counter `vsFixed`) but
+  not in `seat0Wins` / `seat1Wins` / `draws` / `matchups`, which stay self-play only (the deck win-rate chart and
+  matrix say "both sides the same net"). Each such game appends
+  `{t (Unix s), opp, seat, result: win|loss|draw|timeout|error, turns, ms}` to `workers/wNNN-opponents.jsonl`;
+  error log lines name the opponent.
+- `status.py opponent_stats` (read backwards from each file's end, stopping at 24 h) → `scripts/status.sh` lines and
+  a dashboard panel "Training games vs fixed opponents": per opponent, last 6 h and last 24 h, win rate (draws and
+  timeouts count half, like the eval score; errors left out) with a 95% Wilson range (dot + range bar on a 0–100%
+  axis, 50% line), W-L-D, games, timeouts, errors and turns per game, plus the configured shares. `elo.py` got the
+  shared `wilson()` (elo_interval now uses it; same numbers).
+- `tools/perf-golden.ts` self-play traces now run through `drawOpponent` + `playTrainingGame` with the default
+  config, so the golden hashes pin "no opponents = old behaviour": baseline recorded on eaeee8f, then
+  `tools/perf-golden.sh check`: **OK: all 664 hashes match**.
+- Tests: `tests/ai/selfplay/opponents.test.ts` (weights rules; `{self: 1}` draws no random number and plays
+  byte-identical positions to the old SearchAgent + playGame + assignOutcome path; draws deterministic per seed and
+  matching the weights; bot / searchai / best games record only the net's positions with z of the right sign and
+  replay identically from the same seed; netResult). Python: `test_opponent_stats_windows_score_and_interval`,
+  `test_collect_includes_opponents`, `test_opponent_weights_resolution`. tests/ai/selfplay 24/24, python 33 passed.
+  End to end: mock smoke (`riftzero.smoke --backend mock`) with weights 25/25/25/25 in a scratch run dir: all
+  checks passed, 59 games of which 45 vs fixed opponents, 0 errors, status and dashboard show them.
+- Cost (CPU only: engine + search + encoding, uniform in-process evaluator, epyc-1 search 96/24 sims, same deals per
+  kind, 12 games each, one process per kind; the uniform net loses fast to the engine bots, so those games are short):
+
+  | opponent | CPU s / game | turns | net positions / game | CPU s / position |
+  |---|---|---|---|---|
+  | self | 55.7 | 19.3 | 30.6 | 1.82 |
+  | best | 55.5 | 19.3 | 13.6 | 4.08 |
+  | bot | 14.8 | 11.8 | 7.8 | 1.88 |
+  | searchai (default options) | 16.5 | 11.8 | 7.4 | 2.22 |
+
+  A bot decision is nearly free and SearchAI's adds about 20% per position; a `best` game costs a self-play game but
+  yields under half the positions (2.2× per position), plus GPU work on slot 1. The 85/5/5/5 mix costs about 3% more
+  CPU per position than pure self-play. (best and self ran identical games here: with a uniform evaluator the slot
+  doesn't matter and both draw the rng in the same order.)

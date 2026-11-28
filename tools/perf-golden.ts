@@ -13,7 +13,7 @@ import { createGame, applyAction, getLegalActions, getView } from '../src/engine
 import type { GameState } from '../src/engine/types.ts';
 import { makeRng } from '../src/engine/rng.ts';
 import { FactoredEnv } from '../src/ai/selfplay/factored-env.ts';
-import { SearchAgent, playGame, assignOutcome } from '../src/ai/selfplay/game.ts';
+import { drawOpponent, opponentMix, playTrainingGame } from '../src/ai/selfplay/opponents.ts';
 import { UniformEvaluator } from '../src/ai/selfplay/evaluator.ts';
 import { DEFAULT_SEARCH, DEFAULT_CAPS } from '../src/ai/selfplay/config.ts';
 import { encodeRecord } from '../src/ai/selfplay/shards.ts';
@@ -42,17 +42,21 @@ async function selfplayGame(i: number) {
   const env = new FactoredEnv();
   const rng = makeRng(9000 + OFF + i);
   const search = { ...DEFAULT_SEARCH, fullSims: 16, fastSims: 8, fullProb: 0.5, maxConsidered: 8 };
-  const agent = new SearchAgent('nn', env, new UniformEvaluator(0, 0.3), search, DEFAULT_CAPS, { record: true, noise: true, rng });
   const d: [NamedDeck, NamedDeck] = [all[i % all.length], all[(i * 7 + 3) % all.length]];
   const t0 = performance.now();
-  const r = await playGame({ env, agents: [agent, agent], decks: d, seed: 1000 + OFF + i, firstPlayer: (i % 2) as 0 | 1, caps: DEFAULT_CAPS });
+  // the worker's path with the default config (selfplay.opponents unset = pure self-play: draws nothing extra), so
+  // these hashes also pin that the opponent pool changes nothing by default
+  const { kind, netSeat } = drawOpponent(opponentMix(undefined), rng);
+  const g = await playTrainingGame({ env, ev: new UniformEvaluator(0, 0.3), search, caps: DEFAULT_CAPS, rng, decks: d, seed: 1000 + OFF + i,
+    firstPlayer: (i % 2) as 0 | 1, kind, netSeat, pointsShaping: 0 });
+  const r = g.r;
   const ms = performance.now() - t0;
   const h = createHash('sha256');
   const { ms: _ms, error, ...res } = r;
   h.update(canon({ ...res, error: error?.split('\n')[0] }));
-  const pos = assignOutcome(agent.positions, r, 0, 0.2);
+  const pos = g.positions;   // assignOutcome(net positions, r, 0, DEFAULT_CAPS.timeoutShaping = 0.2)
   for (const p of pos) h.update(encodeRecord(p));
-  return { mode: 'selfplay', i, hash: h.digest('hex').slice(0, 20), ms: Math.round(ms), status: r.status, decisions: r.decisions, positions: pos.length, sims: agent.sims, err: error?.split('\n')[0] };
+  return { mode: 'selfplay', i, hash: h.digest('hex').slice(0, 20), ms: Math.round(ms), status: r.status, decisions: r.decisions, positions: pos.length, sims: g.sims, err: error?.split('\n')[0] };
 }
 
 function engineGame(i: number) {

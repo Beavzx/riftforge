@@ -52,6 +52,20 @@ export interface DeckConfig {
   allowMirror: boolean;
 }
 
+/** Who the net plays in a self-play game: itself (both seats), the best checkpoint (slot 1), the engine's rules bot, or
+ *  the hand-built SearchAI. */
+export type OpponentKind = 'self' | 'best' | 'bot' | 'searchai';
+export const OPPONENT_KINDS: readonly OpponentKind[] = ['self', 'best', 'bot', 'searchai'];
+
+/** `selfplay.opponents` (resolved.json `opponents`): the share of training games played against each kind. */
+export interface OpponentsConfig {
+  /** relative weights (normalised). A missing `self` takes what the others leave of 1.0; missing others are 0.
+   *  Missing / empty = { self: 1 } (pure self-play). */
+  weights?: Partial<Record<OpponentKind, number>> | null;
+  /** SearchAI options for `searchai` games (src/ai/search.ts SearchOptions; same shape as eval.searchAiOptions) */
+  searchAiOptions?: Record<string, unknown>;
+}
+
 export interface ResolvedConfig {
   runName: string;
   runDir: string;           // absolute
@@ -66,6 +80,30 @@ export interface ResolvedConfig {
   env: { kind: 'engine' | 'factored' };
   target: { pointsShaping: number };
   eval: { gamesPerOpponent: number; opponents: ('best' | 'searchai' | 'bot')[]; searchAiOptions?: Record<string, unknown> };
+  /** fixed opponents mixed into self-play; absent in runs started before it existed (= pure self-play) */
+  opponents?: OpponentsConfig;
+}
+
+/** Normalised opponent weights: { self: 1 } when unset. A missing `self` is 1 − the others (they must not exceed 1).
+ *  Throws on unknown kinds, negative or non-finite weights, or a zero total. Same rules as python/riftzero/config.py. */
+export function opponentWeights(c?: OpponentsConfig | null): Record<OpponentKind, number> {
+  const w = c?.weights ?? {};
+  for (const [k, v] of Object.entries(w)) {
+    if (!OPPONENT_KINDS.includes(k as OpponentKind)) throw new Error(`selfplay.opponents.weights: unknown opponent '${k}' (use ${OPPONENT_KINDS.join(', ')})`);
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) throw new Error(`selfplay.opponents.weights.${k} must be a number >= 0 (got ${v})`);
+  }
+  const out = { self: 0, best: 0, bot: 0, searchai: 0 } as Record<OpponentKind, number>;
+  for (const k of OPPONENT_KINDS) out[k] = (w as Record<string, number>)[k] ?? 0;
+  if (!Object.keys(w).length) out.self = 1;
+  else if (w.self === undefined) {
+    const others = out.best + out.bot + out.searchai;
+    if (others > 1 + 1e-9) throw new Error(`selfplay.opponents.weights: best + bot + searchai = ${others} > 1 with no 'self' weight given`);
+    out.self = Math.max(0, 1 - others);
+  }
+  const total = OPPONENT_KINDS.reduce((a, k) => a + out[k], 0);
+  if (!(total > 0)) throw new Error('selfplay.opponents.weights: all weights are 0');
+  for (const k of OPPONENT_KINDS) out[k] /= total;
+  return out;
 }
 
 export function loadResolved(runDir: string): ResolvedConfig {

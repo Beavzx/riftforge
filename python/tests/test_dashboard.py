@@ -107,3 +107,52 @@ def test_eval_schedule_running_eta_weighted_by_measured_opponent_cost(tmp_path):
     assert abs(r["eta"] - 120) < 2
     assert s["nextStep"] == 18000 and s["lastDuration"] == 80
     assert abs(s["stepsPerHour"] - 2400) < 1 and abs(s["startsIn"] - (18000 - 12400) / 2400 * 3600) < 2
+
+
+def test_opponent_stats_windows_score_and_interval(tmp_path):
+    """Training games vs fixed opponents (workers/wNNN-opponents.jsonl): per opponent over the last 6 h and 24 h,
+    draws and timeouts count half, errors are left out, older lines are ignored, every worker's file is summed."""
+    from riftzero.status import jsonl_since, opponent_stats
+    from riftzero.elo import wilson
+    rd = tmp_path / "run"
+    (rd / "workers").mkdir(parents=True)
+    now, h = 1_000_000.0, 3600.0
+
+    def line(t, opp, result, turns=20, seat=0):
+        return json.dumps({"t": t, "opp": opp, "seat": seat, "result": result, "turns": turns, "ms": 1000})
+    w0 = [line(now - 30 * h, "bot", "win"),                                       # older than 24 h: ignored
+          line(now - 20 * h, "bot", "loss"), line(now - 20 * h, "bot", "loss"),   # in the 24 h window only
+          line(now - 2 * h, "bot", "win", turns=10), line(now - 1 * h, "bot", "timeout", turns=61),
+          line(now - 1 * h, "searchai", "loss"), line(now - 0.5 * h, "bot", "error")]
+    w1 = [line(now - 12 * h, "best", "draw"), line(now - 3 * h, "bot", "win", turns=30, seat=1)]
+    (rd / "workers" / "w000-opponents.jsonl").write_text("\n".join(w0) + "\n" + '{"t": 999999, "opp": "bo')   # line being written
+    (rd / "workers" / "w001-opponents.jsonl").write_text("\n".join(w1) + "\n")
+    (rd / "workers" / "w000.json").write_text("{}")             # the worker stats file is not an opponents file
+    s = opponent_stats(rd, now=now)
+    assert s["windows"] == [6, 24] and list(s["byOpponent"]) == ["best", "bot", "searchai"]
+    b6, b24 = s["byOpponent"]["bot"]["6"], s["byOpponent"]["bot"]["24"]
+    assert (b6["wins"], b6["losses"], b6["draws"], b6["timeouts"], b6["errors"], b6["games"]) == (2, 0, 1, 1, 1, 3)
+    assert abs(b6["rate"] - 2.5 / 3) < 1e-9 and abs(b6["avgTurns"] - (10 + 61 + 30) / 3) < 1e-9
+    assert (b6["lo"], b6["hi"]) == wilson(2.5 / 3, 3) and 0 < b6["lo"] < b6["rate"] < b6["hi"] <= 1
+    assert (b24["wins"], b24["losses"], b24["draws"], b24["games"]) == (2, 2, 1, 5) and abs(b24["rate"] - 0.5) < 1e-9
+    # best: one draw 12 h ago → an empty 6 h row (no rate), 0.5 over 24 h
+    assert s["byOpponent"]["best"]["6"]["games"] == 0 and s["byOpponent"]["best"]["6"]["rate"] is None
+    assert s["byOpponent"]["best"]["24"]["rate"] == 0.5
+    assert s["byOpponent"]["searchai"]["6"]["rate"] == 0.0 and s["byOpponent"]["searchai"]["6"]["hi"] > 0.3
+    # the backwards reader returns what a full read would, across block boundaries
+    big = rd / "workers" / "w002-opponents.jsonl"
+    big.write_text("".join(line(now - 48 * h + i * 60, "bot", "win") + "\n" for i in range(3000)))
+    want = [r for r in map(json.loads, big.read_text().splitlines()) if r["t"] >= now - 24 * h]
+    assert jsonl_since(big, now - 24 * h, block=777) == want and len(want) > 1000
+    assert opponent_stats(tmp_path / "missing", now=now)["byOpponent"] == {}
+
+
+def test_collect_includes_opponents(tmp_path):
+    import time as _t
+    rd = fake_run(tmp_path / "home-1")
+    (rd / "resolved.json").write_text(json.dumps({"decks": {"pool": []}, "opponents": {"weights": {"self": 0.9, "best": 0, "bot": 0.1, "searchai": 0}}}))
+    (rd / "workers" / "w000-opponents.jsonl").write_text(json.dumps({"t": _t.time() - 60, "opp": "bot", "seat": 1, "result": "loss", "turns": 22}) + "\n")
+    d = collect(rd)
+    json.dumps(d)
+    assert d["opponents"]["weights"]["bot"] == 0.1
+    assert d["opponents"]["byOpponent"]["bot"]["6"]["losses"] == 1

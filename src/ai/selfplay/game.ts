@@ -21,18 +21,20 @@ export interface Agent<S = any> {
   rolledBack?(): void;
 }
 
-/** Network + search agent. In self-play mode (record=true) it uses playout-cap randomisation and records targets. */
+/** Network + search agent. In self-play mode (record=true) it uses playout-cap randomisation and records targets.
+ *  `playoutCap` gives a non-recording agent the same randomisation (a fixed self-play opponent searching like the net
+ *  does in self-play); without it a non-recording agent gives every decision `fullSims`. */
 export class SearchAgent<S> implements Agent<S> {
   readonly mcts: Mcts<S>;
   positions: Position[] = [];
   sims = 0; searches = 0;
   constructor(public name: string, env: SearchEnv<S>, ev: Evaluator, private cfg: SearchConfig, caps: CapsConfig,
-    private o: { record: boolean; noise: boolean; slot?: number; rng: () => number }) {
+    private o: { record: boolean; noise: boolean; slot?: number; rng: () => number; playoutCap?: boolean }) {
     this.mcts = new Mcts(env, ev, cfg, caps);
   }
   private lastRecorded = false;
   async choose(_env: SearchEnv<S>, s: S, actor: PlayerId, ch: Choices, moveNumber: number): Promise<Pick> {
-    const full = !this.o.record || this.o.rng() < this.cfg.fullProb;
+    const full = (!this.o.record && !this.o.playoutCap) || this.o.rng() < this.cfg.fullProb;
     const res = await this.mcts.search(s, actor, ch, { sims: full ? this.cfg.fullSims : this.cfg.fastSims, noise: this.o.noise, rng: this.o.rng, slot: this.o.slot, moveNumber });
     this.sims += res.sims; this.searches++;
     this.lastRecorded = this.o.record && full;

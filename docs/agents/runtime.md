@@ -13,6 +13,7 @@ src/ai/selfplay/
   client.ts        InferenceClient: TCP, HELLO/ACK schema handshake, pipelined RFO1 → RFR1, tag = slot<<24 | id
   mcts.ts          determinised IS-MCTS; Gumbel root (sequential halving, improved-policy target) or PUCT; PUCT below root
   game.ts          playGame loop (caps, forced moves, rollback masking), SearchAgent, EngineBotAgent, assignOutcome
+  opponents.ts     selfplay.opponents: per-game opponent draw (self / best / bot / searchai), playTrainingGame (the worker's game)
   shards.ts        .rfs shard writer (atomic publish via rename)
   decks.ts         deck files + pool/matchup picking with random seats
   worker.ts        self-play worker process (N concurrent games, stats, STOP-file/SIGTERM graceful stop)

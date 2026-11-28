@@ -25,15 +25,23 @@ def elo_from_score(s: float, n: int) -> float:
     return _elo((s * n + 0.5) / (n + 1), n)
 
 
+def wilson(s: float, n: int, z: float = 1.96) -> tuple[float, float]:
+    """Wilson score interval for a score / win rate s over n games (0..1; (0, 1) when n = 0)."""
+    if n <= 0:
+        return (0.0, 1.0)
+    z2 = z * z
+    centre = (s + z2 / (2 * n)) / (1 + z2 / n)
+    half = z * math.sqrt(max(0.0, s * (1 - s)) / n + z2 / (4 * n * n)) / (1 + z2 / n)
+    return centre - half, centre + half
+
+
 def elo_interval(s: float, n: int, z: float = 1.96) -> tuple[float, float]:
     """Wilson score interval, in Elo. The Wald interval (s ± z*sqrt(s(1-s)/n)) has zero width at 0/n and n/n, which
     is exactly what early evals vs SearchAI look like."""
     if n <= 0:
         return (0.0, 0.0)
-    z2 = z * z
-    centre = (s + z2 / (2 * n)) / (1 + z2 / n)
-    half = z * math.sqrt(s * (1 - s) / n + z2 / (4 * n * n)) / (1 + z2 / n)
-    lo, hi = _elo(centre - half, n), _elo(centre + half, n)
+    a, b = wilson(s, n, z)
+    lo, hi = _elo(a, n), _elo(b, n)
     e = elo_from_score(s, n)
     return min(lo, e), max(hi, e)
 

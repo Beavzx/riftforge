@@ -137,6 +137,13 @@ details table { margin-top: 6px; color: var(--text-primary); }
   </section>
 
   <section class="card s12">
+    <h2>Training games vs fixed opponents</h2>
+    <div class="sub" id="oppSub">Self-play games where the net played a fixed opponent (selfplay.opponents), from the net's side, over the last 6 and 24 hours.</div>
+    <div class="chart" id="oppChart"></div>
+    <div id="oppTable" style="overflow-x:auto"></div>
+  </section>
+
+  <section class="card s12">
     <h2>Eval history</h2>
     <div class="sub">Every eval, newest first. Games are played in pairs (same deal, seats swapped). Timeouts also count as draws.</div>
     <div class="scroll" id="evalTable"></div>
@@ -488,10 +495,59 @@ function renderEvalTable(d) {
     : `<div class="empty">No evals yet.</div>`;
 }
 
+// ---------- training games vs fixed opponents: win rate with its 95% range per opponent and window (dot + range bar)
+function renderOpponents(d) {
+  const O = d.opponents || {}, by = O.byOpponent || {}, wins = O.windows || [6, 24], wt = O.weights || {};
+  const chart = document.getElementById("oppChart"), table = document.getElementById("oppTable");
+  const share = Object.entries(wt).filter(([k, v]) => k !== "self" && v > 0);
+  const nameOf = k => (OPP.find(o => o.key === k) || { name: k }).name;
+  document.getElementById("oppSub").textContent = "Self-play games where the net played a fixed opponent, from the net's side, over the last 6 and 24 hours. "
+    + (share.length ? `Configured: ${share.map(([k, v]) => `${nameOf(k)} ${fix(100 * v, 1)}%`).join(", ")} of games. ` : "")
+    + "Win rate counts a draw or timeout as half a win, like the eval score. Bar = 95% range; vertical line = 50%.";
+  const opps = OPP.filter(o => by[o.key]).concat(Object.keys(by).filter(k => !OPP.some(o => o.key === k)).map(k => ({ key: k, name: k, color: "var(--neutral)" })));
+  const rows = [];
+  for (const o of opps) for (const h of wins) { const r = by[o.key][String(h)]; if (r) rows.push({ o, h, r }); }
+  if (!rows.some(x => x.r.games)) {
+    chart.innerHTML = `<div class="empty">${share.length ? "No games against fixed opponents finished in the last 24 hours yet."
+      : "None configured: self-play only. Set selfplay.opponents.weights to mix in games against the previous best, the rules bot or SearchAI (TRAINING.md)."}</div>`;
+    table.innerHTML = ""; return;
+  }
+  chart.innerHTML = "";
+  const W = Math.max(280, chart.clientWidth), narrow = W < 560, bar = 8, gap = 18, m = { l: 130, r: narrow ? 16 : 170, t: 6, b: 24 };
+  const H = m.t + m.b + rows.length * (bar + gap) - gap + 6;
+  const X = v => m.l + v * (W - m.l - m.r);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": "win rate against each fixed opponent, last 6 and 24 hours" }, chart);
+  for (const t of [0, 0.25, 0.5, 0.75, 1]) {
+    el("line", { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, style: `stroke:${t === 0.5 ? "var(--axis)" : "var(--grid)"}`, "stroke-width": 1, "shape-rendering": "crispEdges" }, svg);
+    el("text", { x: X(t), y: H - 6, "text-anchor": "middle", class: "tick" }, svg).textContent = pct(t);
+  }
+  rows.forEach(({ o, h, r }, i) => {
+    const y = m.t + 3 + i * (bar + gap), cy = y + bar / 2;
+    el("text", { x: m.l - 10, y: cy + 4, "text-anchor": "end", class: "tick", style: "fill:var(--text-primary);font-size:13px" }, svg).textContent = `${o.name} · ${h} h`;
+    if (r.games) {
+      const x0 = X(r.lo), x1 = X(r.hi);
+      el("rect", { x: x0, y, width: Math.max(2, x1 - x0), height: bar, rx: 4, style: `fill:${o.color}`, "fill-opacity": 0.3 }, svg);
+      el("circle", { cx: X(r.rate), cy, r: 5, style: `fill:${o.color};stroke:var(--surface-1)`, "stroke-width": 2 }, svg);
+    }
+    if (!narrow) el("text", { x: W - m.r + 10, y: cy + 4, class: "tick", style: "fill:var(--text-primary);font-size:12px" }, svg).textContent =
+      r.games ? `${pct(r.rate)} · ${r.wins}-${r.losses}-${r.draws} · n=${compact(r.games)}` : "no games";   // narrow: the table below carries the values
+    const hitR = el("rect", { x: 0, y: y - gap / 2, width: W, height: bar + gap, fill: "transparent" }, svg);
+    hitR.addEventListener("mousemove", e => showTip(`<div class="h">vs ${esc(o.name)}, last ${h} h</div>` + (r.games
+      ? `Win rate <strong>${fix(100 * r.rate, 1)}%</strong> (95% range ${fix(100 * r.lo, 0)}–${fix(100 * r.hi, 0)}%)<br>${r.wins}-${r.losses}-${r.draws} in ${r.games} games`
+        + (r.timeouts ? ` (${r.timeouts} timeouts)` : "") + (r.avgTurns != null ? `<br>${fix(r.avgTurns, 1)} turns per game` : "")
+        + (r.errors ? `<br>${r.errors} errors (not counted)` : "")
+      : "No games in this window"), e.clientX, e.clientY));
+    hitR.addEventListener("mouseleave", hideTip);
+  });
+  table.innerHTML = tableHtml(["Opponent", "Window", "Win rate", "95% range", "W-L-D", "Games", "Timeouts", "Errors", "Turns/game"],
+    rows.map(({ o, h, r }) => [o.name, `last ${h} h`, r.games ? `${fix(100 * r.rate, 1)}%` : "—", r.games ? `${fix(100 * r.lo, 0)}–${fix(100 * r.hi, 0)}%` : "—",
+      `${r.wins}-${r.losses}-${r.draws}`, String(r.games), String(r.timeouts), String(r.errors), fix(r.avgTurns, 1)]), [2, 5, 6, 7, 8]);
+}
+
 function render() {
   if (!DATA) return;
   renderHeader(DATA); renderTiles(DATA); renderElo(DATA); renderLosses(DATA); renderThroughput(DATA);
-  renderDecks(DATA); renderEvalDeck(DATA); renderEvalTable(DATA);
+  renderDecks(DATA); renderEvalDeck(DATA); renderOpponents(DATA); renderEvalTable(DATA);
 }
 
 async function refresh() {

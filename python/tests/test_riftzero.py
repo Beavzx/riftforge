@@ -145,3 +145,23 @@ def test_replay_window_holds_out_whole_files_never_trained_on(tmp_path):
     w2 = ReplayWindow(d, 10_000, 7, holdout_every=4, preseen=set(names))
     w2.refresh()
     assert len(w2) == 5 * len(names) and len(w2.held) == 0
+
+
+def test_opponent_weights_resolution(tmp_path):
+    from riftzero.config import opponent_weights
+    assert opponent_weights(None) == {"self": 1.0, "best": 0.0, "bot": 0.0, "searchai": 0.0}
+    assert opponent_weights({}) == opponent_weights(None)
+    w = opponent_weights({"self": 0.85, "best": 0.05, "bot": 0.05, "searchai": 0.05})
+    assert abs(w["self"] - 0.85) < 1e-12 and abs(sum(w.values()) - 1) < 1e-12
+    w = opponent_weights({"bot": 0.1})                     # a missing self takes the rest
+    assert abs(w["self"] - 0.9) < 1e-12 and abs(w["bot"] - 0.1) < 1e-12
+    assert opponent_weights({"self": 2, "bot": 2}) == {"self": 0.5, "best": 0.0, "bot": 0.5, "searchai": 0.0}   # normalised
+    for bad in ({"searchAI": 0.1}, {"bot": -1}, {"bot": 0.7, "best": 0.6}, {"self": 0}, {"bot": "x"}):
+        with pytest.raises(ValueError):
+            opponent_weights(bad)
+    # the defaults resolve to pure self-play; the section reaches Node as resolved.json "opponents"
+    r = resolve(load_config(ROOT / "config" / "train.yaml", {"run": {"runsDir": str(tmp_path)}}))
+    assert r["opponents"]["weights"]["self"] == 1.0 and r["opponents"]["searchAiOptions"] == {}
+    r = resolve(load_config(ROOT / "config" / "smoke.yaml", {"run": {"runsDir": str(tmp_path)},
+                                                             "selfplay": {"opponents": {"weights": {"bot": 0.25}, "searchAiOptions": {"turnNodes": 50}}}}))
+    assert r["opponents"]["weights"]["bot"] == 0.25 and r["opponents"]["searchAiOptions"] == {"turnNodes": 50}

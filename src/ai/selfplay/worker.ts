@@ -2,6 +2,9 @@
 //   node --import tsx src/ai/selfplay/worker.ts --run runs/<name> --id 7 --port 47000 [--host 127.0.0.1] [--games N]
 // Plays `workers.concurrentGames` games at once (so the inference server sees a steady stream of requests while
 // this process computes), records positions, writes shards to runs/<name>/shards/, stats to runs/<name>/workers/.
+// With `selfplay.opponents` set, a share of the games puts the net against a fixed opponent (opponents.ts); each of
+// those appends one line to runs/<name>/workers/wNNN-opponents.jsonl:
+//   {"t": <unix s>, "opp": "best"|"bot"|"searchai", "seat": <net's seat>, "result": "win"|"loss"|"draw"|"timeout"|"error", "turns": N, "ms": N}
 // SIGTERM/SIGINT or a runs/<name>/STOP file: abandons in-progress games, publishes the open shard, exits 0.
 import { mkdirSync, renameSync, writeFileSync, appendFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -20,7 +23,8 @@ import { makeEnv } from './env.ts';
 import { InferenceClient } from './client.ts';
 import { UniformEvaluator, type Evaluator } from './evaluator.ts';
 import { DeckPicker } from './decks.ts';
-import { Aborted, assignOutcome, playGame, SearchAgent } from './game.ts';
+import { Aborted } from './game.ts';
+import { drawOpponent, netResult, opponentMix, playTrainingGame } from './opponents.ts';
 import { ShardWriter } from './shards.ts';
 
 function arg(name: string, def?: string): string | undefined {
@@ -43,6 +47,8 @@ async function main() {
   const statsDir = join(runDir, 'workers'); mkdirSync(statsDir, { recursive: true });
   const errDir = join(runDir, 'errors'); mkdirSync(errDir, { recursive: true });
   const rng = makeRng(seedToState(cfg.seed * 1000003 + id * 7919 + Date.now() % 100000));
+  const mix = opponentMix(cfg.opponents);
+  if (mix.kinds.length > 1 || mix.kinds[0] !== 'self') console.log(`[worker ${id}] opponents: ${mix.kinds.map((k, i) => `${k} ${(100 * (mix.cum[i] - (mix.cum[i - 1] ?? 0))).toFixed(1)}%`).join(', ')}`);
 
   let stopping = false;
   const stop = () => { stopping = true; };
@@ -52,10 +58,15 @@ async function main() {
 
   const st = { id, pid: process.pid, started: Date.now(), games: 0, ok: 0, timeouts: 0, errors: 0, positions: 0, decisions: 0,
     sims: 0, evals: 0, turns: 0, rollbacks: 0, maxTurns: 0, inferenceErrors: 0, seat0Wins: 0, seat1Wins: 0, draws: 0, lastGameMs: 0, updated: 0,
+    /** games against a fixed opponent (selfplay.opponents), included in `games`; seat wins, draws and matchups count self-play only */
+    vsFixed: 0,
     /** "<deck> vs <deck>" (names sorted) → [wins of the first, wins of the second, draws], finished games only. Unlike
      *  the counters above it carries over from this worker id's previous stats file, so it covers the whole run. */
     matchups: {} as Record<string, [number, number, number]> };
   const statsPath = join(statsDir, `w${String(id).padStart(3, '0')}.json`);
+  const oppPath = join(statsDir, `w${String(id).padStart(3, '0')}-opponents.jsonl`);
+  const logOpponent = (kind: string, seat: number, result: string, turns: number, ms: number) =>
+    appendFileSync(oppPath, JSON.stringify({ t: Date.now() / 1000, opp: kind, seat, result, turns, ms: Math.round(ms) }) + '\n');
   try { st.matchups = JSON.parse(readFileSync(statsPath, 'utf8')).matchups ?? {}; } catch { /* first start */ }
   const writeStats = () => {
     st.updated = Date.now(); st.evals = ev.count; st.positions = shards.positions;
@@ -70,30 +81,37 @@ async function main() {
       const decks = picker.pick(rng);
       const seed = Math.floor(rng() * 2 ** 31);
       const caps = { ...cfg.caps, maxTurns: maxTurnsAt(cfg.caps, trainerStep(runDir)) };
-      const agent = new SearchAgent('nn', env, ev, cfg.search, caps, { record: true, noise: true, rng });
+      const firstPlayer = rng() < 0.5 ? 0 : 1;
+      const { kind, netSeat } = drawOpponent(mix, rng);   // draws nothing in pure self-play (the default)
       try {
-        const r = await playGame({ env, agents: [agent, agent], decks, seed, firstPlayer: rng() < 0.5 ? 0 : 1, caps, shouldStop: () => stopping });
+        const { r, positions, sims } = await playTrainingGame({ env, ev, search: cfg.search, caps, rng, decks, seed, firstPlayer, kind, netSeat,
+          pointsShaping: cfg.target.pointsShaping, searchAiOptions: mix.searchAiOptions, shouldStop: () => stopping });
         st.rollbacks += r.rollbacks ?? 0; st.maxTurns = caps.maxTurns;
-        st.games++; st.decisions += r.decisions; st.sims += agent.sims; st.turns += r.turns; st.lastGameMs = r.ms;
+        st.games++; st.decisions += r.decisions; st.sims += sims; st.turns += r.turns; st.lastGameMs = r.ms;
+        if (netSeat !== null) { st.vsFixed++; logOpponent(kind, netSeat, netResult(r, netSeat), r.turns, r.ms); }
         if (r.status === 'error') {
           st.errors++;
           if (r.error?.includes('inference server error')) st.inferenceErrors++;
-          appendFileSync(join(errDir, `w${id}.jsonl`), JSON.stringify({ t: Date.now(), lane, ...r }) + '\n');
+          appendFileSync(join(errDir, `w${id}.jsonl`), JSON.stringify({ t: Date.now(), lane, ...(netSeat !== null ? { opp: kind, netSeat } : {}), ...r }) + '\n');
           // lost the server (it exited / is being restarted): exit 3 so the launcher restarts this worker, which
           // reconnects once the server is back — don't spin through instantly failing games
           if (ev instanceof InferenceClient && ev.isClosed) { stopping = true; process.exitCode = 3; return; }
           continue;   // positions from a broken game are not trusted
         }
         if (r.status === 'timeout') st.timeouts++; else st.ok++;
-        if (r.winner === 0) st.seat0Wins++; else if (r.winner === 1) st.seat1Wins++; else st.draws++;
-        const flip = r.decks[0] > r.decks[1];
-        const m = (st.matchups[flip ? `${r.decks[1]} vs ${r.decks[0]}` : `${r.decks[0]} vs ${r.decks[1]}`] ??= [0, 0, 0]);
-        if (r.winner === null) m[2]++; else m[(r.winner === 0) !== flip ? 0 : 1]++;
-        shards.addGame(assignOutcome(agent.positions, r, cfg.target.pointsShaping, caps.timeoutShaping));
+        // seat wins and deck matchups describe self-play (both sides the same net) only
+        if (netSeat === null) {
+          if (r.winner === 0) st.seat0Wins++; else if (r.winner === 1) st.seat1Wins++; else st.draws++;
+          const flip = r.decks[0] > r.decks[1];
+          const m = (st.matchups[flip ? `${r.decks[1]} vs ${r.decks[0]}` : `${r.decks[0]} vs ${r.decks[1]}`] ??= [0, 0, 0]);
+          if (r.winner === null) m[2]++; else m[(r.winner === 0) !== flip ? 0 : 1]++;
+        }
+        shards.addGame(positions);
       } catch (e) {
         if (e instanceof Aborted) return;
         st.errors++;
-        appendFileSync(join(errDir, `w${id}.jsonl`), JSON.stringify({ t: Date.now(), lane, error: (e as Error).stack ?? String(e) }) + '\n');
+        if (netSeat !== null) { st.vsFixed++; logOpponent(kind, netSeat, 'error', 0, 0); }
+        appendFileSync(join(errDir, `w${id}.jsonl`), JSON.stringify({ t: Date.now(), lane, ...(netSeat !== null ? { opp: kind, netSeat } : {}), error: (e as Error).stack ?? String(e) }) + '\n');
         if (/inference (server|client)|connection closed|ECONNREFUSED|ECONNRESET/.test(String(e))) { stopping = true; process.exitCode = 3; }
       }
     }

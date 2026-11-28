@@ -198,6 +198,9 @@ def main(argv=None):
             print(f"[train] maxSampleReuse {state.get('reuse_cfg', '?')} -> {reuse:g}: reuse budget restarts from here", flush=True)
         state["reuse_cfg"], state["reuse_s0"] = reuse, s0
     vw, clip = float(tc["valueWeight"]), float(tc["gradClip"])
+    qmix = float(tc.get("valueTargetQ", 0.0))
+    if qmix:
+        print(f"[train] value target = {1 - qmix:g} z + {qmix:g} q", flush=True)
     last_refresh, last_log_t, last_log_samples = 0.0, time.time(), state["samples"]
     acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
     max_steps = args.max_steps
@@ -229,7 +232,10 @@ def main(argv=None):
                     value, logits = forward_batch(fwd_model, b)
                 logp = Fn.log_softmax(logits.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
                 loss_pi = -(b["pi"] * logp).sum(-1).mean()
-                loss_v = Fn.mse_loss(value.float(), b["z"])
+                # value target: the game outcome z, optionally blended with the root search value q (Lc0 q_ratio;
+                # lower-variance than z alone). Held-out scoring always uses z: the real outcome is what we predict.
+                zt = b["z"] if qmix == 0 else (1 - qmix) * b["z"] + qmix * b["q"]
+                loss_v = Fn.mse_loss(value.float(), zt)
                 loss = loss_pi + vw * loss_v
                 opt.zero_grad(set_to_none=True)
                 finite = bool(torch.isfinite(loss))

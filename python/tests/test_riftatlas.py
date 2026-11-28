@@ -399,7 +399,7 @@ def test_collect_skips_known_caps_and_spaces_requests(env):
     assert col.run() == C.EXIT_OK
     urls = [c["url"] for c in http.calls]
     assert urls[0] == "https://data.riftatlas-workers.com/rpc/publicReplays:list"
-    assert urls[1:] == [f"https://data.riftatlas-workers.com/api/public-replays/{i}?locale=en" for i in IDS[2:4]]
+    assert urls[1:] == [f"https://realtime.riftatlas-workers.com/api/public-replays/{i}?locale=en" for i in IDS[2:4]]
     gaps = [b["t"] - a["t"] for a, b in zip(http.calls, http.calls[1:])]
     assert all(g >= 5.0 for g in gaps)  # --spacing 1 is clamped to 5
     lst = http.calls[0]

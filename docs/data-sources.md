@@ -101,7 +101,7 @@ https://play.riftatlas.com`, the page the browser makes the request from, which 
 1. Sign in at https://play.riftatlas.com and open the game history's **Public replays** tab.
 2. Open DevTools (F12) and go to **Network**. Open a public replay so that requests appear.
 3. Copy the token from any of these:
-   - The request to `data.riftatlas-workers.com/api/public-replays/<id>`: **Headers → Request headers →
+   - The request to `realtime.riftatlas-workers.com/api/public-replays/<id>`: **Headers → Request headers →
      authorization** (`Bearer eyJ…`).
    - A request to `data.riftatlas-workers.com/rpc/...`: **Payload → token**.
    - The `token` request to `auth.riftatlas.com/api/auth/token`: **Response → token**.
@@ -193,7 +193,7 @@ being built.
     list. The response is used directly as an array of entries. **There is no cursor or pagination.** Each entry has
     `publicReplayId`, `players[{playerId,name,legend{name},score,...}]`, `winnerPlayerIds`, `matchFormat`,
     `gameNumber`, `views`, `comments` and `startedAt`. The page size for `"new"` is the server default.
-- **Replay API:** `https://data.riftatlas-workers.com/api/public-replays/<id>?locale=en`. Jonathon's browser was
+- **Replay API:** `https://realtime.riftatlas-workers.com/api/public-replays/<id>?locale=en`. Jonathon's browser was
   seen making this request on 2026-11-28. The helper in the downloaded bundle builds the URL from the PartyKit host
   `realtime.riftatlas-workers.com` instead (chunk `18iwltulw_mqe.js`, module 111243:
   `function y(){let e="realtime.riftatlas-workers.com".trim();...}` / `"R",0,function(e=y()){...}`). The live site

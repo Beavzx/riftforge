@@ -25,7 +25,7 @@ import torch
 import torch.nn.functional as Fn
 
 from .checkpoints import ckpt_dir, list_steps, promote_best
-from .dataset import BadStepGuard, Prefetcher, ReplayWindow
+from .dataset import BadStepGuard, Prefetcher, ReplayWindow, make_batch
 from .model import RiftNet, batch_to_torch, count_params, forward_batch, model_config
 from .schema import load_schema
 from .infer_server import is_oom
@@ -46,6 +46,32 @@ def lr_lambda(tc: dict):
         t = min(1.0, (step - warm) / max(1, total - warm))
         return floor + (1 - floor) * 0.5 * (1 + math.cos(math.pi * t))
     return f
+
+
+def held_out_score(model, recs, max_entities, dev, amp) -> dict | None:
+    """Loss on held-out games (whole shard files that never entered the replay window): the honest value / policy
+    loss. The training loss is measured on positions the net has already trained on, and can fall by memorising games."""
+    if len(recs) < 512:
+        return None
+    V, Z, CE = [], [], []
+    was = model.training
+    model.eval()
+    try:
+        with torch.no_grad(), torch.autocast(dev.type, dtype=amp, enabled=amp is not None):
+            for i in range(0, len(recs), 256):
+                b = batch_to_torch(make_batch(recs[i:i + 256], max_entities), dev)
+                v, lg = forward_batch(model, b)
+                lp = Fn.log_softmax(lg.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
+                CE.append((-(b["pi"] * lp).sum(-1)).cpu()); V.append(v.float().cpu()); Z.append(b["z"].cpu())
+    except Exception as e:
+        if not is_oom(e):
+            raise
+        return None
+    finally:
+        model.train(was)
+    V, Z, CE = torch.cat(V), torch.cat(Z), torch.cat(CE)
+    corr = float(torch.corrcoef(torch.stack([V, Z]))[0, 1]) if V.std() > 0 and Z.std() > 0 else 0.0
+    return {"held_v_mse": float(((V - Z) ** 2).mean()), "held_v_corr": corr, "held_pi_ce": float(CE.mean()), "held_n": len(recs)}
 
 
 def save_checkpoint(run_dir: Path, model, opt, sched, state: dict, keep: int) -> None:
@@ -123,6 +149,15 @@ def main(argv=None):
     if ck is not None and "optimizer" in ck and latest.exists():
         opt.load_state_dict(ck["optimizer"])
         sched.load_state_dict(ck["scheduler"])
+        # the checkpoint's optimizer carries the lr / weight decay it was started with: the config wins on resume
+        lr0, wd0 = float(tc["lr"]), float(tc["weightDecay"])
+        old = (sched.base_lrs[0], opt.param_groups[0]["weight_decay"])
+        sched.base_lrs = [lr0 for _ in opt.param_groups]
+        for g in opt.param_groups:
+            g["initial_lr"], g["weight_decay"] = lr0, wd0
+            g["lr"] = lr0 * lr_lambda(tc)(sched.last_epoch)
+        if old != (lr0, wd0):
+            print(f"[train] config overrides checkpoint optimizer: lr {old[0]:g} -> {lr0:g}, weight decay {old[1]:g} -> {wd0:g}", flush=True)
     fwd_model = torch.compile(model) if tc.get("compile") else model
 
     if not latest.exists():
@@ -131,7 +166,7 @@ def main(argv=None):
         print("[train] wrote initial checkpoint step 0 (latest + best)", flush=True)
 
     window = ReplayWindow(run_dir / "shards", int(tc["replayPositions"]), schema.schema_hash, seed=int(cfg["run"]["seed"]),
-                          preseen=set(state.get("seen_shards", [])))
+                          preseen=set(state.get("seen_shards", [])), holdout_every=int(tc.get("holdoutEvery", 0)))
     window.total_positions = int(state.get("positions_seen", 0))
     pre = Prefetcher(window, int(tc["batchSize"]), schema.max_entities, min_len=int(tc["minPositions"]))
     guard = BadStepGuard(int(tc.get("maxBadSteps", 10)))
@@ -155,12 +190,20 @@ def main(argv=None):
         pass
 
     bs, reuse = int(tc["batchSize"]), float(tc["maxSampleReuse"])
+    # samples allowed = reuse x positions, counted from where maxSampleReuse last changed (`reuse_s0` = the samples that
+    # do not count): lowering it mid-run then trains at the new rate on new data instead of idling until positions catch up
+    if float(state.get("reuse_cfg", -1)) != reuse:   # new run, older checkpoint, or a changed setting
+        s0 = max(0, int(state["samples"] - reuse * int(state.get("positions_seen", 0))))
+        if s0 > 0:
+            print(f"[train] maxSampleReuse {state.get('reuse_cfg', '?')} -> {reuse:g}: reuse budget restarts from here", flush=True)
+        state["reuse_cfg"], state["reuse_s0"] = reuse, s0
     vw, clip = float(tc["valueWeight"]), float(tc["gradClip"])
     last_refresh, last_log_t, last_log_samples = 0.0, time.time(), state["samples"]
     acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
     max_steps = args.max_steps
     steps_this_run = 0
     oom_in_row = 0
+    held: dict = {}
     print(f"[train] waiting for {tc['minPositions']} positions before training", flush=True)
     publish = True   # final checkpoint on exit (not after a non-finite abort: those weights must not reach self-play)
     try:
@@ -172,7 +215,7 @@ def main(argv=None):
                 state["positions_seen"] = window.total_positions
                 state["seen_shards"] = sorted(window.seen)
                 last_refresh = now
-            if len(window) < int(tc["minPositions"]) or state["samples"] + bs > reuse * max(1, window.total_positions):
+            if len(window) < int(tc["minPositions"]) or state["samples"] - state["reuse_s0"] + bs > reuse * max(1, window.total_positions):
                 time.sleep(1.0)
                 continue
             nb = pre.get()          # raises if the prefetch thread died; None = not ready yet (re-check STOP)
@@ -245,18 +288,24 @@ def main(argv=None):
                        "loss_value": acc["v"] / acc["n"], "policy_entropy": acc["ent"] / acc["n"], "lr": sched.get_last_lr()[0],
                        "buffer": len(window), "positions_seen": window.total_positions, "samples": state["samples"],
                        "samples_per_s": (state["samples"] - last_log_samples) / max(1e-6, dt),
-                       "reuse": state["samples"] / max(1, window.total_positions), "skipped_steps": guard.total,
-                       "grad_norm": float(gn), "device": str(dev)}
+                       "reuse": (state["samples"] - state["reuse_s0"]) / max(1, window.total_positions), "skipped_steps": guard.total,
+                       "grad_norm": float(gn), "device": str(dev), **held}
                 metrics.write(json.dumps(row) + "\n"); metrics.flush()
                 if tb:
                     for k, v in row.items():
-                        if k not in ("t", "step", "device"):
+                        if k not in ("t", "step", "device", "held_n"):
                             tb.add_scalar(f"train/{k}", v, step)
                 print(f"[train] step {step} loss {row['loss']:.4f} (pi {row['loss_policy']:.4f} v {row['loss_value']:.4f}) "
                       f"buffer {len(window)} reuse {row['reuse']:.2f}", flush=True)
                 acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
                 last_log_t, last_log_samples = time.time(), state["samples"]
             if step % int(tc["ckptEverySteps"]) == 0:
+                with pre.lock:
+                    recs = list(window.held)
+                held = held_out_score(model, recs, schema.max_entities, dev, amp) or held
+                if held:
+                    print(f"[train] held-out games ({held['held_n']} positions): value mse {held['held_v_mse']:.3f} "
+                          f"(corr {held['held_v_corr']:.2f}), policy CE {held['held_pi_ce']:.3f}", flush=True)
                 save_checkpoint(run_dir, model, opt, sched, state, int(tc["keepCheckpoints"]))
                 window.prune_files(int(tc.get("keepShardFiles", 0)))
             if max_steps and steps_this_run >= max_steps:

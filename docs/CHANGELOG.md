@@ -1170,7 +1170,7 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   "out of memory", so the batches weren't split and retried: ~3,600 self-play games and 10 of the step-18,500 eval
   games ended as errors within 40 s, and then it recovered. Errored games write no positions.
 - 03:33: during the step-24,500 eval the trainer hit a CUDA OOM (256 MB, with 189 MB free; 4 servers at 1.25–1.35 GB
-  each against a 1.15 GB `memoryFraction` cap) and exited. The launcher stopped the run, which stayed down until 10:20.
+  each against a 1.15 GB `memoryFraction` cap) and exited. The launcher stopped the run, which stayed down until 10:03.
 - Cause of the over-cap memory: the servers ran `backend.infer` on asyncio's default thread pool, which adds a thread
   whenever a reload holds the idle one. Every thread that runs a CUDA matmul creates its own cuBLAS handle and
   workspace, which the caching allocator's cap doesn't count.
@@ -1182,3 +1182,20 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   - Tested with injected OOMs on a scratch copy of the run (real model on the GPU, real shards); new test
     `test_is_oom_covers_cublas_handle_allocation_failure`.
 - Step-24,500 eval lost. On resume the launcher evaluates the newest checkpoint (27,956) straight away.
+
+## 2026-11-28 — Trainer: held-out loss, config wins on resume, reuse rebase
+- Why: on epyc-1 the value head memorises games. Value MSE is 0.435 on positions already trained on but 0.80 on fresh
+  games (checkpoint 38,000, 4,000 positions each). The logged training loss (0.40) gave a far rosier picture.
+- `train.holdoutEvery` (default 50): one new shard file in N, chosen by a hash of its name, never enters the replay
+  window. Whole files are held out, since positions of one game share z. Files from before a resume are never held
+  out. At each checkpoint the trainer scores the newest 4,096 held-out positions and logs `held_v_mse`,
+  `held_v_corr` and `held_pi_ce`. The dashboard's value and policy charts draw them as a second, "held-out games"
+  line.
+- On resume, `train.lr` and `train.weightDecay` from the config override the checkpoint's optimizer state (they used to
+  be silently ignored).
+- `maxSampleReuse` changes apply going forward: the budget counts from where the setting changed (`state.reuse_s0`).
+  Lowering 4 → 2 used to leave the trainer idle until positions caught up (~13 h on epyc-1). The logged `reuse` is
+  the governed ratio.
+- Tested on a scratch copy of epyc-1, on CPU: both change messages printed, held-out scoring ran each checkpoint, and
+  the warmup lr followed the new base lr. New test `test_replay_window_holds_out_whole_files_never_trained_on`;
+  python suite 30 passed.

@@ -116,3 +116,32 @@ def test_elo_extreme_scores():
     assert lo < elo_from_score(1.0, 16) <= hi and hi - lo > 200
     lo, hi = elo_interval(0.5, 16)
     assert lo < 0 < hi and abs(lo + hi) < 1e-6
+
+
+def _write_shard(path, n, z, shash=7):
+    """A minimal .rfs shard (read_shard does not parse the observation frame)."""
+    import struct as st
+    from riftzero.dataset import SHARD_MAGIC
+    out = bytearray(st.pack("<4I", SHARD_MAGIC, 1, shash, 0))
+    for _ in range(n):
+        body = st.pack("<I", 3) + b"obs" + st.pack("<ffI", z, 0.0, 2) + np.array([0.5, 0.5], "<f4").tobytes()
+        out += st.pack("<I", len(body)) + body
+    path.write_bytes(bytes(out))
+
+
+def test_replay_window_holds_out_whole_files_never_trained_on(tmp_path):
+    import zlib
+    d = tmp_path / "shards"; d.mkdir()
+    names = [f"w{i:03d}-1-00000.rfs" for i in range(40)]
+    for i, nm in enumerate(names):
+        _write_shard(d / nm, 5, 1.0 if i % 2 else -1.0)
+    held_names = {nm for nm in names if zlib.crc32(nm.encode()) % 4 == 0}
+    assert 0 < len(held_names) < len(names)
+    w = ReplayWindow(d, 10_000, 7, holdout_every=4)
+    n = w.refresh()
+    assert n == 5 * (len(names) - len(held_names)) == len(w)       # held-out positions never enter the window...
+    assert len(w.held) == 5 * len(held_names) and w.held_files == len(held_names)
+    # ...and files from before a resume (possibly trained on) are never used as held-out games
+    w2 = ReplayWindow(d, 10_000, 7, holdout_every=4, preseen=set(names))
+    w2.refresh()
+    assert len(w2) == 5 * len(names) and len(w2.held) == 0

@@ -22,7 +22,7 @@ from .status import selfplay_matchups
 
 PAGE = Path(__file__).with_name("dashboard.html")
 METRIC_KEYS = ("t", "step", "loss", "loss_policy", "loss_value", "policy_entropy", "lr", "positions_seen",
-               "skipped_steps", "grad_norm", "samples_per_s", "reuse", "buffer")
+               "skipped_steps", "grad_norm", "samples_per_s", "reuse", "buffer", "held_v_mse", "held_v_corr", "held_pi_ce")
 MAX_METRIC_POINTS = 3000
 
 

@@ -27,7 +27,7 @@ DEFAULTS: dict = {
     "train": {"gpu": 0, "batchSize": 256, "lr": 3e-4, "warmupSteps": 500, "schedule": "cosine", "totalSteps": 200000,
               "minLrFrac": 0.1, "weightDecay": 1e-4, "valueWeight": 1.0, "gradClip": 1.0, "minPositions": 20000,
               "replayPositions": 400000, "maxSampleReuse": 4.0, "ckptEverySteps": 1000, "keepCheckpoints": 20,
-              "logEverySteps": 50, "ampDtype": "bf16", "compile": False, "keepShardFiles": 2000,
+              "logEverySteps": 50, "ampDtype": "bf16", "compile": False, "keepShardFiles": 2000, "holdoutEvery": 50,
               "allowCpu": False, "maxBadSteps": 10},
     "eval": {"everyCheckpoints": 5, "gamesPerOpponent": 20, "opponents": ["best", "searchai", "bot"], "concurrentGames": 4,
              "gating": {"enabled": False, "threshold": 0.55}, "searchAi": {}},

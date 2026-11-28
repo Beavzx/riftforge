@@ -396,19 +396,24 @@ function renderElo(d) {
 
 function renderLosses(d) {
   const M = d.metrics;
-  const one = (id, key, refs, empty) => {
+  const one = (id, key, refs, empty, heldKey) => {
     const raw = M.filter(r => r[key] != null).map(r => ({ x: r.step, y: r[key] }));
     const sm = ema(raw, 0.9);
     const tail = raw.slice(-40).reverse().map((p, i) => [compact(p.x), fix(p.y, 4), fix(sm[sm.length - 1 - i].y, 4)]);
+    // held-out games (never trained on): one point per checkpoint measurement, i.e. wherever the logged value changes
+    const held = [];
+    if (heldKey) for (const r of M) if (r[heldKey] != null && (!held.length || held[held.length - 1].y !== r[heldKey])) held.push({ x: r.step, y: r[heldKey] });
+    const series = [{ name: held.length ? "training (smoothed)" : "smoothed", color: "var(--series-1)", pts: sm, raw }];
+    if (held.length) series.push({ name: "held-out games", color: "var(--series-2)", pts: held });
     lineChart(document.getElementById(id), {
-      series: [{ name: "smoothed", color: "var(--series-1)", pts: sm, raw }], refs, height: 200, xTitle: "step",
+      series, refs, height: 200, xTitle: "step", endLabels: held.length > 0,
       yFmt: v => fix(v, 2), yTipFmt: v => fix(v, 3), label: key, empty,
       table: raw.length ? details("Table view (latest 40)", tableHtml(["Step", "Raw", "Smoothed"], tail, [0, 1, 2])) : "",
     });
   };
   const wait = `Waiting for the trainer (it starts after ${compact(d.config.minPositions || 10000)} positions).`;
-  one("vChart", "loss_value", [{ y: 1.0, label: "1.0 learnt nothing" }, { y: 0.9, label: "0.9 day-1 target" }], wait);
-  one("pChart", "loss_policy", [], wait);
+  one("vChart", "loss_value", [{ y: 1.0, label: "1.0 learnt nothing" }, { y: 0.9, label: "0.9 day-1 target" }], wait, "held_v_mse");
+  one("pChart", "loss_policy", [], wait, "held_pi_ce");
   one("eChart", "policy_entropy", [], wait);
 }
 

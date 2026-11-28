@@ -7,10 +7,12 @@ Record:      u32 recBytes | u32 obsBytes | RFO1 frame | f32 z | f32 q | u32 nA |
 from __future__ import annotations
 
 import os
+import zlib
 import queue
 import struct
 import threading
 import time
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -63,9 +65,16 @@ class ReplayWindow:
     """
 
     def __init__(self, shard_dir: str | Path, capacity: int, schema_hash: int | None = None, seed: int = 0,
-                 preseen: set[str] | None = None):
-        """`preseen`: shard names already counted before a resume — loaded into the window but not counted again."""
+                 preseen: set[str] | None = None, holdout_every: int = 0, holdout_keep: int = 4096):
+        """`preseen`: shard names already counted before a resume — loaded into the window but not counted again.
+        `holdout_every` N > 0: one new shard file in N (by a hash of its name) never enters the window; its newest
+        `holdout_keep` positions are kept in `held` to measure loss on games the net was not trained on. Whole files are
+        held out, not single positions: positions of one game share z, so a held-out position whose game is in the
+        window would let a memorising value head look good."""
         self.preseen = set(preseen or ())
+        self.holdout_every = int(holdout_every)
+        self.held: deque[Record] = deque(maxlen=int(holdout_keep))
+        self.held_files = 0
         self.dir = Path(shard_dir)
         self.capacity = capacity
         self.schema_hash = schema_hash
@@ -93,11 +102,19 @@ class ReplayWindow:
             except ValueError as e:
                 print(f"[dataset] skipping {p.name}: {e}", flush=True)
                 continue
+            if self.is_holdout(p.name):
+                self.held.extend(recs)
+                self.held_files += 1
+                continue
             self._push(recs)
             if p.name not in self.preseen:
                 n += len(recs)
         self.total_positions += n
         return n
+
+    def is_holdout(self, name: str) -> bool:
+        """Held-out file? Only files new to this trainer process (not `preseen`): older ones may have been trained on."""
+        return self.holdout_every > 0 and name not in self.preseen and zlib.crc32(name.encode()) % self.holdout_every == 0
 
     def _push(self, recs: list[Record]) -> None:
         cap = self.capacity

@@ -1,4 +1,5 @@
-"""Live training dashboard for one run: Elo per eval opponent, losses, throughput, deck and matchup results.
+"""Live training dashboard for one run: Elo per eval opponent, losses, throughput, deck and matchup results, and the
+training games against fixed opponents (selfplay.opponents).
 
     python -m riftzero.dashboard [--run runs/<name> | --config config/train.yaml] [--port 8050] [--host 127.0.0.1]
     scripts/dashboard.sh                  # then open http://localhost:8050 (from Windows too: WSL forwards localhost)
@@ -18,7 +19,7 @@ from pathlib import Path
 
 from .config import load_config, run_dir, REPO_ROOT
 from .elo import read_elo
-from .status import selfplay_matchups
+from .status import opponent_stats, selfplay_matchups
 
 PAGE = Path(__file__).with_name("dashboard.html")
 METRIC_KEYS = ("t", "step", "loss", "loss_policy", "loss_value", "policy_entropy", "lr", "positions_seen",
@@ -198,6 +199,7 @@ def collect(rd: Path) -> dict:
         "metrics": metrics, "evals": evals, "evalLatest": latest,
         "evalSchedule": eval_schedule(rd, cfg, evals, metrics),
         "matchups": selfplay_matchups(rd), "servers": servers, "errorGames": n_err,
+        "opponents": {**opponent_stats(rd), "weights": (resolved.get("opponents") or {}).get("weights")},
     }
 
 

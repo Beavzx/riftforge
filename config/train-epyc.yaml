@@ -28,6 +28,8 @@ selfplay:
   workers: 120          # measured 2026-11-27: 60 → 3.97k evals/s, 120 → 5.14k, 192 → 5.18k, 240 → 5.19k (not the GPU: small model no faster). 120 it is
   concurrentGames: 4
   gamesPerShard: 8
+  # opponents:          # fixed opponents mixed into self-play (TRAINING.md); unset = self-play only
+  #   weights: { self: 0.85, best: 0.05, bot: 0.05, searchai: 0.05 }
 
 env:
   kind: factored

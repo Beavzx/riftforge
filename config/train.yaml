@@ -50,6 +50,10 @@ selfplay:
   concurrentGames: 4    # games per worker in flight (keeps the GPU fed while a worker computes)
   gamesPerShard: 4      # games per training-data file
   statsEverySec: 10
+  # Fixed opponents mixed into self-play (TRAINING.md "Fixed opponents in self-play"). Unset = self-play only.
+  # opponents:
+  #   weights: { self: 0.85, best: 0.05, bot: 0.05, searchai: 0.05 }
+  #   searchAiOptions: {}
 
 env:
   kind: factored        # factored: big decisions (damage splits, big moves, payments) as complete sub-choices

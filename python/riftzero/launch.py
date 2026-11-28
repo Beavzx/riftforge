@@ -188,6 +188,9 @@ class Launcher:
         self.say(f"run {self.r['runName']} in {self.rd}")
         self.say(f"{self.r['workers']['count']} workers x {self.r['workers']['concurrentGames']} games, env {self.r['env']['kind']}, "
                  f"backend {self.backend}, servers on ports {self.r['servers']['ports']}")
+        ow = self.r["opponents"]["weights"]
+        if ow["self"] < 1:
+            self.say("self-play opponents: " + ", ".join(f"{k} {100 * v:.1f}%" for k, v in ow.items() if v > 0))
         out = subprocess.run(self.node_cmd("tools/train-schema.ts", "--out", self.rd), cwd=str(REPO_ROOT), env=self.env,
                              capture_output=True, text=True)
         if out.returncode != 0:

@@ -90,8 +90,41 @@ inference server, workers. Everything for a run lives in `runs/<name>/`:
 | `shards/` | self-play training data (`.rfs`); old files are deleted past `train.keepShardFiles` |
 | `metrics.jsonl`, `tb/` | trainer metrics (TensorBoard: `.venv/bin/tensorboard --logdir runs`) |
 | `elo.csv`, `eval/` | evaluation matches |
-| `status.json`, `workers/`, `servers/` | live counters (what `status.sh` shows) |
+| `status.json`, `workers/`, `servers/` | live counters (what `status.sh` shows); `workers/wNNN-opponents.jsonl`: one line per game against a fixed opponent |
 | `errors/` | games where the engine threw (discarded; repro seeds for bug reports) |
+
+### Fixed opponents in self-play (`selfplay.opponents`)
+
+Pure self-play can learn to beat itself while getting worse against everything else (on epyc-1 the net kept beating
+its previous checkpoints while its eval score against the rules bot fell 40% → 27.5% → 17.5%). To counter that, a
+share of the training games can put the net against a fixed opponent:
+
+```yaml
+selfplay:
+  opponents:
+    weights: { self: 0.85, best: 0.05, bot: 0.05, searchai: 0.05 }   # share of games; default: self only
+    searchAiOptions: {}       # SearchAI options for `searchai` games (same shape as eval.searchAi), e.g. { turnNodes: 130 }
+```
+or on the command line: `scripts/start.sh --set selfplay.opponents.weights.bot=0.1` (90% self-play, 10% vs the bot).
+
+| key | meaning |
+|---|---|
+| `weights.self` | the current net on both seats: the normal self-play game |
+| `weights.best` | the net against the best checkpoint (`ckpt/best.pt`, inference slot 1; the latest net until the first eval). The opponent searches like the self-play net (same `search` settings, root noise, playout cap) and records nothing |
+| `weights.bot` | the net against the engine's rules bot (as in eval) |
+| `weights.searchai` | the net against the hand-built SearchAI (as in eval), with `searchAiOptions` |
+
+- Weights are relative and normalised. Leave out `self` and it gets what the others leave of 1.0; kinds left out
+  get 0. Unknown kinds, negative weights or a zero total stop the launcher. The launch log prints the mix.
+- Without the section (or with `self` alone) the workers play exactly as before: no extra random numbers are drawn,
+  so same seed, same games (checked by `tools/perf-golden.sh`).
+- In a game against a fixed opponent the net sits in one seat, chosen at random, and only its own decisions become
+  training positions (z from its side). Caps, forced moves and rollback masking are as in self-play. These games
+  count in the games/positions totals but not in the self-play deck win rates and matchup matrix.
+- Each such game appends `{t, opp, seat, result, turns, ms}` (`result`: win, loss, draw, timeout or error; `t` in
+  Unix seconds) to `workers/wNNN-opponents.jsonl`.
+- Cost: a bot or SearchAI opponent decides much faster than a search, but the game only yields the net's half of the
+  positions. See docs/CHANGELOG.md (2026-11-28, opponent pool) for measured costs.
 
 ## 4. Watch it
 
@@ -100,7 +133,8 @@ scripts/status.sh --watch
 scripts/dashboard.sh             # live web dashboard: open http://localhost:8050 (also from Windows when run in WSL)
 ```
 The dashboard shows Elo per eval opponent with 95% ranges, value/policy loss and entropy (raw + smoothed), self-play
-throughput, deck win rates, the matchup matrix, the latest eval by deck and the eval history, refreshing every 30 s.
+throughput, deck win rates, the matchup matrix, the latest eval by deck, the training games vs fixed opponents and the
+eval history, refreshing every 30 s.
 It only reads the run's files, so starting or stopping it never affects training. For a remote box, forward the
 port instead of exposing it: `ssh -L 8050:localhost:8050 <host>`, then open http://localhost:8050 locally.
 It shows games per hour, positions, trainer step and losses, the inference batch size, and the latest eval with an
@@ -114,6 +148,11 @@ Elo-vs-SearchAI history. What to look at:
 - **reuse** sits near `train.maxSampleReuse` (4) when the trainer is waiting for self-play, which is normal.
 - **timeouts** are a high share of games early (the caps are 60 turns, annealing to 40) and should fall as play
   becomes purposeful.
+- **Training games vs fixed opponents** (only with `selfplay.opponents`, see section 3): for each fixed opponent, the
+  net's win rate over the last 6 hours and the last 24 hours with its 95% range (Wilson), wins-losses-draws, games,
+  timeouts and turns per game. Draws and timeouts count as half a win, like the eval score; errored games are left
+  out. Thousands of games a day, so it reacts far sooner than the 40-game evals: a falling rate against the bot or
+  SearchAI is the forgetting this is meant to stop. `scripts/status.sh` prints the same numbers.
 - **skipped_steps** (in metrics.jsonl) counts training steps skipped for a non-finite loss or gradient. A few are
   harmless. 10 in a row stop the trainer **without** publishing those weights (the last good `latest.pt` stays).
 

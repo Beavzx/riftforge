@@ -10,7 +10,10 @@ import time
 from pathlib import Path
 
 from .config import REPO_ROOT, load_config, run_dir
-from .elo import read_elo
+from .elo import read_elo, wilson
+
+OPPONENT_WINDOWS_H = (6, 24)
+FIXED_OPPONENTS = ("best", "bot", "searchai")
 
 
 def tail_jsonl(p: Path, n: int = 1) -> list[dict]:
@@ -51,6 +54,99 @@ def selfplay_matchups(rd: Path) -> dict[str, list[int]]:
         except (OSError, ValueError):
             continue
     return tot
+
+
+def jsonl_since(p: Path, cutoff: float, block: int = 1 << 16) -> list[dict]:
+    """Rows of an append-only JSONL file whose times only grow, with t >= cutoff, oldest first. Reads backwards from the
+    end and stops at the first older row, so a long run's file isn't read in full every refresh."""
+    rows: list[dict] = []
+    try:
+        f = open(p, "rb")
+    except OSError:
+        return rows
+    with f:
+        f.seek(0, 2)
+        pos, tail, done = f.tell(), b"", False
+        while pos > 0 and not done:
+            n = min(block, pos)
+            pos -= n
+            f.seek(pos)
+            parts = (f.read(n) + tail).split(b"\n")
+            tail = parts.pop(0) if pos > 0 else b""    # may start mid-line: completed by the next (earlier) block
+            for line in reversed(parts):
+                if not line.strip():
+                    continue
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue    # a line being written right now
+                t = r.get("t") if isinstance(r, dict) else None
+                if not isinstance(t, (int, float)):
+                    continue
+                if t < cutoff:
+                    done = True
+                    break
+                rows.append(r)
+    rows.reverse()
+    return rows
+
+
+def opponent_stats(rd: Path, now: float | None = None, windows=OPPONENT_WINDOWS_H) -> dict:
+    """Self-play games against fixed opponents (selfplay.opponents), from runs/<name>/workers/wNNN-opponents.jsonl,
+    over the last `windows` hours: {"now", "windows": [6, 24], "byOpponent": {opp: {"6": row, "24": row}}}.
+    row = games (wins + losses + draws; errors excluded), wins, losses, draws (timeouts included, as in eval),
+    timeouts, errors, rate = (wins + draws / 2) / games (the eval score), lo / hi = its 95% Wilson interval, avgTurns."""
+    now = time.time() if now is None else now
+    d = rd / "workers"
+    rows: list[dict] = []
+    for p in sorted(d.glob("w*-opponents.jsonl")) if d.exists() else []:
+        rows += jsonl_since(p, now - max(windows) * 3600)
+    by: dict[str, dict] = {}
+    for h in windows:
+        t0 = now - h * 3600
+        acc: dict[str, dict] = {}
+        for r in rows:
+            if not (t0 <= r["t"] <= now):
+                continue
+            a = acc.setdefault(str(r.get("opp")), {"wins": 0, "losses": 0, "draws": 0, "timeouts": 0, "errors": 0, "turns": 0})
+            res = r.get("result")
+            if res == "win":
+                a["wins"] += 1
+            elif res == "loss":
+                a["losses"] += 1
+            elif res in ("draw", "timeout"):
+                a["draws"] += 1
+                a["timeouts"] += res == "timeout"
+            else:
+                a["errors"] += 1
+                continue
+            a["turns"] += int(r.get("turns") or 0)
+        for opp, a in acc.items():
+            n = a["wins"] + a["losses"] + a["draws"]
+            rate = (a["wins"] + 0.5 * a["draws"]) / n if n else None
+            lo, hi = wilson(rate, n) if n else (None, None)
+            turns = a.pop("turns")
+            by.setdefault(opp, {})[str(h)] = {**a, "games": n, "rate": rate, "lo": lo, "hi": hi, "avgTurns": turns / n if n else None}
+    for opp in by.values():      # every window present for every opponent seen (zeros where none fell in it)
+        for h in windows:
+            opp.setdefault(str(h), {"wins": 0, "losses": 0, "draws": 0, "timeouts": 0, "errors": 0, "games": 0,
+                                    "rate": None, "lo": None, "hi": None, "avgTurns": None})
+    order = {k: i for i, k in enumerate(FIXED_OPPONENTS)}
+    return {"now": now, "windows": list(windows), "byOpponent": dict(sorted(by.items(), key=lambda kv: order.get(kv[0], 99)))}
+
+
+def show_opponents(rd: Path) -> None:
+    st = opponent_stats(rd)
+    if not st["byOpponent"]:
+        return
+    print("  training games vs fixed opponents (score = (W + D/2) / games, 95% range):")
+    for opp, w in st["byOpponent"].items():
+        parts = []
+        for h in st["windows"]:
+            r = w[str(h)]
+            parts.append(f"{h}h " + (f"{100 * r['rate']:.0f}% [{100 * r['lo']:.0f}-{100 * r['hi']:.0f}] {r['wins']}-{r['losses']}-{r['draws']} (n={r['games']})"
+                                     if r["games"] else "no games"))
+        print(f"    vs {opp:<9} " + "   ".join(parts))
 
 
 def show_matchups(rd: Path, detail: bool) -> None:
@@ -102,6 +198,7 @@ def show(rd: Path, detail: bool = False) -> None:
               f"timeouts {sp['timeouts']}, errors {sp['errors']}, rollbacks {sp['rollbacks']}, sims/decision "
               f"{sp['sims'] / max(1, sp['decisions']):.1f}")
     show_matchups(rd, detail)
+    show_opponents(rd)
     m = tail_jsonl(rd / "metrics.jsonl")
     if m:
         m = m[-1]

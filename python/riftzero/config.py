@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import os
 from pathlib import Path
 
@@ -14,7 +15,9 @@ DEFAULTS: dict = {
     "run": {"name": "home-1", "seed": 1, "runsDir": "runs"},
     "decks": {"mode": "pool", "pool": ["01-azir.json", "02-vex.json"], "allowMirror": True, "me": None, "opponents": []},
     "caps": {"maxTurns": 60, "maxTurnsAnneal": None, "timeoutShaping": 0.2, "maxActions": 1500, "maxMainPerTurn": 40},
-    "selfplay": {"workers": "auto", "reserveThreads": 2, "concurrentGames": 4, "gamesPerShard": 4, "statsEverySec": 10},
+    "selfplay": {"workers": "auto", "reserveThreads": 2, "concurrentGames": 4, "gamesPerShard": 4, "statsEverySec": 10,
+                 # fixed opponents mixed into self-play; weights None = pure self-play (see opponent_weights)
+                 "opponents": {"weights": None, "searchAiOptions": {}}},
     "search": {"algorithm": "gumbel", "fullSims": 64, "fastSims": 16, "fullProb": 0.25, "maxConsidered": 16, "cVisit": 50,
                "cScale": 1.0, "cPuct": 1.5, "dirichletAlpha": 0.3, "dirichletFrac": 0.25, "temperatureMoves": 12, "forcedStepCap": 64},
     "evalSearch": {"fullSims": 64},
@@ -62,6 +65,33 @@ def resolve_deck(p: str) -> str:
     raise FileNotFoundError(f"deck not found: {p} (looked in repo root and data/meta-decks/)")
 
 
+OPPONENT_KINDS = ("self", "best", "bot", "searchai")
+
+
+def opponent_weights(w: dict | None) -> dict:
+    """selfplay.opponents.weights → normalised {self, best, bot, searchai}. None / {} = pure self-play. A missing `self`
+    takes what the others leave of 1.0 (so `{bot: 0.1}` = 90% self-play, 10% vs the rules bot); missing others are 0.
+    Same rules as src/ai/selfplay/config.ts opponentWeights."""
+    w = dict(w or {})
+    for k, v in w.items():
+        if k not in OPPONENT_KINDS:
+            raise ValueError(f"selfplay.opponents.weights: unknown opponent {k!r} (use {', '.join(OPPONENT_KINDS)})")
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0:
+            raise ValueError(f"selfplay.opponents.weights.{k} must be a number >= 0 (got {v!r})")
+    out = {k: float(w.get(k, 0.0)) for k in OPPONENT_KINDS}
+    if not w:
+        out["self"] = 1.0
+    elif "self" not in w:
+        others = out["best"] + out["bot"] + out["searchai"]
+        if others > 1 + 1e-9:
+            raise ValueError(f"selfplay.opponents.weights: best + bot + searchai = {others:g} > 1 with no 'self' weight given")
+        out["self"] = max(0.0, 1.0 - others)
+    total = sum(out.values())
+    if total <= 0:
+        raise ValueError("selfplay.opponents.weights: all weights are 0")
+    return {k: v / total for k, v in out.items()}
+
+
 def threads() -> int:
     return os.cpu_count() or 4
 
@@ -76,6 +106,7 @@ def run_dir(cfg: dict) -> Path:
 def resolve(cfg: dict) -> dict:
     """The JSON the Node side reads (src/ai/selfplay/config.ts ResolvedConfig)."""
     sp, inf = cfg["selfplay"], cfg["inference"]
+    opp = sp.get("opponents") or {}
     n_servers = max(1, len(inf["gpus"] or [0])) * max(1, int(inf.get("serversPerGpu", 1))) if inf["backend"] != "mock" else 1
     workers = sp["workers"]
     if workers == "auto":
@@ -100,6 +131,7 @@ def resolve(cfg: dict) -> dict:
         "env": cfg["env"], "target": cfg["target"],
         "eval": {"gamesPerOpponent": int(cfg["eval"]["gamesPerOpponent"]), "opponents": list(cfg["eval"]["opponents"]),
                  "concurrentGames": int(cfg["eval"]["concurrentGames"]), "searchAiOptions": cfg["eval"].get("searchAi") or {}},
+        "opponents": {"weights": opponent_weights(opp.get("weights")), "searchAiOptions": opp.get("searchAiOptions") or {}},
     }
 
 

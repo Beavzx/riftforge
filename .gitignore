@@ -7,3 +7,9 @@ tests/ui/shots/
 __pycache__/
 *.pyc
 *.rfs.tmp
+# RiftAtlas replays: never committed or redistributed (docs/data-sources.md)
+riftatlas-replays/
+replays-incoming/
+*.riftatlas.json
+*.riftatlas.json.gz
+riftatlas-replay-*.json

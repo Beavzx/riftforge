@@ -1265,3 +1265,58 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   yields under half the positions (2.2× per position), plus GPU work on slot 1. The 85/5/5/5 mix costs about 3% more
   CPU per position than pure self-play. (best and self ran identical games here: with a uniform evaluator the slot
   doesn't matter and both draw the rng in the same order.)
+
+## 2026-11-28 — RiftAtlas public-replay collector (branch feat/riftatlas-collector)
+- Why: the RiftAtlas operator agreed, by email to Jonathon on 2026-11-28, to a low-rate script on his own account
+  that collects new public replays every few hours for personal practice-partner training. The conditions are that
+  names stay stripped, nothing is redistributed, and the request rate stays conservative. The quote and how each
+  condition is met are in `docs/data-sources.md`, together with Riot's rule against publishing or retaining
+  metagame-defining data.
+- `tools/riftatlas/collect.py` (stdlib only).
+  - **Requests per run:** one `publicReplays:list` (`sort: "new"`), then at most 20 new public replays
+    (`--max`). Requests are at least 5 s apart (default 8 s). A run refuses to start within 2 h of the last one,
+    and a lock prevents overlapping runs.
+  - **Errors and back-off:** the first 401/403/429/5xx, network error or unexpected status stops the run.
+    429/5xx/network errors set a back-off of 6 h, doubling to 48 h, or the server's `Retry-After` if longer.
+  - **Credentials:** a 10-minute JWT in `~/.config/riftatlas/token`, or a session cookie in
+    `~/.config/riftatlas/session` that mints a fresh JWT with one `POST https://auth.riftatlas.com/api/auth/token`
+    per run. Both files must be mode 600. Neither the cookie nor the token is ever logged.
+  - **Output:** anonymised node-graph replays, gzipped, in `~/riftatlas-replays/replays/<id>.json.gz` (mode 700/600;
+    a data dir inside the repo is refused), plus `state.json` with collected, skipped and failed ids and a
+    name-free outcome per replay.
+  - **Runner:** `scripts/riftatlas-collect.sh`. The doc has a systemd user timer and a cron line for every 4 h;
+    neither is installed.
+- `tools/riftatlas/anonymise.py` works on the node graph (`[type, body]` nodes, `{"r": i}` references).
+  - **Names:** display names become `P0`/`P1` by seat in player objects, name fields, log text and every other
+    free-text string, as whole names, case-insensitively.
+  - **Ids:** `plr_` ids become `seat0`/`seat1` everywhere, including keys and embedded ids; any other `plr_` id
+    becomes `anon<N>`.
+  - **Dropped:** `viewerPlayerId` (replaced by `perspectiveSeat`), `identity`, board settings, comments, views,
+    share links, and email/avatar/profile/account fields.
+  - **Protected:** card names, decklist lines and enum fields, so a player called "Stupefy", "Kai" or "base"
+    leaves the cards and zones alone.
+  - **Verification:** `verify()` re-parses the bytes to be written and refuses them if any original id, any
+    `plr_` string, a name outside a protected card name (also URL-encoded), or a dropped key survives.
+  - **Outcome:** `extract_outcome()` takes `gameOutcome.winnerPlayerIds` first, then a unique score ≥ 8, then the
+    other side of a final concession. A concession is not always a loss: in two samples the winner leaves after
+    reaching 8.
+  - **Size:** 22–57 KB gzipped per replay.
+- Endpoints and auth were read from the site's JS bundle; no API request was made while building this:
+  - list: `POST https://data.riftatlas-workers.com/rpc/publicReplays:list`, `text/plain` body
+    `{"args":{...},"token":JWT}`, returning an array with no cursor;
+  - replay: `GET https://data.riftatlas-workers.com/api/public-replays/<id>?locale=en` with a Bearer token and
+    `accept: application/vnd.riftatlas.replay+json;version=2`;
+  - the JWT comes from RiftAtlas's own auth service and keeps the Clerk issuer (RS256, aud `riftatlas`, 600 s).
+- Replay frames contain both players' hands and deck order. Training use must go through the acting player's view
+  (see the doc).
+- `.gitignore`: `riftatlas-replays/`, `replays-incoming/`, `riftatlas-replay-*.json`, `*.riftatlas.json*`.
+- Tests: `python/tests/test_riftatlas.py`, 39 tests.
+  - Decoding is checked against the reference decode. Anonymisation of the five samples (kept outside the repo,
+    skipped when absent) and of a synthetic replay with the awkward names is checked by an independent leak check.
+  - The verifier's catches are tampered in deliberately. Outcomes, including the fallbacks, are checked.
+  - The collector's skip/cap/spacing, 429/5xx/401/403/network back-off, 404/202, permissions, expiry, the
+    session-cookie refresh and the in-repo refusal run against a fake HTTP layer.
+- First live run (2026-11-28, supervised, 3 runs, 10 requests in total): minting a token from the session cookie works;
+  the list and the replay fetch need the page's `Origin` (403 `origin_required` without it); replays are served
+  by `realtime.riftatlas-workers.com` (the data host answers 404). `publicReplays:list` "new" returns 50 entries.
+  First replay saved: 142 frames, 36 KB gzipped; a scan found no `plr_` ids, no viewer id and no email addresses.

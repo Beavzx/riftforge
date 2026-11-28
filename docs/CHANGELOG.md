@@ -1164,3 +1164,21 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   previous eval (best games cost about twice the others); otherwise the next eval's step (newest evaluated or pinned
   step from `ckpt/eval_step.txt` + every) and when the trainer reaches it at its last-hour step rate, plus how long the
   last eval took. Test: python/tests/test_dashboard.py.
+
+## 2026-11-28 — epyc-1: GPU out-of-memory stopped the run (trainer and inference hardening)
+- 00:50: inference server 47003 failed `cublasCreate(handle)` with `CUBLAS_STATUS_ALLOC_FAILED`. `is_oom` only matched
+  "out of memory", so the batches weren't split and retried: ~3,600 self-play games and 10 of the step-18,500 eval
+  games ended as errors within 40 s, and then it recovered. Errored games write no positions.
+- 03:33: during the step-24,500 eval the trainer hit a CUDA OOM (256 MB, with 189 MB free; 4 servers at 1.25–1.35 GB
+  each against a 1.15 GB `memoryFraction` cap) and exited. The launcher stopped the run, which stayed down until 10:20.
+- Cause of the over-cap memory: the servers ran `backend.infer` on asyncio's default thread pool, which adds a thread
+  whenever a reload holds the idle one. Every thread that runs a CUDA matmul creates its own cuBLAS handle and
+  workspace, which the caching allocator's cap doesn't count.
+- Fixes:
+  - `infer_server.py`: all GPU forwards run on one dedicated thread (one cuBLAS handle per server), and `is_oom` also
+    matches `STATUS_ALLOC_FAILED`.
+  - `train.py`: an OOM in forward/backward skips the batch (no optimizer step, gradients cleared, cache emptied
+    outside the except block, back-off of 2 s × the number in a row); it stops only after 30 in a row.
+  - Tested with injected OOMs on a scratch copy of the run (real model on the GPU, real shards); new test
+    `test_is_oom_covers_cublas_handle_allocation_failure`.
+- Step-24,500 eval lost. On resume the launcher evaluates the newest checkpoint (27,956) straight away.

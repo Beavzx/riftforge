@@ -117,6 +117,13 @@ def test_server_splits_batch_on_out_of_memory():
     assert is_oom(RuntimeError("CUDA out of memory. Tried to allocate 2 GiB"))
 
 
+def test_is_oom_covers_cublas_handle_allocation_failure():
+    # epyc-1 2026-11-28 00:50: not retried, so ~3,600 self-play games failed in 40 s
+    assert is_oom(RuntimeError("CUDA error: CUBLAS_STATUS_ALLOC_FAILED when calling `cublasCreate(handle)`"))
+    assert is_oom(RuntimeError("cuDNN error: CUDNN_STATUS_ALLOC_FAILED"))
+    assert not is_oom(RuntimeError("CUDA error: an illegal memory access was encountered"))
+
+
 # ---- 4 / 11: prefetcher ----------------------------------------------------------------------------------------
 class _Win:
     def __init__(self, recs): self.recs = recs

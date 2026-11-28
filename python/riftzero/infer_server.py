@@ -21,6 +21,7 @@ import os
 import struct
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .schema import load_schema
@@ -31,13 +32,19 @@ MAX_CONSECUTIVE_FAILURES = 50
 
 
 def is_oom(e: BaseException) -> bool:
-    return "out of memory" in str(e).lower() or type(e).__name__ == "OutOfMemoryError"
+    """CUDA out of memory, including cuBLAS/cuDNN failing to allocate a handle or workspace (epyc-1 2026-11-28 00:50:
+    `CUBLAS_STATUS_ALLOC_FAILED when calling cublasCreate(handle)` was not retried and failed ~3,600 games in 40 s)."""
+    msg = str(e).lower()
+    return ("out of memory" in msg or "status_alloc_failed" in msg or type(e).__name__ == "OutOfMemoryError")
 
 
 class Server:
     def __init__(self, backend, schema_hash: int, max_batch: int, timeout_ms: float, reload_every: float, stats_path: Path | None):
         self.backend = backend
         self.schema_hash = schema_hash
+        # every GPU forward runs on this one thread: each thread that runs a CUDA matmul creates its own cuBLAS handle and
+        # workspace outside the memoryFraction cap, and the default pool adds threads whenever a reload holds the idle one
+        self.gpu_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="infer-gpu")
         self.max_batch = max_batch
         self.timeout = timeout_ms / 1000.0
         self.reload_every = reload_every
@@ -129,7 +136,7 @@ class Server:
         try:
             if self.backend.name == "mock":
                 return self.backend.infer(obs)
-            return await loop.run_in_executor(None, self.backend.infer, obs)
+            return await loop.run_in_executor(self.gpu_pool, self.backend.infer, obs)
         except Exception as e:
             if not is_oom(e) or len(obs) <= 1:
                 raise

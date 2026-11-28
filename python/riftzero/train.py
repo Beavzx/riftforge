@@ -28,6 +28,9 @@ from .checkpoints import ckpt_dir, list_steps, promote_best
 from .dataset import BadStepGuard, Prefetcher, ReplayWindow
 from .model import RiftNet, batch_to_torch, count_params, forward_batch, model_config
 from .schema import load_schema
+from .infer_server import is_oom
+
+MAX_OOM_IN_ROW = 30   # ~13 min of back-off: a real leak, not a transient peak
 
 AMP = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": None}
 
@@ -157,6 +160,7 @@ def main(argv=None):
     acc = {"loss": 0.0, "pi": 0.0, "v": 0.0, "ent": 0.0, "n": 0}
     max_steps = args.max_steps
     steps_this_run = 0
+    oom_in_row = 0
     print(f"[train] waiting for {tc['minPositions']} positions before training", flush=True)
     publish = True   # final checkpoint on exit (not after a non-finite abort: those weights must not reach self-play)
     try:
@@ -174,16 +178,39 @@ def main(argv=None):
             nb = pre.get()          # raises if the prefetch thread died; None = not ready yet (re-check STOP)
             if nb is None:
                 continue
-            b = batch_to_torch(nb, dev)
-            model.train()
-            with torch.autocast(dev.type, dtype=amp, enabled=amp is not None):
-                value, logits = forward_batch(fwd_model, b)
-            logp = Fn.log_softmax(logits.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
-            loss_pi = -(b["pi"] * logp).sum(-1).mean()
-            loss_v = Fn.mse_loss(value.float(), b["z"])
-            loss = loss_pi + vw * loss_v
-            opt.zero_grad(set_to_none=True)
-            if not torch.isfinite(loss):
+            oom = None
+            try:
+                b = batch_to_torch(nb, dev)
+                model.train()
+                with torch.autocast(dev.type, dtype=amp, enabled=amp is not None):
+                    value, logits = forward_batch(fwd_model, b)
+                logp = Fn.log_softmax(logits.float(), dim=-1).masked_fill(~b["action_mask"], 0.0)
+                loss_pi = -(b["pi"] * logp).sum(-1).mean()
+                loss_v = Fn.mse_loss(value.float(), b["z"])
+                loss = loss_pi + vw * loss_v
+                opt.zero_grad(set_to_none=True)
+                finite = bool(torch.isfinite(loss))
+                if finite:
+                    scaler.scale(loss).backward()
+            except Exception as e:
+                # the trainer shares the card with the inference servers: a transient out-of-memory (epyc-1 2026-11-28
+                # 03:33, during an eval) skips this batch instead of ending the run. Weights are untouched (no step yet).
+                if not is_oom(e):
+                    raise
+                oom = str(e).splitlines()[0][:160]
+            if oom is not None:   # cleanup outside the except block: the traceback holds the forward's activations
+                oom_in_row += 1
+                b = value = logits = logp = loss_pi = loss_v = loss = None
+                opt.zero_grad(set_to_none=True)
+                if dev.type == "cuda":
+                    torch.cuda.empty_cache()
+                print(f"[train] CUDA out of memory; batch skipped ({oom_in_row} in a row): {oom}", flush=True)
+                if oom_in_row >= MAX_OOM_IN_ROW:
+                    raise SystemExit(f"[train] {oom_in_row} out-of-memory batches in a row: stopping (checkpoint saved).")
+                time.sleep(min(30.0, 2.0 * oom_in_row))
+                continue
+            oom_in_row = 0
+            if not finite:
                 print(f"[train] non-finite loss (policy {loss_pi.item()}, value {loss_v.item()}); batch skipped "
                       f"({guard.in_row + 1} in a row)", flush=True)
                 if guard.bad():
@@ -191,7 +218,6 @@ def main(argv=None):
                     raise SystemExit(f"[train] {guard.in_row} non-finite steps in a row: stopping WITHOUT publishing a checkpoint. "
                                      "Last good weights: ckpt/latest.pt. Check metrics.jsonl / recent shards.")
                 continue
-            scaler.scale(loss).backward()
             scaler.unscale_(opt)
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             if not torch.isfinite(gn) and not scaler.is_enabled():

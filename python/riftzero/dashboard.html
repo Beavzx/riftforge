@@ -49,12 +49,30 @@ main { max-width: 1400px; margin: 0 auto; padding: 12px 24px 40px; display: grid
 @media (max-width: 1000px) { .s6, .s4 { grid-column: span 12; } }
 .card h2 { font-size: 15px; font-weight: 600; margin: 0; }
 .card .sub { color: var(--text-secondary); font-size: 13px; margin: 2px 0 10px; }
-.tiles { grid-column: span 12; display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) repeat(6, minmax(0, 1fr)); }
-@media (max-width: 1100px) { .tiles { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } .tile.hero { grid-column: 1 / -1; } }
+.tiles { grid-column: span 12; display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr)); }
+.tile.hero { grid-row: span 2; }
+@media (max-width: 1100px) { .tiles { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } .tile.hero { grid-column: 1 / -1; grid-row: auto; } }
 .tile .label { color: var(--text-secondary); font-size: 13px; }
 .tile .value { font-size: 26px; font-weight: 600; margin-top: 2px; }
 .tile .note { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
 .tile.hero .value { font-size: 48px; line-height: 1.1; }
+.tile.hero .split { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 8px; }
+.tile.hero .split > div { flex: 1 1 150px; min-width: 0; }
+.tile.warn { border-color: var(--warning); } .tile.crit { border-color: var(--critical); }
+.tile .warntext { color: var(--text-primary); font-weight: 600; }
+.temps { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 20px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.temps span { display: inline-flex; align-items: center; gap: 5px; }
+.temps small { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+.temps i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.howto { color: var(--text-secondary); font-size: 12px; margin-top: 8px; }
+.howto b { font-weight: 600; }
+.evlabel { fill: var(--text-secondary); font-size: 10.5px; }
+details.more { margin-top: 0; color: var(--text-primary); font-size: 14px; }
+details.more > summary { cursor: pointer; font-size: 15px; font-weight: 600; }
+details.more > summary .sub { display: inline; font-weight: 400; margin-left: 6px; }
+.more-grid { display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px; }
+@media (max-width: 1000px) { .more-grid { grid-template-columns: minmax(0, 1fr); } }
+.more-grid h3 { font-size: 14px; font-weight: 600; margin: 0; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 6px; color: var(--text-secondary); font-size: 13px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend b { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
@@ -92,43 +110,54 @@ details table { margin-top: 6px; color: var(--text-primary); }
   <div class="tiles" id="tiles"></div>
 
   <section class="card s12">
-    <h2>Elo by eval opponent</h2>
-    <div class="sub">Strength of each evaluated checkpoint relative to the opponent (0 = even, −200 ≈ wins 24%, +200 ≈ wins 76%). Shaded = 95% range. Judge the trend across evals, not one result.</div>
+    <h2>Elo vs the fixed opponents</h2>
+    <div class="sub">Strength of each evaluated checkpoint against the rules bot and SearchAI, which never change (0 = even, −200 ≈ wins 24%, +200 ≈ wins 76%). Shaded = 95% range. Dashed lines = logged changes.</div>
     <div class="legend" id="eloLegend"></div>
     <div class="chart" id="eloChart"></div>
+    <div class="howto"><b>How to read this:</b> higher is better. A line that climbs over several evals is progress; one jump that stays inside the shaded range is noise.</div>
+  </section>
+
+  <section class="card s12">
+    <h2>Training games vs fixed opponents</h2>
+    <div class="sub" id="oppSub">Self-play games where the net played a fixed opponent (selfplay.opponents), from the net's side, over the last 6 and 24 hours.</div>
+    <div class="chart" id="oppChart"></div>
+    <div class="howto"><b>How to read this:</b> the dot is the net's win rate, the bar is where the true rate most likely lies. Right of the 50% line = the net wins more than it loses. A 6 h dot left of the 24 h dot means it is getting worse.</div>
+    <div id="oppTable" style="overflow-x:auto"></div>
+  </section>
+
+  <section class="card s12">
+    <h2>Beats previous checkpoint?</h2>
+    <div class="sub">Each eval's score against "best", the checkpoint evaluated before it (a moving opponent, so not plotted as Elo). Bar = 95% range.</div>
+    <div class="chart" id="prevChart"></div>
+    <div class="howto"><b>How to read this:</b> a dot above the 50% line means the new checkpoint beat the one before it. With 40 games most bars cross 50%, so treat it as a sanity check; the fixed opponents above are the progress measure.</div>
   </section>
 
   <section class="card s4">
     <h2>Value loss</h2>
-    <div class="sub">Should fall below 0.9 within about a day; ~1.0 means it has learnt nothing. Faint = raw, solid = smoothed.</div>
+    <div class="sub">How well the net predicts who wins (mean squared error, lower is better). Faint = raw, solid = smoothed.</div>
+    <div class="legend" id="vLegend"></div>
     <div class="chart" id="vChart"></div>
+    <div class="howto"><b>How to read this:</b> watch the unseen-games line: it should creep down towards the 0.67 floor. The training line far below it only shows the net remembering games it has trained on.<span id="vNote"></span></div>
   </section>
   <section class="card s4">
     <h2>Policy loss</h2>
     <div class="sub">Cross-entropy against the search's improved policy. Faint = raw, solid = smoothed.</div>
+    <div class="legend" id="pLegend"></div>
     <div class="chart" id="pChart"></div>
+    <div class="howto"><b>How to read this:</b> lower = the net predicts the search's choice of move better. The unseen-games line is the honest one; a widening gap below it means memorising.</div>
   </section>
   <section class="card s4">
     <h2>Policy entropy</h2>
-    <div class="sub">Should fall slowly. A drop to about 0 in the first hours means collapse: lower train.lr.</div>
+    <div class="sub">How spread out the net's move choices are. Faint = raw, solid = smoothed.</div>
     <div class="chart" id="eChart"></div>
+    <div class="howto"><b>How to read this:</b> a slow fall means the net is getting more decisive. A drop to about 0 in the first hours means collapse: lower train.lr.</div>
   </section>
 
   <section class="card s6">
     <h2>Self-play throughput</h2>
     <div class="sub">Training positions generated per hour, over hours since the run started.</div>
     <div class="chart" id="tChart"></div>
-  </section>
-  <section class="card s6">
-    <h2>Deck win rate in self-play</h2>
-    <div class="sub">Non-mirror games, both sides the same net. Early on this only says which deck wins when both sides play badly.</div>
-    <div class="chart" id="deckChart"></div>
-  </section>
-
-  <section class="card s6">
-    <h2>Self-play matchups</h2>
-    <div class="sub">Row deck's win % against the column deck (n = games). Blue = row deck wins more, red = loses more.</div>
-    <div id="matrix"></div>
+    <div class="howto"><b>How to read this:</b> flat is healthy. Gaps are pauses or restarts; a lasting drop means slower games (engine, opponent mix) or fewer live workers.</div>
   </section>
   <section class="card s6">
     <h2>Latest eval by the net's deck</h2>
@@ -137,10 +166,9 @@ details table { margin-top: 6px; color: var(--text-primary); }
   </section>
 
   <section class="card s12">
-    <h2>Training games vs fixed opponents</h2>
-    <div class="sub" id="oppSub">Self-play games where the net played a fixed opponent (selfplay.opponents), from the net's side, over the last 6 and 24 hours.</div>
-    <div class="chart" id="oppChart"></div>
-    <div id="oppTable" style="overflow-x:auto"></div>
+    <h2>Changes</h2>
+    <div class="sub" id="changesSub">Changes and incidents logged in the run's events.jsonl. The numbers match the dashed markers on the step charts.</div>
+    <div id="changes"></div>
   </section>
 
   <section class="card s12">
@@ -148,6 +176,23 @@ details table { margin-top: 6px; color: var(--text-primary); }
     <div class="sub">Every eval, newest first. Games are played in pairs (same deal, seats swapped). Timeouts also count as draws.</div>
     <div class="scroll" id="evalTable"></div>
   </section>
+
+  <details class="card s12 more" id="more">
+    <summary>Details<span class="sub">deck win rates and matchups in self-play</span></summary>
+    <div class="more-grid">
+      <div>
+        <h3>Deck win rate in self-play</h3>
+        <div class="sub">Non-mirror games, both sides the same net. Early on this only says which deck wins when both sides play badly.</div>
+        <div class="chart" id="deckChart"></div>
+        <div class="howto"><b>How to read this:</b> a bar past the 50% line means the net wins more often with that deck when it plays both sides; it says little about how strong the deck really is.</div>
+      </div>
+      <div>
+        <h3>Self-play matchups</h3>
+        <div class="sub">Row deck's win % against the column deck (n = games). Blue = row deck wins more, red = loses more.</div>
+        <div id="matrix" style="overflow-x:auto"></div>
+      </div>
+    </div>
+  </details>
 </main>
 <div id="tip"></div>
 </div>
@@ -213,14 +258,18 @@ function showTip(html, cx, cy) {
 }
 const hideTip = () => { tip.style.display = "none"; };
 
-// ---------- line chart: crosshair + tooltip, optional CI bands, markers, end labels, reference lines
+// ---------- line chart: crosshair + tooltip, optional CI bands or per-point range bars (series.bars), markers, end
+// labels, reference lines, and change markers (o.events: [{n, x, label, kind}], dashed vertical lines with labels)
 function lineChart(host, o) {
   host.innerHTML = "";
   const all = o.series.flatMap(s => s.pts);
   if (!all.length) { host.innerHTML = `<div class="empty">${esc(o.empty || "No data yet")}</div>`; return; }
   const W = Math.max(280, host.clientWidth), H = o.height || 220;
-  const m = { l: 50, r: o.endLabels ? 118 : 14, t: 10, b: o.xTitle ? 42 : 30 };
   let x0 = Math.min(...all.map(p => p.x)), x1 = Math.max(...all.map(p => p.x));
+  if (o.eventsExtend)   // sparse charts (evals): show changes made since the last point too
+    for (const e of o.events || []) if (e.x != null) { x0 = Math.min(x0, e.x); x1 = Math.max(x1, e.x); }
+  const evs = (o.events || []).filter(e => e.x != null && e.x >= x0 && e.x <= x1);
+  const m = { l: 50, r: o.endLabels ? 118 : 14, t: evs.length ? 30 : 10, b: o.xTitle ? 42 : 30 };
   if (x1 === x0) { x0 -= 1; x1 += 1; }
   const ys = all.flatMap(p => [p.y, p.lo, p.hi]).concat((o.refs || []).map(r => r.y)).concat(o.series.flatMap(s => (s.raw || []).map(p => p.y)))
     .filter(v => v !== undefined && v !== null && isFinite(v));
@@ -251,8 +300,36 @@ function lineChart(host, o) {
     const left = r.align === "left";
     el("text", { x: left ? m.l + 6 : W - m.r - 4, y: Y(r.y) - 5, "text-anchor": left ? "start" : "end", class: "reflabel" }, svg).textContent = r.label;
   }
+  // change markers: one dashed line per step (events at the same step share it), labels in two rows, cut to fit
+  const groups = [];
+  for (const e of evs) { const g = groups[groups.length - 1]; if (g && g.x === e.x) g.items.push(e); else groups.push({ x: e.x, items: [e] }); }
+  const CH = 5.9, rowEnd = [-Infinity, -Infinity];
+  groups.forEach((g, gi) => {
+    const gx = X(g.x), crit = g.items.some(e => e.kind === "incident");
+    const nums = g.items.map(e => e.n).join(","), label = g.items.map(e => e.label).join(" / ");
+    const room = (gi + 1 < groups.length ? X(groups[gi + 1].x) : W) - gx - 10;
+    const maxChars = Math.floor(room / CH) - nums.length - 1;
+    const txt = maxChars >= 6 ? `${nums} ${label.length > maxChars ? label.slice(0, maxChars - 1) + "…" : label}` : nums;
+    const row = gx + 3 >= rowEnd[0] ? 0 : gx + 3 >= rowEnd[1] ? 1 : -1;
+    const yTop = row === 1 ? 22 : 11;
+    el("line", { x1: gx, x2: gx, y1: row < 0 ? m.t : yTop + 2, y2: H - m.b, style: `stroke:${crit ? "var(--critical)" : "var(--text-secondary)"}`,
+      "stroke-width": 1, "stroke-dasharray": "3 3", "stroke-opacity": 0.7, "shape-rendering": "crispEdges" }, svg);
+    if (row < 0) return;      // no room for even the number: the tooltip and the Changes table still list it
+    rowEnd[row] = gx + 3 + txt.length * CH + 6;
+    const t = el("text", { x: gx + 3, y: yTop, class: "evlabel" }, svg);
+    t.textContent = txt;
+    el("title", {}, t).textContent = g.items.map(e => `${e.n}. ${e.label}`).join("\n");
+  });
   const path = pts => pts.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.y).toFixed(1)).join("");
   for (const s of o.series) {
+    if (s.bars) {   // separate measurements (e.g. each against a different opponent): a range bar per point, no line
+      for (const p of s.pts) if (p.lo != null && p.hi != null) {
+        el("line", { x1: X(p.x), x2: X(p.x), y1: Y(p.lo), y2: Y(p.hi), style: `stroke:${s.color}`, "stroke-width": 2, "stroke-opacity": 0.45 }, svg);
+        for (const v of [p.lo, p.hi]) el("line", { x1: X(p.x) - 4, x2: X(p.x) + 4, y1: Y(v), y2: Y(v), style: `stroke:${s.color}`, "stroke-width": 1.5, "stroke-opacity": 0.6 }, svg);
+      }
+      for (const p of s.pts) el("circle", { cx: X(p.x), cy: Y(p.y), r: 4.5, style: `fill:${s.color};stroke:var(--surface-1)`, "stroke-width": 2 }, svg);
+      continue;
+    }
     const band = s.pts.filter(p => p.lo !== undefined && p.hi !== undefined);
     if (band.length > 1) {
       const d = band.map((p, i) => (i ? "L" : "M") + X(p.x) + " " + Y(p.hi)).join("") + band.slice().reverse().map(p => "L" + X(p.x) + " " + Y(p.lo)).join("") + "Z";
@@ -284,6 +361,10 @@ function lineChart(host, o) {
       const p = at(s, x); if (!p) continue;
       h += `<div class="row"><b class="k" style="background:${s.color}"></b>${esc(s.name)}: <strong>${esc((o.yTipFmt || o.yFmt || compact)(p.y))}</strong>${p.note ? " " + esc(p.note) : ""}</div>`;
     }
+    // changes since the previous point (or at it)
+    const prevX = idx > 0 ? xs[idx - 1] : -Infinity;
+    for (const e of evs) if (e.x > prevX && e.x <= x)
+      h += `<div class="row"><b class="k" style="background:${e.kind === "incident" ? "var(--critical)" : "var(--text-secondary)"}"></b>${e.n}. ${esc(e.label)} <span style="color:var(--text-secondary)">(step ${esc(compact(e.x))})</span></div>`;
     if (cx === undefined) { const b = svg.getBoundingClientRect(); cx = b.left + X(x) * b.width / W; cy = b.top + m.t; }
     showTip(h, cx, cy);
   };
@@ -358,24 +439,76 @@ function renderHeader(d) {
   if (stale) msgs.push(`The run's status file is ${dur(age)} old: the launcher may have stopped or hung. Check the tmux session.`);
   if (st.reason) msgs.push(`Launcher: ${st.reason}`);
   if (d.errorGames) msgs.push(`${d.errorGames} self-play games hit an engine error (discarded; see runs/${d.run}/errors/).`);
+  const hl = d.health || {};
+  if (running && hl.exists && hl.guardT !== undefined && (!hl.running || hl.sensorsStale))
+    msgs.push(`Thermal guard not running or sensors stale (newest guard line ${dur(hl.guardAge)} old, sensors ${hl.sensorsAge != null ? dur(hl.sensorsAge) : "?"} old). Never run at full load without ~/thermal-guard.sh.`);
+  if (hl.alert) msgs.push(`Thermal guard: ${hl.alert}`);
   ban.textContent = msgs.join("  "); ban.classList.toggle("show", msgs.length > 0);
+}
+
+const LEVEL_COLOR = { ok: "var(--good)", warn: "var(--warning)", crit: "var(--critical)", unknown: "var(--neutral)" };
+
+function botHero(d) {
+  const b = d.botSummary || {}, tr = b.training, ev = b.eval, pv = b.evalPrev;
+  const every = (d.config.ckptEverySteps || 500) * (d.config.evalEveryCheckpoints || 3);
+  const block = (label, value, note) => `<div><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div><div class="note">${esc(note)}</div></div>`;
+  const trBlock = tr && tr.games
+    ? block("Training games, last 24 h", pct(tr.rate), `95% range ${pct(tr.lo)}–${pct(tr.hi)} · ${tr.wins}-${tr.losses}-${tr.draws} · n=${compact(tr.games)}`
+      + (b.training6 && b.training6.games ? ` · last 6 h ${pct(b.training6.rate)} (n=${compact(b.training6.games)})` : ""))
+    : block("Training games, last 24 h", "—", tr ? "No training games against the bot in the last 24 hours."
+      : "No training games against the bot: set selfplay.opponents.weights.bot (TRAINING.md).");
+  const evBlock = ev
+    ? block(`Latest eval, step ${compact(ev.step)}`, pct(ev.score), `${ev.wins}-${ev.losses}-${ev.draws}` + (ev.scoreLo != null ? ` · 95% range ${pct(ev.scoreLo)}–${pct(ev.scoreHi)}` : "")
+      + (pv ? ` · previous ${pct(pv.score)} (step ${compact(pv.step)})` : ""))
+    : block("Latest eval", "—", `No eval against the bot yet (first at about step ${compact(every)}).`);
+  return `<div class="card tile hero"><div class="label" style="color:var(--text-primary);font-weight:600">Win rate vs rules bot</div>`
+    + `<div class="split">${trBlock}${evBlock}</div>`
+    + `<div class="note" style="margin-top:10px">Draws and timeouts count half. The near-term yardstick: it should climb past 50%.</div></div>`;
+}
+
+function healthTile(d) {
+  const h = d.health || {}, path = h.path || "~/thermal-guard.log";
+  const shell = (cls, value, note) => `<div class="card tile${cls}" title="${esc(`Thermal guard log: ${path}. Guard limits: DDR5 ${(h.limits || {}).ddr5} °C, CPU ${(h.limits || {}).cpu} °C, M.2 ${(h.limits || {}).m2} °C.`)}">`
+    + `<div class="label">Health (thermal guard)</div>${value}<div class="note">${note}</div></div>`;
+  if (!h.exists) return shell("", `<div class="value">—</div>`, esc(`No thermal guard log (${path}).`));
+  if (h.guardT === undefined) return shell("", `<div class="value">—</div>`, "The thermal guard log has no sensor lines yet.");
+  const T = h.temps || {}, names = { ddr5: "DDR5", cpu: "CPU", m2: "NVMe" };
+  const temps = `<div class="temps">` + ["ddr5", "cpu", "m2"].map(k => { const t = T[k] || { level: "unknown" };
+    return `<span><i style="background:${LEVEL_COLOR[t.level] || "var(--neutral)"}"></i><small>${names[k]}</small>${t.c == null ? "—" : t.c + "°"}</span>`; }).join("") + `</div>`;
+  const hot = ["ddr5", "cpu", "m2"].filter(k => T[k] && (T[k].level === "warn" || T[k].level === "crit"));
+  const ok = h.running && !h.sensorsStale;
+  let note = ok ? `Guard running · sensors ${dur(h.sensorsAge)} old` : `<span class="warntext">⚠ Thermal guard not running / sensors stale</span> · guard line ${dur(h.guardAge)} old, sensors ${h.sensorsAge != null ? dur(h.sensorsAge) : "?"} old`;
+  if (hot.length) note += ` · ${hot.map(k => `${names[k]} ${T[k].level === "crit" ? "at" : "near"} its ${T[k].limit} °C limit`).join(", ")}`;
+  if (h.alert) note += ` · <span class="warntext">${esc(h.alert)}</span>`;
+  const crit = hot.some(k => T[k].level === "crit") || /LIMIT/.test(h.alert || "");
+  return shell(crit ? " crit" : (!ok || hot.length || h.alert) ? " warn" : "", temps, note);
+}
+
+// train.valueTargetQ > 0: the training value loss is against (1 - q) z + q · search value, an easier target, so it
+// drops at the change and can't be compared across it. The held-out (unseen games) loss is always scored against z.
+function qNote(vs, long) {
+  const q = vs && vs.valueTargetQ;
+  if (!q) return "";
+  const target = `${fix(1 - q, 2).replace(/0$/, "")} z + ${fix(q, 2).replace(/0$/, "")} q`, since = vs.qSinceStep != null ? ` since step ${nf.format(vs.qSinceStep)}` : "";
+  return long
+    ? ` Since the training target is blended with the search value (${target})${since}, the training line drops there for that reason alone and can't be compared across it; the unseen-games line is always scored against the game result.`
+    : ` (target ${target}${since}: not comparable across it; compare the unseen-games loss only)`;
 }
 
 function renderTiles(d) {
   const st = d.status || {}, sp = st.selfplay || {}, M = d.metrics, last = M[M.length - 1];
   const sa = d.evals.filter(e => e.opponent === "searchai"), lastSa = sa[sa.length - 1];
-  const tiles = [];
+  const tiles = [botHero(d)];
   const every = (d.config.ckptEverySteps || 500) * (d.config.evalEveryCheckpoints || 3);
-  tiles.push(`<div class="card tile hero"><div class="label">Elo vs SearchAI</div>` + (lastSa
-    ? `<div class="value">${signed(lastSa.elo)}</div><div class="note">95% range ${signed(lastSa.lo)} to ${signed(lastSa.hi)} · ${lastSa.wins}-${lastSa.losses}-${lastSa.draws} at step ${compact(lastSa.step)}${sa.length > 1 ? ` · previous ${signed(sa[sa.length - 2].elo)}` : ""}</div>`
-    : `<div class="value">—</div><div class="note">First eval at about step ${compact(every)} (every ${d.config.evalEveryCheckpoints || 3} checkpoints)</div>`) + `</div>`);
   const tile = (label, value, note) => tiles.push(`<div class="card tile"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div><div class="note">${esc(note || "")}</div></div>`);
+  const vs = d.valueSummary || {}, hv = vs.held, floor = vs.floor || 0.67;
+  tile("Value loss, unseen games", hv ? fix(hv.v_mse, 3) : "—", hv
+    ? `floor ≈ ${fix(floor, 2)} · corr ${fix(hv.v_corr, 2)} · step ${compact(hv.step)}` + (vs.heldPrev ? ` · previous ${fix(vs.heldPrev.v_mse, 3)}` : "") + ` · training loss ${fix(vs.trainSmoothed, 2)}` + qNote(vs)
+    : `No held-out measurement yet: the trainer logs one at each checkpoint (train.holdoutEvery).` + (vs.trainSmoothed != null ? ` Training loss ${fix(vs.trainSmoothed, 2)} flatters: it includes memorised games.` + qNote(vs) : ""));
+  tile("Elo vs SearchAI", lastSa ? signed(lastSa.elo) : "—", lastSa
+    ? `95% range ${signed(lastSa.lo)} to ${signed(lastSa.hi)} · ${lastSa.wins}-${lastSa.losses}-${lastSa.draws} at step ${compact(lastSa.step)}${sa.length > 1 ? ` · previous ${signed(sa[sa.length - 2].elo)}` : ""}`
+    : `First eval at about step ${compact(every)} (every ${d.config.evalEveryCheckpoints || 3} checkpoints)`);
   tile("Trainer step", last ? compact(last.step) : "0", last ? `${compact(last.samples_per_s || 0)} samples/s · reuse ${fix(last.reuse, 2)}` : `waiting for ${compact(d.config.minPositions || 10000)} positions`);
-  tile("Games / hour", st.gamesPerSec !== undefined ? compact(st.gamesPerSec * 3600) : "—", `${compact(sp.games || 0)} games since this launch`);
-  tile("Positions", compact(last ? Math.max(last.positions_seen || 0, sp.positions || 0) : sp.positions || 0), `${compact(sp.timeouts || 0)} timeouts · ${compact(sp.errors || 0)} errors`);
-  const sm = M.length ? ema(M.filter(r => r.loss_value != null).map(r => ({ x: r.step, y: r.loss_value })), 0.9) : [];
-  tile("Value loss", sm.length ? fix(sm[sm.length - 1].y, 3) : "—", "smoothed · target < 0.9 by day 1");
-  tile("Workers", st.workers ? `${st.workersAlive}/${st.workers}` : "—", `${st.workerRestarts || 0} restarts` + (d.servers[0] ? ` · GPU batch ${fix(d.servers[0].avgBatch, 1)}` : ""));
   const es = d.evalSchedule || {}, clock = s => new Date((d.now + s) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   if (es.running) {
     const r = es.running, opp = Object.entries(r.byOpponent).map(([o, n]) => `${o} ${n}/${r.gamesPerOpponent}`).join(" · ");
@@ -384,44 +517,85 @@ function renderTiles(d) {
     const when = es.startsIn == null ? "—" : es.startsIn < 60 ? "due now" : `in ${dur(es.startsIn)}`;
     tile("Next eval", when, `step ${compact(es.nextStep)} (trainer ${compact(es.trainerStep)}` + (es.stepsPerHour ? `, ${compact(es.stepsPerHour)} steps/h` : "") + `)` + (es.startsIn != null && es.startsIn >= 60 ? ` · starts ≈${clock(es.startsIn)}` : "") + (es.lastDuration ? ` · last eval took ${dur(es.lastDuration)}` : ""));
   }
+  tile("Games / hour", st.gamesPerSec !== undefined ? compact(st.gamesPerSec * 3600) : "—", `${compact(sp.games || 0)} games since this launch`);
+  tile("Positions", compact(last ? Math.max(last.positions_seen || 0, sp.positions || 0) : sp.positions || 0), `${compact(sp.timeouts || 0)} timeouts · ${compact(sp.errors || 0)} errors`);
+  tile("Workers", st.workers ? `${st.workersAlive}/${st.workers}` : "—", `${st.workerRestarts || 0} restarts` + (d.servers[0] ? ` · GPU batch ${fix(d.servers[0].avgBatch, 1)}` : ""));
+  tiles.push(healthTile(d));
   document.getElementById("tiles").innerHTML = tiles.join("");
 }
 
+// change markers for the step charts, numbered as in the Changes table
+const eventMarks = d => (d.events || []).map((e, i) => ({ n: i + 1, x: e.step, label: e.label, kind: e.kind }));
+const legendHtml = items => items.map(([name, color]) => `<span><b style="background:${color}"></b>${esc(name)}</span>`).join("");
+
 function renderElo(d) {
-  const present = OPP.filter(o => d.evals.some(e => e.opponent === o.key));
-  document.getElementById("eloLegend").innerHTML = present.map(o => `<span><b style="background:${o.color}"></b>${esc(o.name)}</span>`).join("");
-  const series = present.map(o => ({ name: o.name, color: o.color, pts: d.evals.filter(e => e.opponent === o.key)
+  const fixed = OPP.filter(o => o.key !== "best");          // "best" moves with every eval: see renderPrev
+  const evals = d.evals.filter(e => fixed.some(o => o.key === e.opponent));
+  const present = fixed.filter(o => evals.some(e => e.opponent === o.key));
+  document.getElementById("eloLegend").innerHTML = legendHtml(present.map(o => [o.name, o.color]))
+    + (d.events && d.events.length ? `<span><b style="height:0;background:none;border-top:1.5px dashed var(--text-secondary)"></b>change</span><span><b style="height:0;background:none;border-top:1.5px dashed var(--critical)"></b>incident</span>` : "");
+  const series = present.map(o => ({ name: o.name, color: o.color, pts: evals.filter(e => e.opponent === o.key)
     .map(e => ({ x: e.step, y: e.elo, lo: e.lo, hi: e.hi, note: `(${e.wins}-${e.losses}-${e.draws}${e.timeouts ? `, ${e.timeouts} timeouts` : ""})` })) }));
-  const rows = d.evals.slice().reverse().map(e => [compact(e.step), (OPP.find(o => o.key === e.opponent) || { name: e.opponent }).name, `${e.wins}-${e.losses}-${e.draws}`, signed(e.elo), `${signed(e.lo)} to ${signed(e.hi)}`]);
+  const rows = evals.slice().reverse().map(e => [compact(e.step), (OPP.find(o => o.key === e.opponent) || { name: e.opponent }).name, `${e.wins}-${e.losses}-${e.draws}`, signed(e.elo), `${signed(e.lo)} to ${signed(e.hi)}`]);
   lineChart(document.getElementById("eloChart"), {
     series, height: 280, markers: true, endLabels: true, clamp: [-800, 800], yFmt: signed, xTitle: "trainer step",
-    refs: [{ y: 0, label: "even", align: "left" }], label: "Elo by eval opponent over trainer steps",
+    refs: [{ y: 0, label: "even", align: "left" }], label: "Elo against the rules bot and SearchAI over trainer steps",
+    events: eventMarks(d), eventsExtend: true,
     empty: "No evals yet. The first one runs after a few checkpoints; this chart fills in from there.",
     table: rows.length ? details("Table view", tableHtml(["Step", "Opponent", "W-L-D", "Elo", "95% range"], rows, [0, 3])) : "",
   });
 }
 
+function renderPrev(d) {
+  const best = OPP.find(o => o.key === "best");
+  const ev = d.evals.filter(e => e.opponent === "best" && e.scoreLo != null);
+  const pts = ev.map(e => ({ x: e.step, y: e.score, lo: e.scoreLo, hi: e.scoreHi,
+    note: `(${e.wins}-${e.losses}-${e.draws}${e.bestStep != null ? ` vs step ${compact(e.bestStep)}` : ""}; 95% ${pct(e.scoreLo)}–${pct(e.scoreHi)})` }));
+  const rows = ev.slice().reverse().map(e => [compact(e.step), e.bestStep != null ? compact(e.bestStep) : "—", `${e.wins}-${e.losses}-${e.draws}`, pct(e.score), `${pct(e.scoreLo)}–${pct(e.scoreHi)}`]);
+  const host = document.getElementById("prevChart"), wide = host.clientWidth >= 560;
+  lineChart(host, {
+    series: [{ name: "score vs previous", color: best.color, pts, bars: true }], height: 190, clamp: [0, 1], xTitle: "trainer step",
+    yFmt: pct, yTipFmt: v => fix(100 * v, 1) + "%", refs: [{ y: 0.5, label: wide ? "50% = no better than the previous checkpoint" : "50% = even", align: "left" }],
+    label: "score against the previous checkpoint at each eval", events: eventMarks(d), eventsExtend: true,
+    empty: "No evals against the previous checkpoint yet.",
+    table: rows.length ? details("Table view", tableHtml(["Step", "Previous (best)", "W-L-D", "Score", "95% range"], rows, [0, 1, 3])) : "",
+  });
+}
+
 function renderLosses(d) {
-  const M = d.metrics;
-  const one = (id, key, refs, empty, heldKey) => {
+  const M = d.metrics, evs = eventMarks(d);
+  const one = (id, key, refs, empty, heldKey, legendId) => {
     const raw = M.filter(r => r[key] != null).map(r => ({ x: r.step, y: r[key] }));
     const sm = ema(raw, 0.9);
     const tail = raw.slice(-40).reverse().map((p, i) => [compact(p.x), fix(p.y, 4), fix(sm[sm.length - 1 - i].y, 4)]);
     // held-out games (never trained on): one point per checkpoint measurement, i.e. wherever the logged value changes
     const held = [];
     if (heldKey) for (const r of M) if (r[heldKey] != null && (!held.length || held[held.length - 1].y !== r[heldKey])) held.push({ x: r.step, y: r[heldKey] });
-    const series = [{ name: held.length ? "training (smoothed)" : "smoothed", color: "var(--series-1)", pts: sm, raw }];
-    if (held.length) series.push({ name: "held-out games", color: "var(--series-2)", pts: held });
+    const series = [{ name: held.length ? "training" : "smoothed", color: "var(--series-1)", pts: sm, raw }];
+    if (held.length) series.push({ name: "unseen games", color: "var(--series-2)", pts: held });
+    if (legendId) document.getElementById(legendId).innerHTML = held.length
+      ? legendHtml([["unseen games: the honest number", "var(--series-2)"], ["training batches: partly memorised", "var(--series-1)"]]) : "";
     lineChart(document.getElementById(id), {
-      series, refs, height: 200, xTitle: "step", endLabels: held.length > 0,
+      series, refs, height: 200, xTitle: "step", endLabels: held.length > 0, events: evs,
       yFmt: v => fix(v, 2), yTipFmt: v => fix(v, 3), label: key, empty,
-      table: raw.length ? details("Table view (latest 40)", tableHtml(["Step", "Raw", "Smoothed"], tail, [0, 1, 2])) : "",
+      table: raw.length ? details("Table view (latest 40)", tableHtml(["Step", "Training (raw)", "Training (smoothed)"], tail, [0, 1, 2])
+        + (held.length ? tableHtml(["Step", "Unseen games"], held.slice(-20).reverse().map(p => [compact(p.x), fix(p.y, 4)]), [0, 1]) : "")) : "",
     });
   };
   const wait = `Waiting for the trainer (it starts after ${compact(d.config.minPositions || 10000)} positions).`;
-  one("vChart", "loss_value", [{ y: 1.0, label: "1.0 learnt nothing" }, { y: 0.9, label: "0.9 day-1 target" }], wait, "held_v_mse");
-  one("pChart", "loss_policy", [], wait, "held_pi_ce");
+  const floor = (d.valueSummary || {}).floor || 0.67;
+  document.getElementById("vNote").textContent = qNote(d.valueSummary, true);
+  one("vChart", "loss_value", [{ y: 1.0, label: "1.0 = learnt nothing" }, { y: floor, label: "floor (outcome randomness)", align: "left" }], wait, "held_v_mse", "vLegend");
+  one("pChart", "loss_policy", [], wait, "held_pi_ce", "pLegend");
   one("eChart", "policy_entropy", [], wait);
+}
+
+function renderChanges(d) {
+  const E = d.events || [], host = document.getElementById("changes");
+  if (!E.length) { host.innerHTML = `<div class="empty">No changes logged. Append one JSON line per change to runs/${esc(d.run)}/events.jsonl (format in TRAINING.md).</div>`; return; }
+  host.innerHTML = tableHtml(["#", "Step", "When", "Kind", "What"], E.map((e, i) => [String(i + 1), e.step != null ? nf.format(e.step) : "—",
+    e.t ? new Date(e.t * 1000).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—",
+    e.kind, e.label]), [0, 1]);
 }
 
 function renderThroughput(d) {
@@ -546,9 +720,11 @@ function renderOpponents(d) {
 
 function render() {
   if (!DATA) return;
-  renderHeader(DATA); renderTiles(DATA); renderElo(DATA); renderLosses(DATA); renderThroughput(DATA);
-  renderDecks(DATA); renderEvalDeck(DATA); renderOpponents(DATA); renderEvalTable(DATA);
+  renderHeader(DATA); renderTiles(DATA); renderElo(DATA); renderOpponents(DATA); renderPrev(DATA); renderLosses(DATA);
+  renderThroughput(DATA); renderEvalDeck(DATA); renderChanges(DATA); renderEvalTable(DATA); renderDecks(DATA);
 }
+// the Details section is collapsed: its chart has no width until opened, so draw it again then
+document.getElementById("more").addEventListener("toggle", () => { if (DATA && document.getElementById("more").open) renderDecks(DATA); });
 
 async function refresh() {
   try {

@@ -1320,3 +1320,56 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   the list and the replay fetch need the page's `Origin` (403 `origin_required` without it); replays are served
   by `realtime.riftatlas-workers.com` (the data host answers 404). `publicReplays:list` "new" returns 50 entries.
   First replay saved: 142 frames, 36 KB gzipped; a scan found no `plr_` ids, no viewer id and no email addresses.
+
+## 2026-11-28 — Dashboard tidy: honest numbers first (branch feat/dashboard-tidy)
+- Why: the value head memorises games, so the training value loss (~0.40, and lower again since the 0.75 z + 0.25 q
+  target) flattered the net. The held-out loss is the honest number. The Elo against "best" zig-zags because "best"
+  moves with every eval. Near-term progress is judged by the win rate against the rules bot.
+- **Tiles.**
+  - The hero tile is now **Win rate vs rules bot**: the training games against the bot over the last 24 h (rate,
+    95% Wilson range, W-L-D, n, plus the last 6 h) next to the latest eval against the bot (score, W-L-D, 95%
+    range, previous eval).
+  - Elo vs SearchAI is now a normal tile.
+  - **Value loss, unseen games** replaces the training value-loss tile: the newest `held_v_mse` with its
+    correlation, the step, the previous measurement, "floor ≈ 0.67", and the smoothed training loss for contrast.
+    When `train.valueTargetQ` > 0 (read from the run's config.json), the tile and the value chart's caption say
+    the training loss is against the blended target from step N, so it can't be compared across that step. N is
+    the newest events.jsonl line whose label says "value target".
+  - New **Health (thermal guard)** tile, from `~/thermal-guard.log`; the path can be changed with `--thermal-log`.
+    It shows DDR5 / CPU / NVMe °C, coloured against the guard's limits (80 / 90 / 78 °C, amber within 5 °C).
+    It says "guard running" while the newest line is under 3 minutes old; otherwise it warns "thermal guard not
+    running / sensors stale", which also goes in the banner while the run is running. The guard's WARNING and
+    LIMIT CROSSED lines show too. With no log, the tile says "No thermal guard log".
+- **Charts.**
+  - The Elo chart shows only the fixed opponents (bot, SearchAI).
+  - The new strip **Beats previous checkpoint?** plots each eval's score against "best" as a win % with its 95%
+    range (a dot with a range bar, not joined by a line) and a 50% line. The tooltip names the checkpoint it
+    played (`best_step` from elo.csv).
+  - The value chart has a reference line at 0.67, "floor (outcome randomness)". Its lines are now named "unseen
+    games" and "training", with a legend that says which one is honest. The 0.9 day-1 target is gone.
+  - Each chart has a one-line "How to read this" caption.
+- **Change markers.** `runs/<name>/events.jsonl` holds lines of `{t, step, label, kind: change|incident}`. Each line
+  becomes a numbered dashed marker on the step charts (Elo, beats-previous, value and policy loss, entropy).
+  Incidents are red. Labels are cut to fit, and the full text is in the tooltip. The eval charts widen their step
+  axis to show changes made since the last eval. A new "Changes" table lists all the lines. A missing or empty file
+  means no markers. The format and an append one-liner are in TRAINING.md (section 4).
+- **Layout.**
+  - The training games vs fixed opponents panel now comes right under the Elo chart.
+  - The self-play deck win rates and the matchup matrix are in a collapsed "Details" section at the bottom. Its
+    chart is redrawn when it's opened, because it has no width while closed.
+  - The tile grid is a 2-row hero plus 4 × 2 tiles.
+- **Server.** `dashboard.py` adds `read_events`, `read_health`, `value_summary`, `bot_summary` and per-eval `scoreLo`
+  / `scoreHi` / `bestStep`. The new /api/data keys are `events`, `health`, `valueSummary` and `botSummary`. The page
+  still has no external assets.
+- **Tests.** `python/tests/test_dashboard.py` adds four tests:
+  - events: sorting, tolerance of bad lines, unknown kind
+  - health: fresh, stale guard, stale sensors with the guard's WARNING, levels, blank or 0 sensors, missing file
+  - held-out tile data, including valueTargetQ and the step it started
+  - bot hero data and the previous-checkpoint score ranges
+
+  Python suite: 75 passed, 1 skipped.
+- **Render check.**
+  - Served from the live epyc-1 run on 127.0.0.1:8077; /api/data had every new field.
+  - The page script ran under Node with a DOM stub against that JSON, an empty run and a stale-guard variant, at
+    1300 px and 306 px, with Details open and closed: no errors, no NaN or undefined.
+  - Headless Firefox screenshots (desktop and phone) checked by eye.

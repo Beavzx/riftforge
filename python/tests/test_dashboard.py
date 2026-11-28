@@ -156,3 +156,130 @@ def test_collect_includes_opponents(tmp_path):
     json.dumps(d)
     assert d["opponents"]["weights"]["bot"] == 0.1
     assert d["opponents"]["byOpponent"]["bot"]["6"]["losses"] == 1
+
+
+def _elo_rows(rd: Path, rows: list[list[str]]) -> None:
+    (rd / "elo.csv").write_text(",".join(FIELDS) + "\n" + "".join(",".join(r) + "\n" for r in rows))
+
+
+def test_read_events_sorted_tolerant_and_in_collect(tmp_path):
+    """runs/<name>/events.jsonl: change markers. Missing file = none; lines without a label or not JSON are skipped;
+    an unknown kind counts as a change; sorted by step (no step last), then time."""
+    from riftzero.dashboard import read_events
+    rd = fake_run(tmp_path / "home-1")
+    assert read_events(rd) == [] and collect(rd)["events"] == []
+    lines = [{"t": 300.0, "step": 900, "label": "Restart", "kind": "change"},
+             {"t": 200.0, "step": 900, "label": "Crash: OOM", "kind": "incident"},
+             {"t": 100.0, "step": 50, "label": " lr 3e-4 -> 2e-4 ", "kind": "tweak"},
+             {"t": 50.0, "label": "no step"},
+             {"t": 60.0, "step": 70, "label": ""},            # no label: skipped
+             {"t": 70.0, "step": "x", "label": "bad step"}]   # step not a number: kept, without a step
+    (rd / "events.jsonl").write_text("".join(json.dumps(r) + "\n" for r in lines) + "not json\n" + '{"t": 1, "st')
+    ev = read_events(rd)
+    assert [e["label"] for e in ev] == ["lr 3e-4 -> 2e-4", "Crash: OOM", "Restart", "no step", "bad step"]
+    assert ev[0] == {"t": 100.0, "step": 50, "label": "lr 3e-4 -> 2e-4", "kind": "change"}
+    assert ev[1]["kind"] == "incident" and ev[3]["step"] is None and ev[4]["step"] is None
+    assert collect(rd)["events"] == ev
+
+
+def _guard_line(t: float, sensors_age: float, ddr="60", cpu="65", m2="39", extra="") -> str:
+    from datetime import datetime, timezone
+    def iso(x):
+        return datetime.fromtimestamp(x, timezone.utc).isoformat(timespec="seconds")
+    return f"{iso(t)} sensors@{iso(t - sensors_age)} ddr5_max={ddr} cpu={cpu} m2={m2}{(' ' + extra) if extra else ''}\n"
+
+
+def test_read_health_fresh_stale_missing(tmp_path):
+    """Health tile from ~/thermal-guard.log: newest line, colour level per sensor against the guard's limits
+    (DDR5 80, CPU 90, M.2 78; amber within 5 °C), "running" only if the newest line is under 3 minutes old."""
+    from riftzero.dashboard import read_health
+    now = 1_795_890_000.0
+    log = tmp_path / "thermal-guard.log"
+    missing = read_health(tmp_path / "nope.log", now=now)
+    assert missing["exists"] is False and "temps" not in missing and missing["path"].endswith("nope.log")
+    log.write_text("garbage\n")
+    assert read_health(log, now=now)["exists"] is True and "guardT" not in read_health(log, now=now)
+    # fresh: older lines are ignored, the newest one counts; a half-written last line is skipped
+    log.write_text(_guard_line(now - 600, 60, ddr="84") + _guard_line(now - 30, 58) + "2026-11-28T18:2")
+    h = read_health(log, now=now)
+    assert h["running"] and not h["sensorsStale"] and h["alert"] is None
+    assert abs(h["guardAge"] - 30) < 1e-6 and abs(h["sensorsAge"] - 88) < 1e-6
+    assert {k: (v["c"], v["level"]) for k, v in h["temps"].items()} == {"ddr5": (60, "ok"), "cpu": (65, "ok"), "m2": (39, "ok")}
+    # levels: warn within 5 °C of the limit, crit at it; 0 / blank = unknown (the guard found no sensor)
+    log.write_text(_guard_line(now - 30, 58, ddr="76", cpu="90", m2="0"))
+    t = read_health(log, now=now)["temps"]
+    assert (t["ddr5"]["level"], t["cpu"]["level"], t["m2"]["level"], t["m2"]["c"]) == ("warn", "crit", "unknown", None)
+    log.write_text(_guard_line(now - 30, 58, cpu=""))
+    assert read_health(log, now=now)["temps"]["cpu"] == {"c": None, "limit": 90, "level": "unknown"}
+    # guard stopped: the newest line is 10 minutes old
+    log.write_text(_guard_line(now - 600, 58))
+    h = read_health(log, now=now)
+    assert h["running"] is False and h["sensorsStale"] is True
+    # guard running but the sensor log is old: its WARNING line follows the plain one, with the same guard time
+    line = _guard_line(now - 20, 400)
+    log.write_text(line + _guard_line(now - 20, 400, extra="WARNING: sensor log is 400s old"))
+    h = read_health(log, now=now)
+    assert h["running"] and h["sensorsStale"] and h["alert"] == "WARNING: sensor log is 400s old"
+    # collect passes the configured path through
+    rd = fake_run(tmp_path / "home-1")
+    assert collect(rd, thermal_log=log)["health"]["path"] == str(log)
+    assert collect(rd, thermal_log=tmp_path / "nope.log")["health"]["exists"] is False
+
+
+def test_value_summary_held_out_tile(tmp_path):
+    """"Value loss, unseen games": newest held-out measurement (logged at a checkpoint, repeated on later rows), the
+    step it first appeared, the previous one, and the smoothed training loss for contrast; None without held-out data."""
+    from riftzero.dashboard import value_summary
+    rd = fake_run(tmp_path / "home-1")
+    vs = collect(rd)["valueSummary"]
+    assert vs["held"] is None and vs["heldPrev"] is None and vs["floor"] == 0.67 and abs(vs["trainSmoothed"] - 0.9) < 1e-9
+    rows = [{"step": 10, "loss_value": 0.5}, {"step": 20, "loss_value": 0.5, "held_v_mse": 0.80, "held_v_corr": 0.5, "held_pi_ce": 1.3},
+            {"step": 30, "loss_value": 0.5, "held_v_mse": 0.80, "held_v_corr": 0.5, "held_pi_ce": 1.3},
+            {"step": 40, "loss_value": 0.5, "held_v_mse": 0.74, "held_v_corr": 0.54, "held_pi_ce": 1.24},
+            {"step": 50, "loss_value": 0.5, "held_v_mse": 0.74, "held_v_corr": 0.54, "held_pi_ce": 1.24}]
+    vs = value_summary(rows)
+    assert vs["held"] == {"step": 40, "v_mse": 0.74, "v_corr": 0.54, "pi_ce": 1.24}
+    assert vs["heldPrev"]["step"] == 20 and vs["heldPrev"]["v_mse"] == 0.80 and vs["heldCount"] == 2
+    assert abs(vs["trainSmoothed"] - 0.5) < 1e-9
+    assert value_summary([])["trainSmoothed"] is None
+    # through collect: read from metrics.jsonl
+    (rd / "metrics.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+    assert collect(rd)["valueSummary"]["held"]["v_mse"] == 0.74
+    # blended value target (train.valueTargetQ): the training loss isn't comparable across the change; the step it
+    # started comes from the newest events.jsonl line naming the value target
+    assert vs["valueTargetQ"] == 0.0 and vs["qSinceStep"] is None
+    events = [{"step": 30, "label": "value target 0.9z+0.1q"}, {"step": 45, "label": "Value target 0.75 z + 0.25 q"},
+              {"step": 48, "label": "lr change"}]
+    assert value_summary(rows, 0.25, events)["qSinceStep"] == 45
+    assert value_summary(rows, 0.25, [])["qSinceStep"] is None and value_summary(rows, 0.0, events)["qSinceStep"] is None
+    cfg = json.loads((rd / "config.json").read_text())
+    cfg["train"]["valueTargetQ"] = 0.25
+    (rd / "config.json").write_text(json.dumps(cfg))
+    (rd / "events.jsonl").write_text(json.dumps({"t": 1.0, "step": 45, "label": "15% fixed opponents, value target 0.75z+0.25q", "kind": "change"}) + "\n")
+    vs = collect(rd)["valueSummary"]
+    assert vs["valueTargetQ"] == 0.25 and vs["qSinceStep"] == 45
+
+
+def test_bot_hero_and_previous_checkpoint_scores(tmp_path):
+    """Hero tile: newest eval vs the bot (+ the one before) and the last-24-h training games vs the bot. Every eval
+    row carries its score's 95% Wilson range and which checkpoint "best" was."""
+    import time as _t
+    from riftzero.elo import wilson
+    rd = fake_run(tmp_path / "home-1")
+    assert collect(rd)["botSummary"] == {"eval": None, "evalPrev": None, "training": None, "training6": None}
+    _elo_rows(rd, [["1", "3000", "bot", "40", "7", "33", "0", "0", "0", "0.175", "-260", "-407", "-131", "1500", "False"],
+                   ["1", "3000", "best", "40", "26", "14", "0", "0", "0", "0.65", "105", "-3", "218", "1500", "False"],
+                   ["2", "6000", "bot", "40", "11", "28", "1", "1", "0", "0.2875", "-160", "-280", "-50", "3000", "False"],
+                   ["2", "6000", "best", "40", "13", "27", "0", "0", "0", "0.325", "-124", "-240", "-14", "", "False"]])
+    now = _t.time()
+    games = ((60, "win"), (120, "loss"), (180, "loss"), (10 * 3600, "loss"), (11 * 3600, "draw"))
+    (rd / "workers" / "w000-opponents.jsonl").write_text("".join(
+        json.dumps({"t": now - dt, "opp": "bot", "seat": 0, "result": res, "turns": 12}) + "\n" for dt, res in games))
+    d = collect(rd)
+    json.dumps(d)
+    b = d["botSummary"]
+    assert b["eval"]["step"] == 6000 and b["eval"]["score"] == 0.2875 and b["evalPrev"]["step"] == 3000
+    assert (b["eval"]["scoreLo"], b["eval"]["scoreHi"]) == wilson(0.2875, 40)
+    assert b["training"]["games"] == 5 and abs(b["training"]["rate"] - 1.5 / 5) < 1e-9 and b["training6"]["games"] == 3
+    best = [e for e in d["evals"] if e["opponent"] == "best"]
+    assert [e["bestStep"] for e in best] == [1500, None] and best[1]["scoreLo"] < 0.325 < best[1]["scoreHi"] < 0.5

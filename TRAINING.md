@@ -132,17 +132,27 @@ or on the command line: `scripts/start.sh --set selfplay.opponents.weights.bot=0
 scripts/status.sh --watch
 scripts/dashboard.sh             # live web dashboard: open http://localhost:8050 (also from Windows when run in WSL)
 ```
-The dashboard shows Elo per eval opponent with 95% ranges, value/policy loss and entropy (raw + smoothed), self-play
-throughput, deck win rates, the matchup matrix, the latest eval by deck, the training games vs fixed opponents and the
-eval history, refreshing every 30 s.
-It only reads the run's files, so starting or stopping it never affects training. For a remote box, forward the
+The dashboard shows, top to bottom: tiles (win rate vs the rules bot, held-out value loss, Elo vs SearchAI, trainer
+step, next eval, games per hour, positions, workers, thermal health); Elo against the fixed eval opponents (bot,
+SearchAI); the training games vs fixed opponents; whether each eval beats the previous checkpoint; value/policy loss
+and entropy (raw + smoothed, with the held-out line); self-play throughput; the latest eval by deck; the logged
+changes; the eval history; and, collapsed under "Details", the self-play deck win rates and matchup matrix. Each
+chart has a one-line "how to read this". It refreshes every 30 s.
+It only reads files, so starting or stopping it never affects training. For a remote box, forward the
 port instead of exposing it: `ssh -L 8050:localhost:8050 <host>`, then open http://localhost:8050 locally.
-It shows games per hour, positions, trainer step and losses, the inference batch size, and the latest eval with an
-Elo-vs-SearchAI history. What to look at:
-- **Elo vs SearchAI** is the main number. The hand-built SearchAI is the yardstick, and the net starts far below
-  it (a random network loses nearly every game).
-- **loss_value** should fall below about 0.9 within the first day. Around 1.0 means the value head has learnt
-  nothing yet.
+What to look at:
+- **Win rate vs the rules bot** (the big tile) is the near-term yardstick: the training games against the bot over
+  the last 24 h (hundreds a day, with a 95% range) next to the latest 40-game eval. It should climb past 50%.
+  **Elo vs SearchAI** is the longer-term one; the net starts far below it (a random network loses nearly every game).
+- **Beats previous checkpoint?** plots each eval's score against "best" (the checkpoint evaluated before it) as a win %
+  with its 95% range. The opponent moves with every eval, so it is a sanity check, not a progress curve, and it is
+  not drawn as Elo.
+- **Value loss, unseen games** (`held_v_mse` in metrics.jsonl, logged at each checkpoint on positions from held-out
+  games, see `train.holdoutEvery`) is the honest value number. Outcome randomness alone leaves about 0.67; around
+  1.0 means the value head has learnt nothing. The training `loss_value` sits far lower because the net partly
+  remembers games it trained on, and with `train.valueTargetQ` > 0 it is measured against the blended target
+  (1 − q) z + q · search value, so it drops at that change and can't be compared across it. The held-out loss is
+  always scored against z.
 - **policy entropy** should fall slowly. If it drops to about 0 in the first hours, the run has collapsed: lower
   `train.lr`.
 - **reuse** sits near `train.maxSampleReuse` (4) when the trainer is waiting for self-play, which is normal.
@@ -156,9 +166,34 @@ Elo-vs-SearchAI history. What to look at:
 - **skipped_steps** (in metrics.jsonl) counts training steps skipped for a non-finite loss or gradient. A few are
   harmless. 10 in a row stop the trainer **without** publishing those weights (the last good `latest.pt` stays).
 
-- **Deck win %** (self-play, both sides the same net) shows which lists the AI rates. Early on it only says which deck
-  wins when both sides play badly. `scripts/status.sh --matchups` lists every pairing. Evals also break results down
-  by the net's deck.
+- **Deck win %** (self-play, both sides the same net, under "Details") shows which lists the AI rates. Early on it only
+  says which deck wins when both sides play badly. `scripts/status.sh --matchups` lists every pairing. Evals also
+  break results down by the net's deck.
+- **Health (thermal guard)** reads the newest line of `~/thermal-guard.log` (written every minute by
+  `~/thermal-guard.sh`; another path with `scripts/dashboard.sh --thermal-log <path>`). It shows DDR5 / CPU / NVMe
+  °C, coloured against the guard's limits (DDR5 80, CPU 90, M.2 78 °C; amber within 5 °C), and "guard running" while
+  the newest line is under 3 minutes old. If the line is older, or the sensor reading is more than 5 minutes old,
+  the tile and the banner say the guard isn't running or the sensors are stale. No log file: the tile says so and
+  nothing else changes (the home PC has no guard).
+
+**Change markers (`runs/<name>/events.jsonl`).** When you change a running run's setup (config, code, restart) or
+something goes wrong, append one JSON line to the run's `events.jsonl`. The dashboard draws each one as a numbered,
+dashed vertical line on the step charts (Elo, beats-previous, losses, entropy) and lists it in the "Changes" table,
+so a later jump in a curve can be matched to its cause:
+```
+{"t": 1795889820, "step": 45875, "label": "15% fixed opponents, value target 0.75z+0.25q", "kind": "change"}
+```
+- `t`: Unix seconds. `step`: the trainer step it applies from (the newest `step` in metrics.jsonl, or the step a
+  restart resumed at). `label`: a short description; the charts cut it to fit, and the table shows it in full.
+- `kind`: `change` (grey marker) or `incident` (red, for crashes and outages). Anything else counts as a change.
+- When you turn on or change `train.valueTargetQ`, put "value target" in the label: the dashboard takes the step
+  of the newest such line as the point where the training value loss stops being comparable.
+- One way to append the current step:
+  ```bash
+  R=runs/epyc-1; S=$(tail -1 $R/metrics.jsonl | python3 -c 'import json,sys; print(json.load(sys.stdin)["step"])')
+  echo "{\"t\": $(date +%s), \"step\": $S, \"label\": \"lr 3e-4 -> 2e-4\", \"kind\": \"change\"}" >> $R/events.jsonl
+  ```
+- A missing or empty file means no markers. Lines without a label, and lines that aren't JSON, are skipped.
 
 Evals are played in **pairs**: both games of a pair use the same decks, shuffle and first player, with the seats
 swapped, so the net plays each side of the same deal once. Luck of the matchup and the draw then cancels within a pair

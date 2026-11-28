@@ -17,7 +17,7 @@ conservative request frequency. This script is built to stay well inside that:
 Endpoints (from the site's JS bundle, 2026-11-28; see docs/data-sources.md for the evidence):
   list   POST https://data.riftatlas-workers.com/rpc/publicReplays:list
          content-type text/plain;charset=UTF-8, body {"args": {"sort": "new"}, "token": "<JWT>"}  -> JSON array
-  replay GET  https://data.riftatlas-workers.com/api/public-replays/<id>?locale=en   (--replay-origin to change)
+  replay GET  https://realtime.riftatlas-workers.com/api/public-replays/<id>?locale=en   (--replay-origin to change)
          authorization: Bearer <JWT>, accept: application/vnd.riftatlas.replay+json;version=2
   token  POST https://auth.riftatlas.com/api/auth/token  (session cookie) -> {"token": "<JWT>"}   [optional]
          RiftAtlas's own account service (not Clerk's Frontend API, although the JWT keeps the Clerk issuer
@@ -62,7 +62,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anonymise  # noqa: E402
 
 DATA_ORIGIN = "https://data.riftatlas-workers.com"
-REPLAY_ORIGIN = DATA_ORIGIN  # observed live 2026-11-28; the bundle's helper points at realtime.riftatlas-workers.com
+REPLAY_ORIGIN = "https://realtime.riftatlas-workers.com"  # first live run 2026-11-28: the data host answers 404 here
 AUTH_ORIGIN = "https://auth.riftatlas.com"
 USER_AGENT = "riftforge-replay-collector"
 REPLAY_ACCEPT = "application/vnd.riftatlas.replay+json;version=2"
@@ -233,6 +233,10 @@ class Collector:
             r = Response(r.status, r.headers, gzip.decompress(r.body))
         return r
 
+    def _origin(self) -> dict[str, str]:
+        """The data API answers 403 origin_required without the page's Origin (first live run, 2026-11-28)."""
+        return {"origin": self.args.auth_origin} if self.args.auth_origin else {}
+
     def _check(self, r: Response, what: str) -> None:
         """Stop on any status the service would not want repeated."""
         code = _error_code(r)
@@ -325,7 +329,8 @@ class Collector:
         def call() -> Response:
             body = json.dumps({"args": args, "token": self.token}).encode()
             return self._send("POST", f"{DATA_ORIGIN}/rpc/publicReplays:list",
-                              {"content-type": "text/plain;charset=UTF-8", "accept": "application/json"}, body)
+                              {"content-type": "text/plain;charset=UTF-8", "accept": "application/json",
+                               **self._origin()}, body)
 
         r = self.authed(call, "list")
         self._check(r, "list")
@@ -341,7 +346,8 @@ class Collector:
         url = f"{self.args.replay_origin.rstrip('/')}/api/public-replays/{urllib.parse.quote(pid)}?locale={urllib.parse.quote(self.args.locale)}"
 
         def call() -> Response:
-            return self._send("GET", url, {"authorization": f"Bearer {self.token}", "accept": REPLAY_ACCEPT})
+            return self._send("GET", url, {"authorization": f"Bearer {self.token}", "accept": REPLAY_ACCEPT,
+                                           **self._origin()})
 
         return self.authed(call, f"replay {pid}")
 
@@ -512,7 +518,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--list-limit", type=int, default=0, help="pass a limit to the list query (default: server default)")
     p.add_argument("--locale", default="en")
     p.add_argument("--auth-origin", default="https://play.riftatlas.com",
-                   help="Origin header for the token refresh only: the page the browser makes it from (the JWT's "
+                   help="Origin header (token refresh, list and replay requests): the page the browser makes them from (the JWT's "
                         "azp claim); '' sends none")
     p.add_argument("--replay-origin", default=REPLAY_ORIGIN, help="host serving /api/public-replays/<id>")
     p.add_argument("--check-token", action="store_true", help="check the credential files and exit; no requests")

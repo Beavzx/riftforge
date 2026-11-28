@@ -1316,3 +1316,7 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
   - The verifier's catches are tampered in deliberately. Outcomes, including the fallbacks, are checked.
   - The collector's skip/cap/spacing, 429/5xx/401/403/network back-off, 404/202, permissions, expiry, the
     session-cookie refresh and the in-repo refusal run against a fake HTTP layer.
+- First live run (2026-11-28, supervised, 3 runs, 10 requests in total): minting a token from the session cookie works;
+  the list and the replay fetch need the page's `Origin` (403 `origin_required` without it); replays are served
+  by `realtime.riftatlas-workers.com` (the data host answers 404). `publicReplays:list` "new" returns 50 entries.
+  First replay saved: 142 frames, 36 KB gzipped; a scan found no `plr_` ids, no viewer id and no email addresses.

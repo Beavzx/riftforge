@@ -66,13 +66,15 @@ train:
   totalSteps: 400000
   minPositions: 50000
   replayPositions: 2000000   # ~60 GB RAM
-  maxSampleReuse: 4.0
-  ckptEverySteps: 500    # 500 × 256 ÷ reuse 4 ≈ 32k new positions (~15 min) per self-play net, as home-1
+  maxSampleReuse: 1.5    # was 4. Offline A/B 2026-11-28 (5 fresh nets, 160k epyc-1 positions, scored on unseen games):
+                         # held-out value MSE is best at reuse 1.2-1.6 (0.663) and worse past it (0.742 at 3.15).
+                         # Weight decay 0.03 made no difference and the small model was no better (CHANGELOG)
+  ckptEverySteps: 250    # 250 × 256 ÷ reuse 1.5 ≈ 43k new positions (~16 min) per self-play net
   keepCheckpoints: 100
   keepShardFiles: 8000   # ~8000 × 8 games × ~40 positions × ~33 KB ≈ 85 GB of shards on disk
 
 eval:
-  everyCheckpoints: 12  # every 6,000 steps ≈ 384k positions (~3.5 h); one 40-game eval vs 3 opponents takes ~1 h
+  everyCheckpoints: 12  # every 3,000 steps ≈ 512k positions (~3.2 h at reuse 1.5); one eval takes ~1.5 h
   gamesPerOpponent: 40
   opponents: [searchai, best, bot]
   concurrentGames: 8

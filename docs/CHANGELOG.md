@@ -1199,3 +1199,15 @@ installed on simulation-server, and the RJ#906 todo). `tools/fuzz.ts --games 150
 - Tested on a scratch copy of epyc-1, on CPU: both change messages printed, held-out scoring ran each checkpoint, and
   the warmup lr followed the new base lr. New test `test_replay_window_holds_out_whole_files_never_trained_on`;
   python suite 30 passed.
+
+## 2026-11-28 — epyc-1: maxSampleReuse 4 → 1.5 (offline A/B), checkpoints every 250 steps
+- Offline A/B: fresh medium nets trained on the same 162k epyc-1 positions, scored on 49k positions from 150 newer
+  shard files the nets never saw. Held-out value MSE against the number of passes over the data (current settings):
+  0.701 at 0.8 passes, **0.663 at 1.6**, 0.690 at 2.0, 0.742 at 3.2, 0.772 at 4.0. At 4.0 the train/held-out gap
+  (0.422 / 0.772) reproduces the live run's (0.435 / 0.80).
+  - Weight decay 0.03 changed nothing (0.772 at 4.0).
+  - The small model reached the same best (0.666) with a worse policy (held-out CE 1.29–1.30 vs 1.27–1.28).
+  - Script `~/perf/vexp/vexp.py`.
+- `maxSampleReuse` 4 → 1.5. To keep ~16 min per self-play net and ~3 h between evals, `ckptEverySteps` 500 → 250
+  (evals every 3,000 steps).
+- Restarted 16:42 at step 44,532 ("maxSampleReuse ? -> 1.5: reuse budget restarts from here").
